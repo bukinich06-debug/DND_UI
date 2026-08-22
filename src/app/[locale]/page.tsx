@@ -1,5 +1,5 @@
-import DndApp from "@/components/DndApp";
+import { AppLayout } from "@/components/app-layout";
 
 export default function HomePage() {
-  return <DndApp />;
+  return <AppLayout />;
 }

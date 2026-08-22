@@ -21,6 +21,7 @@
     "init": "Init",
     "abilityScores": "Ability Scores",
     "equipment": "Equipment",
+    "purse": "Coins",
     "conditions": "Conditions",
     "abilities": {
       "str": "STR",
@@ -66,6 +67,13 @@
     "rest": "Rest",
     "stealth": "Stealth"
   },
+  "coins": {
+    "pp": "pp",
+    "gp": "gp",
+    "ep": "ep",
+    "sp": "sp",
+    "cp": "cp"
+  },
   "sidebar": {
     "situation": "Situation",
     "nearby": "Nearby",
@@ -93,6 +101,7 @@
     "weight": "Weight",
     "weightValue": "{total} / {max} {unit}",
     "unit": "lb",
+    "purse": "Coins",
     "itemsCount": "{count, plural, one {# item} other {# items}}",
     "searchPlaceholder": "Search items...",
     "empty": "No items found.",
@@ -248,6 +257,7 @@
       { "icon": "📌", "label": "Notice Board", "sub": "Near the entrance" },
       { "icon": "🚪", "label": "Back Door", "sub": "Leads to the alley" },
       { "icon": "🍺", "label": "Bar", "sub": "Gareth tends it" }
-    ]
+    ],
+    "purse": { "pp": 0, "gp": 42, "ep": 0, "sp": 18, "cp": 7 }
   }
 }

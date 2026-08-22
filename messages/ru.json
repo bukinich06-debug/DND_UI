@@ -21,6 +21,7 @@
     "init": "Иниц",
     "abilityScores": "Характеристики",
     "equipment": "Снаряжение",
+    "purse": "Монеты",
     "conditions": "Состояния",
     "abilities": {
       "str": "СИЛ",
@@ -66,6 +67,13 @@
     "rest": "Отдых",
     "stealth": "Скрытность"
   },
+  "coins": {
+    "pp": "пм",
+    "gp": "зм",
+    "ep": "эм",
+    "sp": "см",
+    "cp": "мм"
+  },
   "sidebar": {
     "situation": "Ситуация",
     "nearby": "Рядом",
@@ -93,6 +101,7 @@
     "weight": "Вес",
     "weightValue": "{total} / {max} {unit}",
     "unit": "кг",
+    "purse": "Монеты",
     "itemsCount": "{count, plural, one {# предмет} few {# предмета} many {# предметов} other {# предметов}}",
     "searchPlaceholder": "Поиск предметов...",
     "empty": "Ничего не найдено.",
@@ -248,6 +257,7 @@
       { "icon": "📌", "label": "Доска объявлений", "sub": "У входа" },
       { "icon": "🚪", "label": "Задняя дверь", "sub": "Ведёт в переулок" },
       { "icon": "🍺", "label": "Стойка", "sub": "За ней Гарет" }
-    ]
+    ],
+    "purse": { "pp": 0, "gp": 42, "ep": 0, "sp": 18, "cp": 7 }
   }
 }

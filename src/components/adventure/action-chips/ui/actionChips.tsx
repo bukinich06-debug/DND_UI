@@ -1,0 +1,34 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+import type { ActionId } from "@/components/shared/types";
+
+const ACTION_IDS: ActionId[] = ["talk", "inspect", "search", "attack", "move", "rest", "stealth"];
+
+interface IActionChipsProps {
+  onPick: (label: string) => void;
+}
+
+export const ActionChips = ({ onPick }: IActionChipsProps) => {
+  const t = useTranslations("center");
+  const tActions = useTranslations("actions");
+
+  return (
+    <div className="mb-3 flex flex-wrap items-center gap-2">
+      <span className="font-sans text-[11px] text-muted">{t("suggest")}</span>
+      {ACTION_IDS.map((id) => {
+        const label = tActions(id);
+        return (
+          <button
+            key={id}
+            type="button"
+            onClick={() => onPick(label)}
+            className="cursor-pointer rounded-[3px] border border-border bg-transparent px-[9px] py-[3px] font-sans text-xs text-muted transition-all hover:border-gold-dim hover:bg-[#1a1714] hover:text-gold"
+          >
+            {label}
+          </button>
+        );
+      })}
+    </div>
+  );
+};

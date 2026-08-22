@@ -2,7 +2,7 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-background: #0f0e0d;
+  --color-background: #000000;
   --color-panel: #1a1917;
   --color-panel-alt: #231f1a;
   --color-border: #2e2b27;
@@ -37,7 +37,7 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
-  background-color: #0f0e0d;
+  background-color: #000000;
   color: #e8e0d0;
   font-family: 'Inter', system-ui, sans-serif;
 }
