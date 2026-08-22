@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useLocale, useTranslations, useMessages } from "next-intl";
+import { usePathname, useRouter } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/routing";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -15,10 +18,15 @@ interface Message {
   timestamp?: string;
 }
 
+type ItemCategory = "weapons" | "armor" | "consumables" | "quest" | "other";
+type CategoryFilter = "all" | ItemCategory;
+type TabId = "character" | "spells" | "journal";
+type ActionId = "talk" | "inspect" | "search" | "attack" | "move" | "rest" | "stealth";
+
 interface InventoryItem {
   id: number;
   name: string;
-  category: "weapons" | "armor" | "consumables" | "quest" | "other";
+  category: ItemCategory;
   qty: number;
   description: string;
   weight: number;
@@ -28,139 +36,37 @@ interface InventoryItem {
   properties?: string[];
 }
 
-// ─── Static data ─────────────────────────────────────────────────────────────
+interface NearbyEntry {
+  icon: string;
+  label: string;
+  sub: string;
+}
 
-const ADVENTURE_LOG: Message[] = [
-  {
-    id: 1,
-    type: "narration",
-    text: "The rain lashes against the shuttered windows of the Rusty Lantern. You push open the heavy oak door and step inside. Warm firelight fills the low-ceilinged common room, but conversation dies the moment you cross the threshold. A dozen pairs of eyes find you — then look away.",
-    timestamp: "Evening",
-  },
-  {
-    id: 2,
-    type: "npc",
-    speaker: "Gareth (Bartender)",
-    text: "You're not from around here, are you? Last stranger who wandered in asking questions... well. What'll it be?",
-  },
-  {
-    id: 3,
-    type: "player",
-    text: 'You set two silver coins on the bar and lean in. "I\'m looking for the Harwick caravan — three wagons, left Millhaven six days ago. Never arrived at Thorngate. I\'m told you might know something."',
-  },
-  {
-    id: 4,
-    type: "system",
-    text: "Persuasion Check",
-    roll: "14 + 2 = 16",
-    speaker: "Success",
-  },
-  {
-    id: 5,
-    type: "narration",
-    text: "Gareth's jaw tightens. He wipes the bar slowly with a rag that was never going to clean anything. Then, without looking at you, he tips his head toward the back corner — where a cloaked figure nurses a drink alone.",
-    timestamp: "Evening",
-  },
-  {
-    id: 6,
-    type: "combat",
-    text: "A chair scrapes behind you. Two figures rise from a corner table — heavyset men, hands moving toward belt knives. One of them snarls: \"Harwick's business stays Harwick's business, ranger.\"",
-    speaker: "Ambush — Roll for Initiative",
-  },
+const CATEGORY_FILTERS: CategoryFilter[] = [
+  "all",
+  "weapons",
+  "armor",
+  "consumables",
+  "quest",
+  "other",
 ];
 
-const INVENTORY_ITEMS: InventoryItem[] = [
-  {
-    id: 1,
-    name: "Longbow",
-    category: "weapons",
-    qty: 1,
-    description: "A finely crafted recurve bow of yew wood. Reliable at range.",
-    weight: 2,
-    rarity: "common",
-    equipped: true,
-    value: "25 gp",
-    properties: ["Range 150/600 ft", "1d8 piercing", "Two-handed"],
-  },
-  {
-    id: 2,
-    name: "Leather Armor",
-    category: "armor",
-    qty: 1,
-    description: "Supple leather armor reinforced at the shoulders and chest.",
-    weight: 10,
-    rarity: "common",
-    equipped: true,
-    value: "10 gp",
-    properties: ["AC 11 + DEX modifier", "No disadvantage on Stealth"],
-  },
-  {
-    id: 3,
-    name: "Quiver of Arrows",
-    category: "weapons",
-    qty: 20,
-    description: "Standard iron-tipped arrows. Well-fletched.",
-    weight: 1,
-    rarity: "common",
-    value: "1 gp",
-    properties: ["1d6 piercing with shortbow", "1d8 piercing with longbow"],
-  },
-  {
-    id: 4,
-    name: "Healing Potion",
-    category: "consumables",
-    qty: 3,
-    description: "A small vial of glowing red liquid. Restores 2d4 + 2 hit points.",
-    weight: 0.5,
-    rarity: "common",
-    value: "50 gp",
-    properties: ["Restores 2d4 + 2 HP", "Bonus action to use"],
-  },
-  {
-    id: 5,
-    name: "Hempen Rope",
-    category: "other",
-    qty: 1,
-    description: "Fifty feet of sturdy rope. Can support up to 300 pounds.",
-    weight: 10,
-    rarity: "common",
-    value: "1 gp",
-    properties: ["50 feet", "300 lb capacity"],
-  },
-  {
-    id: 6,
-    name: "Letter of Introduction",
-    category: "quest",
-    qty: 1,
-    description: "A sealed letter from Merchant Harwick bearing his personal crest. Opens doors.",
-    weight: 0,
-    rarity: "uncommon",
-    value: "—",
-    properties: ["Quest item", "Cannot be dropped"],
-  },
-  {
-    id: 7,
-    name: "Shortsword",
-    category: "weapons",
-    qty: 1,
-    description: "A plain iron shortsword. Good for close quarters.",
-    weight: 2,
-    rarity: "common",
-    value: "10 gp",
-    properties: ["1d6 piercing", "Finesse, Light"],
-  },
+const TAB_IDS: TabId[] = ["character", "spells", "journal"];
+const ACTION_IDS: ActionId[] = [
+  "talk",
+  "inspect",
+  "search",
+  "attack",
+  "move",
+  "rest",
+  "stealth",
 ];
 
-const NEARBY = [
-  { icon: "👤", label: "Gareth", sub: "Bartender — wary but cooperative" },
-  { icon: "🧥", label: "Mira", sub: "Cloaked traveler — unknown motive" },
-  { icon: "⚠️", label: "Two armed men", sub: "Hostile — watching you" },
-  { icon: "📌", label: "Notice Board", sub: "Near the entrance" },
-  { icon: "🚪", label: "Back Door", sub: "Leads to the alley" },
-  { icon: "🍺", label: "Bar", sub: "Gareth tends it" },
-];
-
-const ACTION_SUGGESTIONS = ["Talk", "Inspect", "Search", "Attack", "Move", "Rest", "Stealth"];
+const RARITY_COLORS: Record<string, string> = {
+  common: "#7a7060",
+  uncommon: "#6b9e8a",
+  rare: "#9a6bc4",
+};
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -260,6 +166,55 @@ const IconUser = () => (
   </svg>
 );
 
+// ─── Language Switcher ────────────────────────────────────────────────────────
+
+function LanguageSwitcher() {
+  const locale = useLocale() as Locale;
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const switchLocale = (next: Locale) => {
+    if (next === locale) return;
+    router.replace(pathname, { locale: next });
+  };
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        border: "1px solid #2e2b27",
+        borderRadius: "4px",
+        overflow: "hidden",
+      }}
+    >
+      {(["en", "ru"] as const).map((code) => {
+        const active = locale === code;
+        return (
+          <button
+            key={code}
+            type="button"
+            onClick={() => switchLocale(code)}
+            style={{
+              backgroundColor: active ? "#231f1a" : "transparent",
+              border: "none",
+              color: active ? "#c9a84c" : "#7a7060",
+              fontSize: "11px",
+              fontFamily: "'Inter', sans-serif",
+              fontWeight: active ? 600 : 400,
+              padding: "5px 9px",
+              cursor: "pointer",
+              letterSpacing: "0.04em",
+            }}
+          >
+            {code.toUpperCase()}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 // ─── Left Sidebar ─────────────────────────────────────────────────────────────
 
 function AbilityCard({ name, score }: { name: string; score: number }) {
@@ -309,17 +264,17 @@ function BarStat({
 
 function LeftSidebar({ onInventory, activeTab, setActiveTab }: {
   onInventory: () => void;
-  activeTab: string;
-  setActiveTab: (t: string) => void;
+  activeTab: TabId;
+  setActiveTab: (t: TabId) => void;
 }) {
-  const tabs = ["Character", "Spells", "Journal"];
+  const t = useTranslations("character");
+  const tNav = useTranslations("nav");
 
   return (
     <aside
       style={{ backgroundColor: "#0f0e0d", borderColor: "#2e2b27", width: "280px", flexShrink: 0 }}
       className="border-r flex flex-col h-full"
     >
-      {/* Character header */}
       <div style={{ borderColor: "#2e2b27", padding: "20px 16px 16px" }} className="border-b">
         <div className="flex items-center gap-3">
           <div
@@ -334,10 +289,10 @@ function LeftSidebar({ onInventory, activeTab, setActiveTab }: {
           </div>
           <div className="flex flex-col gap-0.5">
             <span style={{ fontFamily: "'EB Garamond', serif", fontSize: "20px", color: "#e8e0d0", lineHeight: 1.1, fontWeight: 500 }}>
-              Aldric
+              {t("name")}
             </span>
             <span style={{ color: "#c9a84c", fontSize: "12px", fontFamily: "'Inter', sans-serif" }}>
-              Ranger · Level 3
+              {t("classLevel", { level: 3 })}
             </span>
             <div className="flex items-center gap-1 mt-0.5">
               {[1, 2, 3].map(i => (
@@ -348,48 +303,47 @@ function LeftSidebar({ onInventory, activeTab, setActiveTab }: {
         </div>
       </div>
 
-      {/* Stats */}
       <div style={{ padding: "14px 16px", borderColor: "#2e2b27" }} className="border-b flex flex-col gap-3">
-        <BarStat label="HP" current={24} max={28} color="#7ab87a" icon={<IconHeart />} />
-        <BarStat label="XP" current={640} max={900} color="#5a7fc9" />
+        <BarStat label={t("hp")} current={24} max={28} color="#7ab87a" icon={<IconHeart />} />
+        <BarStat label={t("xp")} current={640} max={900} color="#5a7fc9" />
 
         <div className="flex gap-3 mt-1">
           <div style={{ flex: 1, backgroundColor: "#1a1917", border: "1px solid #2e2b27", borderRadius: "4px", padding: "8px", textAlign: "center" }}>
-            <div style={{ color: "#7a7060", fontSize: "9px", fontFamily: "'Inter', sans-serif", letterSpacing: "0.08em" }} className="uppercase">AC</div>
+            <div style={{ color: "#7a7060", fontSize: "9px", fontFamily: "'Inter', sans-serif", letterSpacing: "0.08em" }} className="uppercase">{t("ac")}</div>
             <div style={{ color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", fontSize: "18px", fontWeight: 500 }}>15</div>
           </div>
           <div style={{ flex: 1, backgroundColor: "#1a1917", border: "1px solid #2e2b27", borderRadius: "4px", padding: "8px", textAlign: "center" }}>
-            <div style={{ color: "#7a7060", fontSize: "9px", fontFamily: "'Inter', sans-serif", letterSpacing: "0.08em" }} className="uppercase">Prof</div>
+            <div style={{ color: "#7a7060", fontSize: "9px", fontFamily: "'Inter', sans-serif", letterSpacing: "0.08em" }} className="uppercase">{t("prof")}</div>
             <div style={{ color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", fontSize: "18px", fontWeight: 500 }}>+2</div>
           </div>
           <div style={{ flex: 1, backgroundColor: "#1a1917", border: "1px solid #2e2b27", borderRadius: "4px", padding: "8px", textAlign: "center" }}>
-            <div style={{ color: "#7a7060", fontSize: "9px", fontFamily: "'Inter', sans-serif", letterSpacing: "0.08em" }} className="uppercase">Init</div>
+            <div style={{ color: "#7a7060", fontSize: "9px", fontFamily: "'Inter', sans-serif", letterSpacing: "0.08em" }} className="uppercase">{t("init")}</div>
             <div style={{ color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", fontSize: "18px", fontWeight: 500 }}>+3</div>
           </div>
         </div>
       </div>
 
-      {/* Ability scores */}
       <div style={{ padding: "14px 16px", borderColor: "#2e2b27" }} className="border-b">
         <div style={{ color: "#7a7060", fontSize: "10px", fontFamily: "'Inter', sans-serif", letterSpacing: "0.1em", marginBottom: "8px" }} className="uppercase">
-          Ability Scores
+          {t("abilityScores")}
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "6px" }}>
           {[
-            { name: "STR", score: 12 }, { name: "DEX", score: 17 }, { name: "CON", score: 13 },
-            { name: "INT", score: 11 }, { name: "WIS", score: 14 }, { name: "CHA", score: 9 },
-          ].map(a => <AbilityCard key={a.name} {...a} />)}
+            { key: "str", score: 12 }, { key: "dex", score: 17 }, { key: "con", score: 13 },
+            { key: "int", score: 11 }, { key: "wis", score: 14 }, { key: "cha", score: 9 },
+          ].map(a => (
+            <AbilityCard key={a.key} name={t(`abilities.${a.key}`)} score={a.score} />
+          ))}
         </div>
       </div>
 
-      {/* Equipment */}
       <div style={{ padding: "14px 16px", borderColor: "#2e2b27" }} className="border-b flex flex-col gap-2">
         <div style={{ color: "#7a7060", fontSize: "10px", fontFamily: "'Inter', sans-serif", letterSpacing: "0.1em", marginBottom: "2px" }} className="uppercase">
-          Equipment
+          {t("equipment")}
         </div>
         {[
-          { icon: <IconSword />, label: "Longbow", sub: "Weapon · 1d8+3" },
-          { icon: <IconShield />, label: "Leather Armor", sub: "AC 12 + DEX" },
+          { icon: <IconSword />, label: t("equipped.longbow"), sub: t("equipped.longbowSub") },
+          { icon: <IconShield />, label: t("equipped.leatherArmor"), sub: t("equipped.leatherArmorSub") },
         ].map(e => (
           <div key={e.label} className="flex items-center gap-2">
             <span style={{ color: "#c9a84c" }}>{e.icon}</span>
@@ -400,7 +354,11 @@ function LeftSidebar({ onInventory, activeTab, setActiveTab }: {
           </div>
         ))}
         <div className="flex flex-wrap gap-1.5 mt-1">
-          {["Quiver ×20", "Potion ×3", "Rope"].map(tag => (
+          {[
+            t("tags.quiver", { count: 20 }),
+            t("tags.potion", { count: 3 }),
+            t("tags.rope"),
+          ].map(tag => (
             <span key={tag} style={{
               backgroundColor: "#231f1a", border: "1px solid #2e2b27", borderRadius: "3px",
               padding: "2px 8px", fontSize: "11px", color: "#7a7060", fontFamily: "'Inter', sans-serif",
@@ -411,30 +369,27 @@ function LeftSidebar({ onInventory, activeTab, setActiveTab }: {
         </div>
       </div>
 
-      {/* Conditions */}
       <div style={{ padding: "10px 16px", borderColor: "#2e2b27" }} className="border-b">
         <div style={{ color: "#7a7060", fontSize: "10px", fontFamily: "'Inter', sans-serif", letterSpacing: "0.1em", marginBottom: "6px" }} className="uppercase">
-          Conditions
+          {t("conditions")}
         </div>
         <div className="flex gap-2 flex-wrap">
           <span style={{
             backgroundColor: "#1e2a1e", border: "1px solid #3d6040", borderRadius: "3px",
             padding: "2px 8px", fontSize: "11px", color: "#7ab87a",
-          }}>Focused</span>
+          }}>{t("conditionsList.focused")}</span>
           <span style={{
             backgroundColor: "#2a1e1a", border: "1px solid #60402e", borderRadius: "3px",
             padding: "2px 8px", fontSize: "11px", color: "#c48060",
-          }}>Wet (rain)</span>
+          }}>{t("conditionsList.wet")}</span>
         </div>
       </div>
 
-      {/* Spacer */}
       <div className="flex-1" />
 
-      {/* Nav buttons */}
       <div style={{ padding: "12px 16px", borderColor: "#2e2b27" }} className="border-t">
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px" }}>
-          {tabs.map(tab => (
+          {TAB_IDS.map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -450,7 +405,7 @@ function LeftSidebar({ onInventory, activeTab, setActiveTab }: {
                 transition: "all 0.15s",
               }}
             >
-              {tab}
+              {tNav(tab)}
             </button>
           ))}
           <button
@@ -467,7 +422,7 @@ function LeftSidebar({ onInventory, activeTab, setActiveTab }: {
               transition: "all 0.15s",
             }}
           >
-            Inventory
+            {tNav("inventory")}
           </button>
         </div>
       </div>
@@ -478,6 +433,8 @@ function LeftSidebar({ onInventory, activeTab, setActiveTab }: {
 // ─── Adventure Log ────────────────────────────────────────────────────────────
 
 function MessageBubble({ msg }: { msg: Message }) {
+  const t = useTranslations("center");
+
   if (msg.type === "narration") {
     return (
       <div style={{ padding: "0 0 24px 0" }}>
@@ -517,7 +474,7 @@ function MessageBubble({ msg }: { msg: Message }) {
           fontStyle: "italic",
           margin: 0,
         }}>
-          "{msg.text}"
+          &ldquo;{msg.text}&rdquo;
         </p>
       </div>
     );
@@ -533,7 +490,7 @@ function MessageBubble({ msg }: { msg: Message }) {
         marginBottom: "20px",
       }}>
         <div style={{ color: "#c9a84c", fontSize: "10px", fontFamily: "'Inter', sans-serif", marginBottom: "5px", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-          Your action
+          {t("yourAction")}
         </div>
         <p style={{
           fontFamily: "'EB Garamond', serif",
@@ -613,7 +570,13 @@ function MessageBubble({ msg }: { msg: Message }) {
 
 // ─── Center Panel ─────────────────────────────────────────────────────────────
 
-function CenterPanel({ onInventory }: { onInventory: () => void }) {
+function CenterPanel() {
+  const t = useTranslations("center");
+  const tNav = useTranslations("nav");
+  const tActions = useTranslations("actions");
+  const messages = useMessages();
+  const adventureLog = (messages.content as { log: Message[] }).log;
+
   const [input, setInput] = useState("");
   const logRef = useRef<HTMLDivElement>(null);
 
@@ -621,10 +584,10 @@ function CenterPanel({ onInventory }: { onInventory: () => void }) {
     if (logRef.current) {
       logRef.current.scrollTop = logRef.current.scrollHeight;
     }
-  }, []);
+  }, [adventureLog]);
 
-  const handleSuggestion = (s: string) => {
-    setInput(prev => prev ? `${prev} ${s.toLowerCase()}` : s.toLowerCase());
+  const handleSuggestion = (label: string) => {
+    setInput(prev => prev ? `${prev} ${label.toLowerCase()}` : label.toLowerCase());
   };
 
   const handleSend = () => {
@@ -634,7 +597,6 @@ function CenterPanel({ onInventory }: { onInventory: () => void }) {
 
   return (
     <main style={{ backgroundColor: "#0f0e0d", display: "flex", flexDirection: "column", minWidth: 0 }}>
-      {/* Location header */}
       <header style={{
         borderBottom: "1px solid #2e2b27",
         padding: "14px 28px",
@@ -646,7 +608,7 @@ function CenterPanel({ onInventory }: { onInventory: () => void }) {
         <div>
           <div className="flex items-center gap-2">
             <h1 style={{ fontFamily: "'EB Garamond', serif", fontSize: "22px", color: "#e8e0d0", fontWeight: 500, margin: 0, lineHeight: 1 }}>
-              The Rusty Lantern
+              {t("location")}
             </h1>
             <span style={{
               backgroundColor: "#1a2420", border: "1px solid #2e4038",
@@ -656,18 +618,19 @@ function CenterPanel({ onInventory }: { onInventory: () => void }) {
               display: "flex", alignItems: "center", gap: "5px",
             }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "#6b9e8a", display: "inline-block", animation: "pulse 2s infinite" }} />
-              AI DM Active
+              {t("aiDmActive")}
             </span>
           </div>
           <p style={{ color: "#7a7060", fontSize: "13px", fontFamily: "'Inter', sans-serif", margin: "4px 0 0" }}>
-            Evening · Rainy · Common room of a roadside tavern
+            {t("situationLine")}
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
           {[
-            { icon: <IconBook />, label: "Journal" },
-            { icon: <IconMap />, label: "World" },
-            { icon: <IconSettings />, label: "Settings" },
+            { icon: <IconBook />, label: tNav("journal") },
+            { icon: <IconMap />, label: tNav("world") },
+            { icon: <IconSettings />, label: tNav("settings") },
           ].map(btn => (
             <button
               key={btn.label}
@@ -698,63 +661,62 @@ function CenterPanel({ onInventory }: { onInventory: () => void }) {
         </div>
       </header>
 
-      {/* Adventure log */}
       <div
         ref={logRef}
         className="scrollable flex-1"
         style={{ padding: "32px 48px 16px", overflowY: "auto" }}
       >
-        {ADVENTURE_LOG.map(msg => (
+        {adventureLog.map(msg => (
           <MessageBubble key={msg.id} msg={msg} />
         ))}
-        {/* Typing indicator */}
         <div style={{ display: "flex", alignItems: "center", gap: "8px", paddingBottom: "8px" }}>
           <div style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "#c9a84c", opacity: 0.6 }} />
           <span style={{ color: "#7a7060", fontSize: "13px", fontFamily: "'EB Garamond', serif", fontStyle: "italic" }}>
-            The Dungeon Master weighs your next move...
+            {t("thinking")}
           </span>
         </div>
       </div>
 
-      {/* Action input */}
       <div style={{
         borderTop: "1px solid #2e2b27",
         padding: "16px 28px 20px",
         backgroundColor: "#0f0e0d",
         flexShrink: 0,
       }}>
-        {/* Suggestion chips */}
         <div className="flex items-center gap-2 flex-wrap mb-3">
-          <span style={{ color: "#7a7060", fontSize: "11px", fontFamily: "'Inter', sans-serif" }}>Suggest:</span>
-          {ACTION_SUGGESTIONS.map(s => (
-            <button
-              key={s}
-              onClick={() => handleSuggestion(s)}
-              style={{
-                backgroundColor: "transparent",
-                border: "1px solid #2e2b27",
-                borderRadius: "3px",
-                color: "#7a7060",
-                fontSize: "12px",
-                fontFamily: "'Inter', sans-serif",
-                padding: "3px 9px",
-                cursor: "pointer",
-                transition: "all 0.15s",
-              }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "#8a7035";
-                (e.currentTarget as HTMLButtonElement).style.color = "#c9a84c";
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#1a1714";
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "#2e2b27";
-                (e.currentTarget as HTMLButtonElement).style.color = "#7a7060";
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent";
-              }}
-            >
-              {s}
-            </button>
-          ))}
+          <span style={{ color: "#7a7060", fontSize: "11px", fontFamily: "'Inter', sans-serif" }}>{t("suggest")}</span>
+          {ACTION_IDS.map(id => {
+            const label = tActions(id);
+            return (
+              <button
+                key={id}
+                onClick={() => handleSuggestion(label)}
+                style={{
+                  backgroundColor: "transparent",
+                  border: "1px solid #2e2b27",
+                  borderRadius: "3px",
+                  color: "#7a7060",
+                  fontSize: "12px",
+                  fontFamily: "'Inter', sans-serif",
+                  padding: "3px 9px",
+                  cursor: "pointer",
+                  transition: "all 0.15s",
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "#8a7035";
+                  (e.currentTarget as HTMLButtonElement).style.color = "#c9a84c";
+                  (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#1a1714";
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "#2e2b27";
+                  (e.currentTarget as HTMLButtonElement).style.color = "#7a7060";
+                  (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent";
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
 
         <div className="flex gap-3 items-end">
@@ -767,7 +729,7 @@ function CenterPanel({ onInventory }: { onInventory: () => void }) {
                 handleSend();
               }
             }}
-            placeholder="What do you want to do?"
+            placeholder={t("placeholder")}
             rows={3}
             style={{
               flex: 1,
@@ -809,11 +771,11 @@ function CenterPanel({ onInventory }: { onInventory: () => void }) {
             onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = "#c9a84c")}
           >
             <IconSend />
-            Execute
+            {t("execute")}
           </button>
         </div>
         <div style={{ color: "#3d3830", fontSize: "11px", fontFamily: "'Inter', sans-serif", marginTop: "6px" }}>
-          Enter to send · Shift+Enter for new line
+          {t("inputHint")}
         </div>
       </div>
     </main>
@@ -823,6 +785,11 @@ function CenterPanel({ onInventory }: { onInventory: () => void }) {
 // ─── Right Sidebar ────────────────────────────────────────────────────────────
 
 function RightSidebar({ open, onToggle }: { open: boolean; onToggle: () => void }) {
+  const t = useTranslations("sidebar");
+  const tChar = useTranslations("character");
+  const messages = useMessages();
+  const nearby = (messages.content as { nearby: NearbyEntry[] }).nearby;
+
   return (
     <aside
       style={{
@@ -835,7 +802,6 @@ function RightSidebar({ open, onToggle }: { open: boolean; onToggle: () => void 
         position: "relative",
       }}
     >
-      {/* Toggle button — always visible */}
       <button
         onClick={onToggle}
         style={{
@@ -862,14 +828,13 @@ function RightSidebar({ open, onToggle }: { open: boolean; onToggle: () => void 
 
       {open && (
         <div className="scrollable" style={{ height: "100%", overflowY: "auto", padding: "14px 0" }}>
-          {/* Current situation */}
-          <Section title="Situation">
+          <Section title={t("situation")}>
             <div className="flex flex-col gap-1.5">
               {[
-                { k: "Location", v: "The Rusty Lantern" },
-                { k: "Time", v: "Evening, ~8th bell" },
-                { k: "Weather", v: "Heavy rain" },
-                { k: "Threat", v: "Two armed men — hostile" },
+                { k: t("location"), v: t("locationValue") },
+                { k: t("time"), v: t("timeValue") },
+                { k: t("weather"), v: t("weatherValue") },
+                { k: t("threat"), v: t("threatValue") },
               ].map(r => (
                 <div key={r.k} className="flex justify-between">
                   <span style={{ color: "#7a7060", fontSize: "12px", fontFamily: "'Inter', sans-serif" }}>{r.k}</span>
@@ -881,10 +846,9 @@ function RightSidebar({ open, onToggle }: { open: boolean; onToggle: () => void 
 
           <SectionDivider />
 
-          {/* Nearby */}
-          <Section title="Nearby">
+          <Section title={t("nearby")}>
             <div className="flex flex-col gap-1">
-              {NEARBY.map(n => (
+              {nearby.map(n => (
                 <button
                   key={n.label}
                   style={{
@@ -921,8 +885,7 @@ function RightSidebar({ open, onToggle }: { open: boolean; onToggle: () => void 
 
           <SectionDivider />
 
-          {/* Party */}
-          <Section title="Party">
+          <Section title={t("party")}>
             <div style={{
               backgroundColor: "#1a1917",
               border: "1px solid #2e2b27",
@@ -931,22 +894,21 @@ function RightSidebar({ open, onToggle }: { open: boolean; onToggle: () => void 
             }}>
               <div className="flex items-center justify-between mb-2">
                 <div>
-                  <div style={{ color: "#e8e0d0", fontSize: "13px", fontFamily: "'Inter', sans-serif" }}>Sylwen</div>
-                  <div style={{ color: "#7a7060", fontSize: "11px" }}>Cleric · Lv 3</div>
+                  <div style={{ color: "#e8e0d0", fontSize: "13px", fontFamily: "'Inter', sans-serif" }}>{t("partyName")}</div>
+                  <div style={{ color: "#7a7060", fontSize: "11px" }}>{t("partyClass", { level: 3 })}</div>
                 </div>
                 <div style={{
                   backgroundColor: "#1e2a1e", border: "1px solid #3d6040", borderRadius: "3px",
                   padding: "2px 7px", fontSize: "11px", color: "#7ab87a",
-                }}>Ready</div>
+                }}>{t("ready")}</div>
               </div>
-              <BarStat label="HP" current={18} max={22} color="#7ab87a" />
+              <BarStat label={tChar("hp")} current={18} max={22} color="#7ab87a" />
             </div>
           </Section>
 
           <SectionDivider />
 
-          {/* Quest */}
-          <Section title="Active Quest">
+          <Section title={t("activeQuest")}>
             <div style={{
               backgroundColor: "#1a1917",
               border: "1px solid #2e2b27",
@@ -954,26 +916,30 @@ function RightSidebar({ open, onToggle }: { open: boolean; onToggle: () => void 
               padding: "10px",
             }}>
               <div style={{ fontFamily: "'EB Garamond', serif", fontSize: "16px", color: "#d4b483", marginBottom: "6px" }}>
-                Find the Missing Caravan
+                {t("questTitle")}
               </div>
               <div className="flex flex-col gap-1.5 mb-3">
-                <div style={{ color: "#7a7060", fontSize: "11px", display: "flex", alignItems: "center", gap: "5px" }}>
-                  <span style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "#c9a84c", display: "inline-block", flexShrink: 0 }} />
-                  Learn what Gareth knows
-                </div>
-                <div style={{ color: "#7a7060", fontSize: "11px", display: "flex", alignItems: "center", gap: "5px" }}>
-                  <span style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "#2e2b27", display: "inline-block", flexShrink: 0 }} />
-                  Speak to the cloaked traveler
-                </div>
-                <div style={{ color: "#7a7060", fontSize: "11px", display: "flex", alignItems: "center", gap: "5px" }}>
-                  <span style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "#2e2b27", display: "inline-block", flexShrink: 0 }} />
-                  Locate the Harwick wagons
-                </div>
+                {[
+                  { text: t("questObj1"), done: true },
+                  { text: t("questObj2"), done: false },
+                  { text: t("questObj3"), done: false },
+                ].map(obj => (
+                  <div key={obj.text} style={{ color: "#7a7060", fontSize: "11px", display: "flex", alignItems: "center", gap: "5px" }}>
+                    <span style={{
+                      width: 6, height: 6, borderRadius: "50%",
+                      backgroundColor: obj.done ? "#c9a84c" : "#2e2b27",
+                      display: "inline-block", flexShrink: 0,
+                    }} />
+                    {obj.text}
+                  </div>
+                ))}
               </div>
               <div style={{ height: "4px", backgroundColor: "#2e2b27", borderRadius: "2px", overflow: "hidden" }}>
                 <div style={{ width: "15%", height: "100%", backgroundColor: "#c9a84c", borderRadius: "2px" }} />
               </div>
-              <div style={{ color: "#7a7060", fontSize: "10px", marginTop: "4px", fontFamily: "'Inter', sans-serif" }}>1 of 3 objectives complete</div>
+              <div style={{ color: "#7a7060", fontSize: "10px", marginTop: "4px", fontFamily: "'Inter', sans-serif" }}>
+                {t("questProgress", { done: 1, total: 3 })}
+              </div>
             </div>
           </Section>
         </div>
@@ -999,15 +965,6 @@ function SectionDivider() {
 
 // ─── Inventory Modal ──────────────────────────────────────────────────────────
 
-const CATEGORIES = ["All", "Weapons", "Armor", "Consumables", "Quest", "Other"] as const;
-type Category = (typeof CATEGORIES)[number];
-
-const RARITY_COLORS: Record<string, string> = {
-  common: "#7a7060",
-  uncommon: "#6b9e8a",
-  rare: "#9a6bc4",
-};
-
 function ItemIcon({ category }: { category: string }) {
   if (category === "weapons") return <IconSword />;
   if (category === "armor") return <IconShield />;
@@ -1016,17 +973,22 @@ function ItemIcon({ category }: { category: string }) {
 }
 
 function InventoryModal({ onClose }: { onClose: () => void }) {
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState<Category>("All");
-  const [selected, setSelected] = useState<InventoryItem | null>(INVENTORY_ITEMS[0]);
+  const t = useTranslations("inventory");
+  const messages = useMessages();
+  const inventoryItems = (messages.content as { items: InventoryItem[] }).items;
 
-  const filtered = INVENTORY_ITEMS.filter(item => {
-    const matchCat = category === "All" || item.category === category.toLowerCase();
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState<CategoryFilter>("all");
+  const [selected, setSelected] = useState<InventoryItem | null>(inventoryItems[0] ?? null);
+
+  const filtered = inventoryItems.filter(item => {
+    const matchCat = category === "all" || item.category === category;
     const matchSearch = item.name.toLowerCase().includes(search.toLowerCase());
     return matchCat && matchSearch;
   });
 
-  const totalWeight = INVENTORY_ITEMS.reduce((sum, i) => sum + i.weight * i.qty, 0);
+  const totalWeight = inventoryItems.reduce((sum, i) => sum + i.weight * i.qty, 0);
+  const unit = t("unit");
 
   return (
     <div
@@ -1050,15 +1012,16 @@ function InventoryModal({ onClose }: { onClose: () => void }) {
         overflow: "hidden",
         boxShadow: "0 24px 80px rgba(0,0,0,0.8)",
       }}>
-        {/* Header */}
         <div style={{ padding: "16px 20px", borderBottom: "1px solid #2e2b27", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
           <div>
-            <h2 style={{ fontFamily: "'EB Garamond', serif", fontSize: "22px", color: "#e8e0d0", margin: 0, fontWeight: 500 }}>Inventory</h2>
+            <h2 style={{ fontFamily: "'EB Garamond', serif", fontSize: "22px", color: "#e8e0d0", margin: 0, fontWeight: 500 }}>{t("title")}</h2>
             <div style={{ color: "#7a7060", fontSize: "12px", marginTop: "2px" }}>
-              Weight: <span style={{ color: "#b0a898", fontFamily: "'JetBrains Mono', monospace" }}>{totalWeight}</span>
-              <span style={{ color: "#7a7060" }}> / 120 lb</span>
+              {t("weight")}:{" "}
+              <span style={{ color: "#b0a898", fontFamily: "'JetBrains Mono', monospace" }}>
+                {t("weightValue", { total: totalWeight, max: 120, unit })}
+              </span>
               <span style={{ display: "inline-block", margin: "0 8px", color: "#3d3830" }}>·</span>
-              {INVENTORY_ITEMS.length} items
+              {t("itemsCount", { count: inventoryItems.length })}
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -1068,7 +1031,7 @@ function InventoryModal({ onClose }: { onClose: () => void }) {
               </span>
               <input
                 type="text"
-                placeholder="Search items..."
+                placeholder={t("searchPlaceholder")}
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 style={{
@@ -1101,9 +1064,8 @@ function InventoryModal({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        {/* Category filters */}
         <div style={{ padding: "10px 20px", borderBottom: "1px solid #2e2b27", display: "flex", gap: "6px", flexShrink: 0 }}>
-          {CATEGORIES.map(cat => (
+          {CATEGORY_FILTERS.map(cat => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
@@ -1119,14 +1081,12 @@ function InventoryModal({ onClose }: { onClose: () => void }) {
                 transition: "all 0.15s",
               }}
             >
-              {cat}
+              {t(`categories.${cat}`)}
             </button>
           ))}
         </div>
 
-        {/* Body: list + detail */}
         <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-          {/* Item list */}
           <div className="scrollable" style={{ flex: 1, overflowY: "auto", borderRight: "1px solid #2e2b27" }}>
             {filtered.map(item => (
               <button
@@ -1165,26 +1125,29 @@ function InventoryModal({ onClose }: { onClose: () => void }) {
                       <span style={{
                         backgroundColor: "#1a2420", border: "1px solid #2e4038", borderRadius: "2px",
                         padding: "1px 5px", fontSize: "10px", color: "#6b9e8a",
-                      }}>Equipped</span>
+                      }}>{t("equipped")}</span>
                     )}
                     {item.rarity && item.rarity !== "common" && (
                       <span style={{ color: RARITY_COLORS[item.rarity], fontSize: "10px" }}>◆</span>
                     )}
                   </div>
                   <div style={{ color: "#7a7060", fontSize: "11px", fontFamily: "'Inter', sans-serif" }}>
-                    {item.category.charAt(0).toUpperCase() + item.category.slice(1)} · {item.weight} lb
+                    {t("categoryWeight", {
+                      category: t(`categories.${item.category}`),
+                      weight: item.weight,
+                      unit,
+                    })}
                   </div>
                 </div>
               </button>
             ))}
             {filtered.length === 0 && (
               <div style={{ color: "#7a7060", fontSize: "14px", padding: "32px 20px", textAlign: "center", fontFamily: "'EB Garamond', serif", fontStyle: "italic" }}>
-                No items found.
+                {t("empty")}
               </div>
             )}
           </div>
 
-          {/* Item detail */}
           {selected && (
             <div style={{ width: "280px", flexShrink: 0, padding: "20px", overflowY: "auto" }} className="scrollable">
               <div className="flex items-center gap-2 mb-1">
@@ -1192,19 +1155,19 @@ function InventoryModal({ onClose }: { onClose: () => void }) {
                 <h3 style={{ fontFamily: "'EB Garamond', serif", fontSize: "20px", color: "#e8e0d0", margin: 0, fontWeight: 500 }}>{selected.name}</h3>
               </div>
               <div style={{ color: "#7a7060", fontSize: "12px", fontFamily: "'Inter', sans-serif", marginBottom: "14px" }}>
-                {selected.category.charAt(0).toUpperCase() + selected.category.slice(1)}
+                {t(`categories.${selected.category}`)}
                 {selected.rarity && selected.rarity !== "common" && (
                   <span style={{ color: RARITY_COLORS[selected.rarity], marginLeft: "8px" }}>
-                    {selected.rarity.charAt(0).toUpperCase() + selected.rarity.slice(1)}
+                    {t(`rarity.${selected.rarity}`)}
                   </span>
                 )}
               </div>
               <p style={{ fontFamily: "'EB Garamond', serif", fontSize: "15px", color: "#b0a898", lineHeight: 1.6, fontStyle: "italic", marginBottom: "16px" }}>
-                "{selected.description}"
+                &ldquo;{selected.description}&rdquo;
               </p>
               {selected.properties && (
                 <div style={{ marginBottom: "16px" }}>
-                  <div style={{ color: "#7a7060", fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "6px" }}>Properties</div>
+                  <div style={{ color: "#7a7060", fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "6px" }}>{t("properties")}</div>
                   {selected.properties.map(p => (
                     <div key={p} style={{ color: "#b0a898", fontSize: "12px", fontFamily: "'Inter', sans-serif", padding: "3px 0", borderBottom: "1px solid #1f1c18" }}>
                       {p}
@@ -1214,23 +1177,23 @@ function InventoryModal({ onClose }: { onClose: () => void }) {
               )}
               <div className="flex gap-2 mb-3">
                 <div style={{ flex: 1, backgroundColor: "#231f1a", border: "1px solid #2e2b27", borderRadius: "4px", padding: "8px", textAlign: "center" }}>
-                  <div style={{ color: "#7a7060", fontSize: "9px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Weight</div>
-                  <div style={{ color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", fontSize: "14px" }}>{selected.weight} lb</div>
+                  <div style={{ color: "#7a7060", fontSize: "9px", textTransform: "uppercase", letterSpacing: "0.08em" }}>{t("weight")}</div>
+                  <div style={{ color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", fontSize: "14px" }}>{selected.weight} {unit}</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "#231f1a", border: "1px solid #2e2b27", borderRadius: "4px", padding: "8px", textAlign: "center" }}>
-                  <div style={{ color: "#7a7060", fontSize: "9px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Value</div>
+                  <div style={{ color: "#7a7060", fontSize: "9px", textTransform: "uppercase", letterSpacing: "0.08em" }}>{t("value")}</div>
                   <div style={{ color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", fontSize: "14px" }}>{selected.value}</div>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
                 {selected.equipped ? (
-                  <ActionBtn label="Unequip" />
+                  <ActionBtn label={t("actions.unequip")} />
                 ) : (
-                  selected.category === "weapons" || selected.category === "armor" ? <ActionBtn label="Equip" primary /> : null
+                  selected.category === "weapons" || selected.category === "armor" ? <ActionBtn label={t("actions.equip")} primary /> : null
                 )}
-                {selected.category === "consumables" && <ActionBtn label="Use" primary />}
-                <ActionBtn label="Inspect" />
-                {selected.category !== "quest" && <ActionBtn label="Drop" danger />}
+                {selected.category === "consumables" && <ActionBtn label={t("actions.use")} primary />}
+                <ActionBtn label={t("actions.inspect")} />
+                {selected.category !== "quest" && <ActionBtn label={t("actions.drop")} danger />}
               </div>
             </div>
           )}
@@ -1266,7 +1229,7 @@ function ActionBtn({ label, primary, danger }: { label: string; primary?: boolea
 export default function App() {
   const [rightOpen, setRightOpen] = useState(true);
   const [inventoryOpen, setInventoryOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("Character");
+  const [activeTab, setActiveTab] = useState<TabId>("character");
 
   return (
     <div style={{ display: "flex", height: "100%", width: "100%", backgroundColor: "#0f0e0d", overflow: "hidden", position: "relative" }}>
@@ -1275,9 +1238,8 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
-      <CenterPanel onInventory={() => setInventoryOpen(true)} />
+      <CenterPanel />
 
-      {/* Right sidebar toggle when closed */}
       {!rightOpen && (
         <button
           onClick={() => setRightOpen(true)}

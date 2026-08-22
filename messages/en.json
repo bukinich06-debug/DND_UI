@@ -1,0 +1,253 @@
+{
+  "meta": {
+    "title": "DND UI",
+    "description": "Dungeons & Dragons adventure UI"
+  },
+  "nav": {
+    "character": "Character",
+    "spells": "Spells",
+    "journal": "Journal",
+    "inventory": "Inventory",
+    "world": "World",
+    "settings": "Settings"
+  },
+  "character": {
+    "name": "Aldric",
+    "classLevel": "Ranger · Level {level}",
+    "hp": "HP",
+    "xp": "XP",
+    "ac": "AC",
+    "prof": "Prof",
+    "init": "Init",
+    "abilityScores": "Ability Scores",
+    "equipment": "Equipment",
+    "conditions": "Conditions",
+    "abilities": {
+      "str": "STR",
+      "dex": "DEX",
+      "con": "CON",
+      "int": "INT",
+      "wis": "WIS",
+      "cha": "CHA"
+    },
+    "equipped": {
+      "longbow": "Longbow",
+      "longbowSub": "Weapon · 1d8+3",
+      "leatherArmor": "Leather Armor",
+      "leatherArmorSub": "AC 12 + DEX"
+    },
+    "tags": {
+      "quiver": "Quiver ×{count}",
+      "potion": "Potion ×{count}",
+      "rope": "Rope"
+    },
+    "conditionsList": {
+      "focused": "Focused",
+      "wet": "Wet (rain)"
+    }
+  },
+  "center": {
+    "location": "The Rusty Lantern",
+    "aiDmActive": "AI DM Active",
+    "situationLine": "Evening · Rainy · Common room of a roadside tavern",
+    "thinking": "The Dungeon Master weighs your next move...",
+    "suggest": "Suggest:",
+    "placeholder": "What do you want to do?",
+    "execute": "Execute",
+    "inputHint": "Enter to send · Shift+Enter for new line",
+    "yourAction": "Your action"
+  },
+  "actions": {
+    "talk": "Talk",
+    "inspect": "Inspect",
+    "search": "Search",
+    "attack": "Attack",
+    "move": "Move",
+    "rest": "Rest",
+    "stealth": "Stealth"
+  },
+  "sidebar": {
+    "situation": "Situation",
+    "nearby": "Nearby",
+    "party": "Party",
+    "activeQuest": "Active Quest",
+    "location": "Location",
+    "time": "Time",
+    "weather": "Weather",
+    "threat": "Threat",
+    "locationValue": "The Rusty Lantern",
+    "timeValue": "Evening, ~8th bell",
+    "weatherValue": "Heavy rain",
+    "threatValue": "Two armed men — hostile",
+    "partyName": "Sylwen",
+    "partyClass": "Cleric · Lv {level}",
+    "ready": "Ready",
+    "questTitle": "Find the Missing Caravan",
+    "questObj1": "Learn what Gareth knows",
+    "questObj2": "Speak to the cloaked traveler",
+    "questObj3": "Locate the Harwick wagons",
+    "questProgress": "{done} of {total} objectives complete"
+  },
+  "inventory": {
+    "title": "Inventory",
+    "weight": "Weight",
+    "weightValue": "{total} / {max} {unit}",
+    "unit": "lb",
+    "itemsCount": "{count, plural, one {# item} other {# items}}",
+    "searchPlaceholder": "Search items...",
+    "empty": "No items found.",
+    "equipped": "Equipped",
+    "properties": "Properties",
+    "value": "Value",
+    "categoryWeight": "{category} · {weight} {unit}",
+    "categories": {
+      "all": "All",
+      "weapons": "Weapons",
+      "armor": "Armor",
+      "consumables": "Consumables",
+      "quest": "Quest",
+      "other": "Other"
+    },
+    "rarity": {
+      "common": "Common",
+      "uncommon": "Uncommon",
+      "rare": "Rare"
+    },
+    "actions": {
+      "equip": "Equip",
+      "unequip": "Unequip",
+      "use": "Use",
+      "inspect": "Inspect",
+      "drop": "Drop"
+    }
+  },
+  "content": {
+    "log": [
+      {
+        "id": 1,
+        "type": "narration",
+        "text": "The rain lashes against the shuttered windows of the Rusty Lantern. You push open the heavy oak door and step inside. Warm firelight fills the low-ceilinged common room, but conversation dies the moment you cross the threshold. A dozen pairs of eyes find you — then look away.",
+        "timestamp": "Evening"
+      },
+      {
+        "id": 2,
+        "type": "npc",
+        "speaker": "Gareth (Bartender)",
+        "text": "You're not from around here, are you? Last stranger who wandered in asking questions... well. What'll it be?"
+      },
+      {
+        "id": 3,
+        "type": "player",
+        "text": "You set two silver coins on the bar and lean in. \"I'm looking for the Harwick caravan — three wagons, left Millhaven six days ago. Never arrived at Thorngate. I'm told you might know something.\""
+      },
+      {
+        "id": 4,
+        "type": "system",
+        "text": "Persuasion Check",
+        "roll": "14 + 2 = 16",
+        "speaker": "Success"
+      },
+      {
+        "id": 5,
+        "type": "narration",
+        "text": "Gareth's jaw tightens. He wipes the bar slowly with a rag that was never going to clean anything. Then, without looking at you, he tips his head toward the back corner — where a cloaked figure nurses a drink alone.",
+        "timestamp": "Evening"
+      },
+      {
+        "id": 6,
+        "type": "combat",
+        "text": "A chair scrapes behind you. Two figures rise from a corner table — heavyset men, hands moving toward belt knives. One of them snarls: \"Harwick's business stays Harwick's business, ranger.\"",
+        "speaker": "Ambush — Roll for Initiative"
+      }
+    ],
+    "items": [
+      {
+        "id": 1,
+        "name": "Longbow",
+        "category": "weapons",
+        "qty": 1,
+        "description": "A finely crafted recurve bow of yew wood. Reliable at range.",
+        "weight": 2,
+        "rarity": "common",
+        "equipped": true,
+        "value": "25 gp",
+        "properties": ["Range 150/600 ft", "1d8 piercing", "Two-handed"]
+      },
+      {
+        "id": 2,
+        "name": "Leather Armor",
+        "category": "armor",
+        "qty": 1,
+        "description": "Supple leather armor reinforced at the shoulders and chest.",
+        "weight": 10,
+        "rarity": "common",
+        "equipped": true,
+        "value": "10 gp",
+        "properties": ["AC 11 + DEX modifier", "No disadvantage on Stealth"]
+      },
+      {
+        "id": 3,
+        "name": "Quiver of Arrows",
+        "category": "weapons",
+        "qty": 20,
+        "description": "Standard iron-tipped arrows. Well-fletched.",
+        "weight": 1,
+        "rarity": "common",
+        "value": "1 gp",
+        "properties": ["1d6 piercing with shortbow", "1d8 piercing with longbow"]
+      },
+      {
+        "id": 4,
+        "name": "Healing Potion",
+        "category": "consumables",
+        "qty": 3,
+        "description": "A small vial of glowing red liquid. Restores 2d4 + 2 hit points.",
+        "weight": 0.5,
+        "rarity": "common",
+        "value": "50 gp",
+        "properties": ["Restores 2d4 + 2 HP", "Bonus action to use"]
+      },
+      {
+        "id": 5,
+        "name": "Hempen Rope",
+        "category": "other",
+        "qty": 1,
+        "description": "Fifty feet of sturdy rope. Can support up to 300 pounds.",
+        "weight": 10,
+        "rarity": "common",
+        "value": "1 gp",
+        "properties": ["50 feet", "300 lb capacity"]
+      },
+      {
+        "id": 6,
+        "name": "Letter of Introduction",
+        "category": "quest",
+        "qty": 1,
+        "description": "A sealed letter from Merchant Harwick bearing his personal crest. Opens doors.",
+        "weight": 0,
+        "rarity": "uncommon",
+        "value": "—",
+        "properties": ["Quest item", "Cannot be dropped"]
+      },
+      {
+        "id": 7,
+        "name": "Shortsword",
+        "category": "weapons",
+        "qty": 1,
+        "description": "A plain iron shortsword. Good for close quarters.",
+        "weight": 2,
+        "rarity": "common",
+        "value": "10 gp",
+        "properties": ["1d6 piercing", "Finesse, Light"]
+      }
+    ],
+    "nearby": [
+      { "icon": "👤", "label": "Gareth", "sub": "Bartender — wary but cooperative" },
+      { "icon": "🧥", "label": "Mira", "sub": "Cloaked traveler — unknown motive" },
+      { "icon": "⚠️", "label": "Two armed men", "sub": "Hostile — watching you" },
+      { "icon": "📌", "label": "Notice Board", "sub": "Near the entrance" },
+      { "icon": "🚪", "label": "Back Door", "sub": "Leads to the alley" },
+      { "icon": "🍺", "label": "Bar", "sub": "Gareth tends it" }
+    ]
+  }
+}
