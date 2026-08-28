@@ -8,9 +8,10 @@ import { WorldSchema } from "../schema"
 
 interface IWorldModalProps {
   onClose: () => void
+  onMoved: () => void
 }
 
-export const WorldModal = ({ onClose }: IWorldModalProps) => {
+export const WorldModal = ({ onClose, onMoved }: IWorldModalProps) => {
   const t = useTranslations("world")
   const {
     loading,
@@ -22,7 +23,7 @@ export const WorldModal = ({ onClose }: IWorldModalProps) => {
     currentId,
     travel,
     moveTo,
-  } = useWorldMap()
+  } = useWorldMap(onMoved)
   const pan = usePanZoom()
 
   let body

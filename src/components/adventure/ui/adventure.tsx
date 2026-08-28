@@ -6,7 +6,11 @@ import { AdventureHeader } from "../header"
 import { AdventureLog } from "../log"
 import { Composer } from "../composer"
 
-export const Adventure = () => {
+interface IAdventureProps {
+  onLocationChanged: () => void
+}
+
+export const Adventure = ({ onLocationChanged }: IAdventureProps) => {
   const [worldOpen, setWorldOpen] = useState(false)
 
   return (
@@ -14,7 +18,15 @@ export const Adventure = () => {
       <AdventureHeader onWorld={() => setWorldOpen(true)} />
       <AdventureLog />
       <Composer />
-      {worldOpen && <WorldModal onClose={() => setWorldOpen(false)} />}
+      {worldOpen && (
+        <WorldModal
+          onClose={() => setWorldOpen(false)}
+          onMoved={() => {
+            setWorldOpen(false)
+            onLocationChanged()
+          }}
+        />
+      )}
     </main>
   )
 }

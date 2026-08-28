@@ -8,7 +8,7 @@ import { PartyCard } from "../party-card";
 import { QuestCard } from "../quest-card";
 import type { ISituationPanelProps } from "../types";
 
-export const SituationPanel = ({ open, onToggle }: ISituationPanelProps) => {
+export const SituationPanel = ({ open, onToggle, locationEpoch }: ISituationPanelProps) => {
   const t = useTranslations("sidebar");
 
   return (
@@ -54,7 +54,7 @@ export const SituationPanel = ({ open, onToggle }: ISituationPanelProps) => {
           <SectionDivider />
 
           <Section title={t("nearby")}>
-            <NearbyList />
+            <NearbyList locationEpoch={locationEpoch} />
           </Section>
 
           <SectionDivider />

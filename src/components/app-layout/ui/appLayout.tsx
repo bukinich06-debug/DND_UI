@@ -8,12 +8,21 @@ import { IconChevronLeft } from "@/components/shared/icon";
 import { useShell } from "../hooks/useShell";
 
 export const AppLayout = () => {
-  const { rightOpen, setRightOpen, inventoryOpen, setInventoryOpen, activeTab, setActiveTab } = useShell();
+  const {
+    rightOpen,
+    setRightOpen,
+    inventoryOpen,
+    setInventoryOpen,
+    activeTab,
+    setActiveTab,
+    locationEpoch,
+    bumpLocation,
+  } = useShell();
 
   return (
     <div className="relative flex h-full w-full overflow-hidden bg-background">
       <CharacterPanel onInventory={() => setInventoryOpen(true)} activeTab={activeTab} setActiveTab={setActiveTab} />
-      <Adventure />
+      <Adventure onLocationChanged={bumpLocation} />
 
       {!rightOpen && (
         <button
@@ -25,7 +34,11 @@ export const AppLayout = () => {
         </button>
       )}
 
-      <SituationPanel open={rightOpen} onToggle={() => setRightOpen((o) => !o)} />
+      <SituationPanel
+        open={rightOpen}
+        onToggle={() => setRightOpen((o) => !o)}
+        locationEpoch={locationEpoch}
+      />
 
       {inventoryOpen && <InventoryModal onClose={() => setInventoryOpen(false)} />}
     </div>

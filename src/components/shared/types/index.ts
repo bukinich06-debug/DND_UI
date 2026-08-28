@@ -25,12 +25,6 @@ export interface IInventoryItem {
   properties?: string[];
 }
 
-export interface INearbyEntry {
-  icon: string;
-  label: string;
-  sub: string;
-}
-
 export interface IPurse {
   pp: number;
   gp: number;
@@ -45,5 +39,4 @@ export type ActionId = "talk" | "inspect" | "search" | "attack" | "move" | "rest
 export interface IContent {
   log: ILogMessage[];
   items: IInventoryItem[];
-  nearby: INearbyEntry[];
 }

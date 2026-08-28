@@ -9,7 +9,7 @@ import { byIdMap, layoutTree } from "../helpers/layoutTree"
 import { visibleLocations } from "../helpers/visibleLocations"
 import type { ILocation, ILocationLink, IPlayerLocation } from "../types"
 
-export const useWorldMap = () => {
+export const useWorldMap = (onMoved: () => void) => {
   const [locations, setLocations] = useState<ILocation[]>([])
   const [links, setLinks] = useState<ILocationLink[]>([])
   const [player, setPlayer] = useState<IPlayerLocation | null>(null)
@@ -76,6 +76,7 @@ export const useWorldMap = () => {
       setError(null)
       try {
         setPlayer(await goToLocation(locationId))
+        onMoved()
       } catch (e) {
         setError(
           e instanceof Error ? e.message : "Не удалось перейти в локацию.",
@@ -84,7 +85,7 @@ export const useWorldMap = () => {
         setMoving(false)
       }
     },
-    [currentId, moving],
+    [currentId, moving, onMoved],
   )
 
   return {

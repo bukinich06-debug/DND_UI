@@ -95,6 +95,9 @@
   "sidebar": {
     "situation": "Situation",
     "nearby": "Nearby",
+    "nearbyLoading": "Loading…",
+    "nearbyError": "Could not load who is nearby.",
+    "nearbyEmpty": "No one nearby.",
     "party": "Party",
     "activeQuest": "Active Quest",
     "location": "Location",
@@ -267,14 +270,6 @@
         "value": "10 gp",
         "properties": ["1d6 piercing", "Finesse, Light"]
       }
-    ],
-    "nearby": [
-      { "icon": "👤", "label": "Gareth", "sub": "Bartender — wary but cooperative" },
-      { "icon": "🧥", "label": "Mira", "sub": "Cloaked traveler — unknown motive" },
-      { "icon": "⚠️", "label": "Two armed men", "sub": "Hostile — watching you" },
-      { "icon": "📌", "label": "Notice Board", "sub": "Near the entrance" },
-      { "icon": "🚪", "label": "Back Door", "sub": "Leads to the alley" },
-      { "icon": "🍺", "label": "Bar", "sub": "Gareth tends it" }
     ]
   }
 }
