@@ -11,6 +11,25 @@
     "world": "World",
     "settings": "Settings"
   },
+  "world": {
+    "title": "World",
+    "loading": "Loading location map…",
+    "empty": "No locations yet.",
+    "here": "You are here",
+    "days": "{count, plural, one {# day} other {# days}}",
+    "travelLeft": "{count, plural, one {# day} other {# days}} left",
+    "travelTo": "Travel: {name}",
+    "kinds": {
+      "region": "Region",
+      "settlement": "Settlement",
+      "district": "District",
+      "building": "Building",
+      "room": "Room",
+      "dungeon": "Dungeon",
+      "wilderness": "Wilderness",
+      "other": "Place"
+    }
+  },
   "character": {
     "classLevel": "{className} · Level {level}",
     "hp": "HP",

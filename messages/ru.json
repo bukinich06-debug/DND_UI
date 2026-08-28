@@ -11,6 +11,25 @@
     "world": "Мир",
     "settings": "Настройки"
   },
+  "world": {
+    "title": "Мир",
+    "loading": "Загрузка схемы локаций…",
+    "empty": "Локаций пока нет.",
+    "here": "Вы здесь",
+    "days": "{count, plural, one {# день} few {# дня} many {# дней} other {# дня}}",
+    "travelLeft": "ещё {count, plural, one {# день} few {# дня} many {# дней} other {# дня}}",
+    "travelTo": "Путь: {name}",
+    "kinds": {
+      "region": "Регион",
+      "settlement": "Поселение",
+      "district": "Район",
+      "building": "Здание",
+      "room": "Комната",
+      "dungeon": "Подземелье",
+      "wilderness": "Дикая местность",
+      "other": "Место"
+    }
+  },
   "character": {
     "classLevel": "{className} · Уровень {level}",
     "hp": "ОЗ",
