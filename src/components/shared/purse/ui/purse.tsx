@@ -11,6 +11,9 @@ interface IPurseProps {
 export const Purse = ({ className }: IPurseProps) => {
   const t = useTranslations("coins");
   const purse = usePurse();
+
+  if (!purse) return null;
+
   const parts = formatPurse(purse);
 
   if (parts.length === 0) return null;

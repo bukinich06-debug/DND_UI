@@ -38,15 +38,15 @@ export const ItemList = ({ items, selected, onSelect, empty, unit }: IItemListPr
               <span className="font-sans text-sm text-foreground">{item.name}</span>
               {item.qty > 1 && <span className="font-mono text-xs text-muted">×{item.qty}</span>}
               {item.equipped && (
-                <span className="rounded-[2px] border border-[#2e4038] bg-[#1a2420] px-[5px] py-px text-[10px] text-system">{t("equipped")}</span>
+                <span className="rounded-[2px] border border-[#2e4038] bg-[#1a2420] px-[5px] py-px text-xs text-system">{t("equipped")}</span>
               )}
               {item.rarity && item.rarity !== "common" && (
-                <span className="text-[10px]" style={{ color: RARITY_COLORS[item.rarity] }}>
+                <span className="text-xs" style={{ color: RARITY_COLORS[item.rarity] }}>
                   ◆
                 </span>
               )}
             </div>
-            <div className="font-sans text-[11px] text-muted">
+            <div className="font-sans text-[13px] text-muted">
               {t("categoryWeight", {
                 category: t(`categories.${item.category}`),
                 weight: item.weight,

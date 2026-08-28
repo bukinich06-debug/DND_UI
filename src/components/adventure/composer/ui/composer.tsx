@@ -24,7 +24,7 @@ export const Composer = () => {
           }}
           placeholder={t("placeholder")}
           rows={3}
-          className="flex-1 resize-none rounded border border-border-light bg-panel px-3.5 py-3 font-serif text-[17px] leading-normal text-foreground outline-none transition-colors focus:border-gold-dim"
+          className="flex-1 resize-none rounded border border-border-light bg-panel px-3.5 py-3 font-serif text-[17px] leading-normal text-foreground placeholder:text-parchment-dim outline-none transition-colors focus:border-gold-dim"
         />
         <button
           type="button"
@@ -35,7 +35,7 @@ export const Composer = () => {
           {t("execute")}
         </button>
       </div>
-      <div className="mt-1.5 font-sans text-[11px] text-border-light">{t("inputHint")}</div>
+      <div className="mt-1.5 font-sans text-[13px] text-foreground-dim">{t("inputHint")}</div>
     </div>
   );
 };

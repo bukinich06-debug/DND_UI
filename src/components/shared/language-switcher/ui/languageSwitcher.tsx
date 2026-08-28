@@ -23,7 +23,7 @@ export const LanguageSwitcher = () => {
             key={code}
             type="button"
             onClick={() => switchLocale(code)}
-            className={`cursor-pointer border-none px-[9px] py-[5px] font-sans text-[11px] tracking-wide ${
+            className={`cursor-pointer border-none px-[9px] py-[5px] font-sans text-[13px] tracking-wide ${
               active ? "bg-panel-alt font-semibold text-gold" : "bg-transparent font-normal text-muted"
             }`}
           >

@@ -36,7 +36,7 @@ export const ItemDetail = ({ item, unit }: IItemDetailProps) => {
       <p className="mb-4 font-serif text-[15px] leading-[1.6] text-foreground-dim italic">&ldquo;{item.description}&rdquo;</p>
       {item.properties && (
         <div className="mb-4">
-          <div className="mb-1.5 text-[10px] uppercase tracking-widest text-muted">{t("properties")}</div>
+          <div className="mb-1.5 text-xs uppercase tracking-widest text-muted">{t("properties")}</div>
           {item.properties.map((p) => (
             <div key={p} className="border-b border-[#1f1c18] py-[3px] font-sans text-xs text-foreground-dim">
               {p}
@@ -46,13 +46,13 @@ export const ItemDetail = ({ item, unit }: IItemDetailProps) => {
       )}
       <div className="mb-3 flex gap-2">
         <div className="flex-1 rounded border border-border bg-panel-alt p-2 text-center">
-          <div className="text-[9px] uppercase tracking-widest text-muted">{t("weight")}</div>
+          <div className="text-[11px] uppercase tracking-widest text-muted">{t("weight")}</div>
           <div className="font-mono text-sm text-foreground">
             {item.weight} {unit}
           </div>
         </div>
         <div className="flex-1 rounded border border-border bg-panel-alt p-2 text-center">
-          <div className="text-[9px] uppercase tracking-widest text-muted">{t("value")}</div>
+          <div className="text-[11px] uppercase tracking-widest text-muted">{t("value")}</div>
           <div className="font-mono text-sm text-foreground">{item.value}</div>
         </div>
       </div>

@@ -16,7 +16,7 @@ export const NearbyList = () => {
           <span className="shrink-0 text-sm">{n.icon}</span>
           <div>
             <div className="font-sans text-[13px] text-foreground">{n.label}</div>
-            <div className="text-[11px] text-muted">{n.sub}</div>
+            <div className="text-[13px] text-muted">{n.sub}</div>
           </div>
         </button>
       ))}

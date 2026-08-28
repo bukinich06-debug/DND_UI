@@ -15,7 +15,7 @@ export const ActionChips = ({ onPick }: IActionChipsProps) => {
 
   return (
     <div className="mb-3 flex flex-wrap items-center gap-2">
-      <span className="font-sans text-[11px] text-muted">{t("suggest")}</span>
+      <span className="font-sans text-[13px] text-foreground-dim">{t("suggest")}</span>
       {ACTION_IDS.map((id) => {
         const label = tActions(id);
         return (
@@ -23,7 +23,7 @@ export const ActionChips = ({ onPick }: IActionChipsProps) => {
             key={id}
             type="button"
             onClick={() => onPick(label)}
-            className="cursor-pointer rounded-[3px] border border-border bg-transparent px-[9px] py-[3px] font-sans text-xs text-muted transition-all hover:border-gold-dim hover:bg-[#1a1714] hover:text-gold"
+            className="cursor-pointer rounded-[3px] border border-border-light bg-transparent px-[9px] py-[3px] font-sans text-xs text-foreground-dim transition-all hover:border-gold-dim hover:bg-[#1a1714] hover:text-gold"
           >
             {label}
           </button>

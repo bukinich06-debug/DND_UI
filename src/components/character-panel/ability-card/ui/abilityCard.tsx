@@ -9,9 +9,9 @@ export const AbilityCard = ({ name, score }: IAbilityCardProps) => {
 
   return (
     <div className="flex flex-col items-center gap-0.5 rounded border border-border bg-panel py-1.5">
-      <span className="font-sans text-[9px] font-medium uppercase tracking-widest text-muted">{name}</span>
+      <span className="font-sans text-[11px] font-medium uppercase tracking-widest text-muted">{name}</span>
       <span className="font-mono text-[15px] font-medium leading-none text-foreground">{score}</span>
-      <span className="font-mono text-[11px] text-gold">{modStr}</span>
+      <span className="font-mono text-[13px] text-gold">{modStr}</span>
     </div>
   );
 };

@@ -14,11 +14,11 @@ export const BarStat = ({ label, current, max, color, icon }: IBarStatProps) => 
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between">
-        <span className="flex items-center gap-1 font-sans text-[11px] uppercase tracking-wider text-muted">
+        <span className="flex items-center gap-1 font-sans text-[13px] uppercase tracking-wider text-muted">
           {icon && <span style={{ color }}>{icon}</span>}
           {label}
         </span>
-        <span className="font-mono text-[11px] text-foreground-dim">
+        <span className="font-mono text-[13px] text-foreground-dim">
           {current}
           <span className="text-muted">/{max}</span>
         </span>

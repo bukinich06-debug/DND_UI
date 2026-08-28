@@ -46,5 +46,4 @@ export interface IContent {
   log: ILogMessage[];
   items: IInventoryItem[];
   nearby: INearbyEntry[];
-  purse: IPurse;
 }

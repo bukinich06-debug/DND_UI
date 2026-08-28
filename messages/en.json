@@ -12,8 +12,7 @@
     "settings": "Settings"
   },
   "character": {
-    "name": "Aldric",
-    "classLevel": "Ranger · Level {level}",
+    "classLevel": "{className} · Level {level}",
     "hp": "HP",
     "xp": "XP",
     "ac": "AC",
@@ -257,7 +256,6 @@
       { "icon": "📌", "label": "Notice Board", "sub": "Near the entrance" },
       { "icon": "🚪", "label": "Back Door", "sub": "Leads to the alley" },
       { "icon": "🍺", "label": "Bar", "sub": "Gareth tends it" }
-    ],
-    "purse": { "pp": 0, "gp": 42, "ep": 0, "sp": 18, "cp": 7 }
+    ]
   }
 }

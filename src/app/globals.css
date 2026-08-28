@@ -10,10 +10,10 @@
   --color-gold: #c9a84c;
   --color-gold-dim: #8a7035;
   --color-parchment: #d4b483;
-  --color-parchment-dim: #9a7e55;
+  --color-parchment-dim: #c4a06a;
   --color-foreground: #e8e0d0;
-  --color-foreground-dim: #b0a898;
-  --color-muted: #7a7060;
+  --color-foreground-dim: #d4ccc0;
+  --color-muted: #c4b8a4;
   --color-narration: #ddd5c4;
   --color-npc: #c4b89a;
   --color-player: #c9a84c;
@@ -22,6 +22,7 @@
   --color-hp: #7ab87a;
   --color-xp: #5a7fc9;
 
+  --text-xs: 0.8125rem;
   --font-serif: 'EB Garamond', Georgia, serif;
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
