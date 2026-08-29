@@ -1,20 +1,20 @@
 import type { IInventoryItem } from "@/components/shared/types";
 import { ActionBtn } from "@/components/shared/action-btn";
 import { ItemIcon } from "../../helpers/itemIcon";
+import { canEquip } from "../../helpers/resolveEquipSlot";
+import { RARITY_COLORS } from "../../helpers/rarityColors";
 import { useTranslations } from "next-intl";
-
-const RARITY_COLORS: Record<string, string> = {
-  common: "#7a7060",
-  uncommon: "#6b9e8a",
-  rare: "#9a6bc4",
-};
 
 interface IItemDetailProps {
   item: IInventoryItem;
   unit: string;
+  busy: boolean;
+  actionError: string | null;
+  onEquip: (item: IInventoryItem) => void;
+  onUnequip: (item: IInventoryItem) => void;
 }
 
-export const ItemDetail = ({ item, unit }: IItemDetailProps) => {
+export const ItemDetail = ({ item, unit, busy, actionError, onEquip, onUnequip }: IItemDetailProps) => {
   const t = useTranslations("inventory");
 
   return (
@@ -56,14 +56,17 @@ export const ItemDetail = ({ item, unit }: IItemDetailProps) => {
           <div className="font-mono text-sm text-foreground">{item.value}</div>
         </div>
       </div>
+      {actionError && <p className="mb-3 m-0 font-sans text-xs text-combat">{actionError}</p>}
       <div className="flex flex-wrap gap-2">
-        {item.equipped && <ActionBtn label={t("actions.unequip")} />}
-        {!item.equipped && (item.category === "weapons" || item.category === "armor") && (
-          <ActionBtn label={t("actions.equip")} primary />
+        {item.equipped && (
+          <ActionBtn label={t("actions.unequip")} disabled={busy} onClick={() => onUnequip(item)} />
         )}
-        {item.category === "consumables" && <ActionBtn label={t("actions.use")} primary />}
-        <ActionBtn label={t("actions.inspect")} />
-        {item.category !== "quest" && <ActionBtn label={t("actions.drop")} danger />}
+        {canEquip(item) && (
+          <ActionBtn label={t("actions.equip")} primary disabled={busy} onClick={() => onEquip(item)} />
+        )}
+        {item.category === "consumables" && <ActionBtn label={t("actions.use")} primary disabled={busy} />}
+        <ActionBtn label={t("actions.inspect")} disabled={busy} />
+        {item.category !== "quest" && <ActionBtn label={t("actions.drop")} danger disabled={busy} />}
       </div>
     </div>
   );

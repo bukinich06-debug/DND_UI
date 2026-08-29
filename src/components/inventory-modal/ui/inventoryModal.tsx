@@ -5,6 +5,7 @@ import { Purse } from "@/components/shared/purse";
 import type { CategoryFilter } from "@/components/shared/types";
 import { useTranslations } from "next-intl";
 import { useInventoryFilter } from "../hooks/useInventoryFilter";
+import { useItems } from "../hooks/useItems";
 import { ItemDetail } from "../item-detail";
 import { ItemList } from "../item-list";
 
@@ -16,9 +17,30 @@ interface IInventoryModalProps {
 
 export const InventoryModal = ({ onClose }: IInventoryModalProps) => {
   const t = useTranslations("inventory");
-  const { items, search, setSearch, category, setCategory, selected, setSelected, filtered, totalWeight } =
-    useInventoryFilter();
+  const { items, loading, error, busy, actionError, equip, unequip } = useItems();
+  const { search, setSearch, category, setCategory, selected, setSelected, filtered, totalWeight } =
+    useInventoryFilter(items);
   const unit = t("unit");
+
+  let listArea = (
+    <div className="flex flex-1 overflow-hidden">
+      <ItemList items={filtered} selected={selected} onSelect={setSelected} empty={t("empty")} unit={unit} />
+      {selected && (
+        <ItemDetail
+          item={selected}
+          unit={unit}
+          busy={busy}
+          actionError={actionError}
+          onEquip={equip}
+          onUnequip={unequip}
+        />
+      )}
+    </div>
+  );
+  if (loading)
+    listArea = <p className="m-0 flex-1 px-5 py-8 font-sans text-sm text-muted">{t("loading")}</p>;
+  if (error)
+    listArea = <p className="m-0 flex-1 px-5 py-8 font-sans text-sm text-combat">{t("error")}</p>;
 
   return (
     <div
@@ -80,10 +102,7 @@ export const InventoryModal = ({ onClose }: IInventoryModalProps) => {
           ))}
         </div>
 
-        <div className="flex flex-1 overflow-hidden">
-          <ItemList items={filtered} selected={selected} onSelect={setSelected} empty={t("empty")} unit={unit} />
-          {selected && <ItemDetail item={selected} unit={unit} />}
-        </div>
+        {listArea}
       </div>
     </div>
   );

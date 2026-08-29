@@ -12,15 +12,31 @@ export interface ILogMessage {
 export type ItemCategory = "weapons" | "armor" | "consumables" | "quest" | "other";
 export type CategoryFilter = "all" | ItemCategory;
 
+export type ItemRarity = "common" | "uncommon" | "rare" | "veryRare" | "legendary" | "artifact";
+
+export type ItemKind =
+  | "weapon"
+  | "armor"
+  | "shield"
+  | "tool"
+  | "gear"
+  | "consumable"
+  | "treasure"
+  | "key"
+  | "junk"
+  | "other";
+
 export interface IInventoryItem {
-  id: number;
+  id: string;
   name: string;
+  kind: ItemKind;
   category: ItemCategory;
   qty: number;
   description: string;
   weight: number;
-  rarity?: "common" | "uncommon" | "rare";
+  rarity?: ItemRarity;
   equipped?: boolean;
+  isTwoHanded?: boolean;
   value?: string;
   properties?: string[];
 }
@@ -38,5 +54,4 @@ export type ActionId = "talk" | "inspect" | "search" | "attack" | "move" | "rest
 
 export interface IContent {
   log: ILogMessage[];
-  items: IInventoryItem[];
 }

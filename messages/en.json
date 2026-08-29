@@ -131,6 +131,9 @@
     "itemsCount": "{count, plural, one {# item} other {# items}}",
     "searchPlaceholder": "Search items...",
     "empty": "No items found.",
+    "loading": "Loading items…",
+    "error": "Could not load items.",
+    "equipError": "Could not equip or unequip the item.",
     "equipped": "Equipped",
     "properties": "Properties",
     "value": "Value",
@@ -146,7 +149,10 @@
     "rarity": {
       "common": "Common",
       "uncommon": "Uncommon",
-      "rare": "Rare"
+      "rare": "Rare",
+      "veryRare": "Very rare",
+      "legendary": "Legendary",
+      "artifact": "Artifact"
     },
     "actions": {
       "equip": "Equip",
@@ -193,87 +199,6 @@
         "type": "combat",
         "text": "A chair scrapes behind you. Two figures rise from a corner table — heavyset men, hands moving toward belt knives. One of them snarls: \"Harwick's business stays Harwick's business, ranger.\"",
         "speaker": "Ambush — Roll for Initiative"
-      }
-    ],
-    "items": [
-      {
-        "id": 1,
-        "name": "Longbow",
-        "category": "weapons",
-        "qty": 1,
-        "description": "A finely crafted recurve bow of yew wood. Reliable at range.",
-        "weight": 2,
-        "rarity": "common",
-        "equipped": true,
-        "value": "25 gp",
-        "properties": ["Range 150/600 ft", "1d8 piercing", "Two-handed"]
-      },
-      {
-        "id": 2,
-        "name": "Leather Armor",
-        "category": "armor",
-        "qty": 1,
-        "description": "Supple leather armor reinforced at the shoulders and chest.",
-        "weight": 10,
-        "rarity": "common",
-        "equipped": true,
-        "value": "10 gp",
-        "properties": ["AC 11 + DEX modifier", "No disadvantage on Stealth"]
-      },
-      {
-        "id": 3,
-        "name": "Quiver of Arrows",
-        "category": "weapons",
-        "qty": 20,
-        "description": "Standard iron-tipped arrows. Well-fletched.",
-        "weight": 1,
-        "rarity": "common",
-        "value": "1 gp",
-        "properties": ["1d6 piercing with shortbow", "1d8 piercing with longbow"]
-      },
-      {
-        "id": 4,
-        "name": "Healing Potion",
-        "category": "consumables",
-        "qty": 3,
-        "description": "A small vial of glowing red liquid. Restores 2d4 + 2 hit points.",
-        "weight": 0.5,
-        "rarity": "common",
-        "value": "50 gp",
-        "properties": ["Restores 2d4 + 2 HP", "Bonus action to use"]
-      },
-      {
-        "id": 5,
-        "name": "Hempen Rope",
-        "category": "other",
-        "qty": 1,
-        "description": "Fifty feet of sturdy rope. Can support up to 300 pounds.",
-        "weight": 10,
-        "rarity": "common",
-        "value": "1 gp",
-        "properties": ["50 feet", "300 lb capacity"]
-      },
-      {
-        "id": 6,
-        "name": "Letter of Introduction",
-        "category": "quest",
-        "qty": 1,
-        "description": "A sealed letter from Merchant Harwick bearing his personal crest. Opens doors.",
-        "weight": 0,
-        "rarity": "uncommon",
-        "value": "—",
-        "properties": ["Quest item", "Cannot be dropped"]
-      },
-      {
-        "id": 7,
-        "name": "Shortsword",
-        "category": "weapons",
-        "qty": 1,
-        "description": "A plain iron shortsword. Good for close quarters.",
-        "weight": 2,
-        "rarity": "common",
-        "value": "10 gp",
-        "properties": ["1d6 piercing", "Finesse, Light"]
       }
     ]
   }

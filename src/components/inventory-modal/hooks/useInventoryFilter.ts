@@ -1,14 +1,20 @@
-import { useMessages } from "next-intl";
-import { useState } from "react";
-import type { CategoryFilter, IContent, IInventoryItem } from "@/components/shared/types";
+import { useEffect, useState } from "react";
+import type { CategoryFilter, IInventoryItem } from "@/components/shared/types";
 
-export const useInventoryFilter = () => {
-  const messages = useMessages();
-  const items = (messages.content as IContent).items;
-
+export const useInventoryFilter = (items: IInventoryItem[]) => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<CategoryFilter>("all");
-  const [selected, setSelected] = useState<IInventoryItem | null>(items[0] ?? null);
+  const [selected, setSelected] = useState<IInventoryItem | null>(null);
+
+  useEffect(() => {
+    setSelected((prev) => {
+      if (prev) {
+        const next = items.find((item) => item.id === prev.id);
+        if (next) return next;
+      }
+      return items[0] ?? null;
+    });
+  }, [items]);
 
   const filtered = items.filter((item) => {
     const matchCat = category === "all" || item.category === category;
@@ -18,5 +24,5 @@ export const useInventoryFilter = () => {
 
   const totalWeight = items.reduce((sum, i) => sum + i.weight * i.qty, 0);
 
-  return { items, search, setSearch, category, setCategory, selected, setSelected, filtered, totalWeight };
+  return { search, setSearch, category, setCategory, selected, setSelected, filtered, totalWeight };
 };

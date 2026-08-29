@@ -1,12 +1,7 @@
 import type { IInventoryItem } from "@/components/shared/types";
 import { ItemIcon } from "../../helpers/itemIcon";
+import { RARITY_COLORS } from "../../helpers/rarityColors";
 import { useTranslations } from "next-intl";
-
-const RARITY_COLORS: Record<string, string> = {
-  common: "#7a7060",
-  uncommon: "#6b9e8a",
-  rare: "#9a6bc4",
-};
 
 interface IItemListProps {
   items: IInventoryItem[];
