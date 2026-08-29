@@ -22,7 +22,7 @@ export const AppLayout = () => {
   return (
     <div className="relative flex h-full w-full overflow-hidden bg-background">
       <CharacterPanel onInventory={() => setInventoryOpen(true)} activeTab={activeTab} setActiveTab={setActiveTab} />
-      <Adventure onLocationChanged={bumpLocation} />
+      <Adventure onLocationChanged={bumpLocation} locationEpoch={locationEpoch} />
 
       {!rightOpen && (
         <button

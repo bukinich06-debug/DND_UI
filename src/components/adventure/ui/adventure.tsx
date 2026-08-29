@@ -8,14 +8,15 @@ import { Composer } from "../composer"
 
 interface IAdventureProps {
   onLocationChanged: () => void
+  locationEpoch: number
 }
 
-export const Adventure = ({ onLocationChanged }: IAdventureProps) => {
+export const Adventure = ({ onLocationChanged, locationEpoch }: IAdventureProps) => {
   const [worldOpen, setWorldOpen] = useState(false)
 
   return (
     <main className="flex min-w-0 flex-1 flex-col bg-background">
-      <AdventureHeader onWorld={() => setWorldOpen(true)} />
+      <AdventureHeader onWorld={() => setWorldOpen(true)} locationEpoch={locationEpoch} />
       <AdventureLog />
       <Composer />
       {worldOpen && (
