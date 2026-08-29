@@ -26,7 +26,7 @@ export const ItemList = ({ items, selected, onSelect, empty, unit }: IItemListPr
           key={item.id}
           type="button"
           onClick={() => onSelect(item)}
-          className={`flex w-full cursor-pointer items-center gap-3 border-none border-b border-[#1f1c18] px-5 py-[11px] text-left transition-colors hover:bg-[#1f1c18] ${
+          className={`flex w-full cursor-pointer items-center gap-3 border-none border-b border-border px-5 py-[11px] text-left transition-colors hover:bg-panel ${
             selected?.id === item.id ? "bg-panel-alt hover:bg-panel-alt" : "bg-transparent"
           }`}
         >
@@ -38,7 +38,7 @@ export const ItemList = ({ items, selected, onSelect, empty, unit }: IItemListPr
               <span className="font-sans text-sm text-foreground">{item.name}</span>
               {item.qty > 1 && <span className="font-mono text-xs text-muted">×{item.qty}</span>}
               {item.equipped && (
-                <span className="rounded-[2px] border border-[#2e4038] bg-[#1a2420] px-[5px] py-px text-xs text-system">{t("equipped")}</span>
+                <span className="border border-border bg-panel-alt px-[5px] py-px text-xs text-system">{t("equipped")}</span>
               )}
               {item.rarity && item.rarity !== "common" && (
                 <span className="text-xs" style={{ color: RARITY_COLORS[item.rarity] }}>
@@ -57,7 +57,7 @@ export const ItemList = ({ items, selected, onSelect, empty, unit }: IItemListPr
         </button>
       ))}
       {items.length === 0 && (
-        <div className="px-5 py-8 text-center font-serif text-sm text-muted italic">{empty}</div>
+        <div className="px-5 py-8 text-center font-sans text-sm text-muted italic">{empty}</div>
       )}
     </div>
   );

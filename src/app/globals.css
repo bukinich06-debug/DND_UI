@@ -1,30 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import 'tailwindcss';
 
 @theme {
   --color-background: #000000;
-  --color-panel: #1a1917;
-  --color-panel-alt: #231f1a;
-  --color-border: #2e2b27;
-  --color-border-light: #3d3830;
-  --color-gold: #c9a84c;
-  --color-gold-dim: #8a7035;
-  --color-parchment: #d4b483;
-  --color-parchment-dim: #c4a06a;
-  --color-foreground: #e8e0d0;
-  --color-foreground-dim: #d4ccc0;
-  --color-muted: #c4b8a4;
-  --color-narration: #ddd5c4;
-  --color-npc: #c4b89a;
-  --color-player: #c9a84c;
-  --color-system: #6b9e8a;
+  --color-panel: #1a1a1a;
+  --color-panel-alt: #222222;
+  --color-border: #333333;
+  --color-border-light: #444444;
+  --color-accent: #c41e3a;
+  --color-accent-dim: #8a1528;
+  --color-link: #4a90d9;
+  --color-foreground: #ffffff;
+  --color-foreground-dim: #f0f0f0;
+  --color-muted: #9a9a9a;
+  --color-narration: #f0f0f0;
+  --color-npc: #e0e0e0;
+  --color-player: #ffffff;
+  --color-system: #5cb85c;
   --color-combat: #c45c3a;
-  --color-hp: #7ab87a;
+  --color-hp: #5cb85c;
   --color-xp: #5a7fc9;
 
-  --text-xs: 0.8125rem;
-  --font-serif: 'EB Garamond', Georgia, serif;
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --text-xs: 0.875rem;
+  --font-sans: 'Inter', Arial, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
@@ -39,8 +37,8 @@ body {
   margin: 0;
   padding: 0;
   background-color: #000000;
-  color: #e8e0d0;
-  font-family: 'Inter', system-ui, sans-serif;
+  color: #ffffff;
+  font-family: 'Inter', Arial, system-ui, sans-serif;
 }
 
 .scrollable {
@@ -52,7 +50,7 @@ body {
 }
 .scrollable:hover {
   scrollbar-width: thin;
-  scrollbar-color: #3d3830 transparent;
+  scrollbar-color: #444444 transparent;
 }
 .scrollable:hover::-webkit-scrollbar {
   display: block;
@@ -62,11 +60,10 @@ body {
   background: transparent;
 }
 .scrollable:hover::-webkit-scrollbar-thumb {
-  background: #3d3830;
-  border-radius: 2px;
+  background: #444444;
 }
 
 ::selection {
-  background: #c9a84c33;
-  color: #e8e0d0;
+  background: #c41e3a33;
+  color: #ffffff;
 }

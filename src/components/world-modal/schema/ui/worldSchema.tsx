@@ -58,7 +58,7 @@ const RoadLabel = ({ edge, travel }: IRoadLabelProps) => {
 
   return (
     <div
-      className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 rounded border border-gold-dim bg-panel px-1.5 py-0.5 font-sans text-[10px] whitespace-nowrap text-gold"
+      className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 border border-accent-dim bg-panel px-1.5 py-0.5 font-sans text-[10px] whitespace-nowrap text-accent"
       style={{ left: edge.labelX, top: edge.labelY }}
     >
       {parts.join(" · ")}
@@ -117,7 +117,7 @@ export const WorldSchema = ({
               refY="4"
               orient="auto"
             >
-              <path d="M0 0 L8 4 L0 8 Z" fill="#c9a84c" />
+              <path d="M0 0 L8 4 L0 8 Z" fill="#c41e3a" />
             </marker>
           </defs>
           {tree.map((edge) => (
@@ -125,7 +125,7 @@ export const WorldSchema = ({
               key={`${edge.fromId}-${edge.toId}`}
               d={edge.d}
               fill="none"
-              stroke="#3a3a36"
+              stroke="#333333"
               strokeWidth="1.5"
             />
           ))}
@@ -134,7 +134,7 @@ export const WorldSchema = ({
               key={edge.id}
               d={edge.d}
               fill="none"
-              stroke={edge.onRoute ? "#c9a84c" : "#8a7035"}
+              stroke={edge.onRoute ? "#c41e3a" : "#8a1528"}
               strokeWidth={edge.currentLeg ? 2.5 : 1.5}
               strokeDasharray="6 4"
               markerEnd="url(#world-road-arrow)"

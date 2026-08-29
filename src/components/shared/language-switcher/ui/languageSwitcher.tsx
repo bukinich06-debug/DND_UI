@@ -15,7 +15,7 @@ export const LanguageSwitcher = () => {
   };
 
   return (
-    <div className="flex items-center overflow-hidden rounded border border-border">
+    <div className="flex items-center overflow-hidden border border-border">
       {(["en", "ru"] as const).map((code) => {
         const active = locale === code;
         return (
@@ -23,8 +23,10 @@ export const LanguageSwitcher = () => {
             key={code}
             type="button"
             onClick={() => switchLocale(code)}
-            className={`cursor-pointer border-none px-[9px] py-[5px] font-sans text-[13px] tracking-wide ${
-              active ? "bg-panel-alt font-semibold text-gold" : "bg-transparent font-normal text-muted"
+            className={`cursor-pointer px-[9px] py-[5px] font-sans text-[13px] tracking-wide ${
+              active
+                ? "border-0 border-r-2 border-solid border-accent bg-panel-alt font-semibold text-foreground"
+                : "border-0 bg-transparent font-normal text-muted"
             }`}
           >
             {code.toUpperCase()}

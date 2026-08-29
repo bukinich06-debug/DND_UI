@@ -25,7 +25,7 @@ export const SituationPanel = ({ open, onToggle, locationEpoch }: ISituationPane
               <button
                 type="button"
                 onClick={onToggle}
-                className="flex size-7 shrink-0 cursor-pointer items-center justify-center rounded border border-border bg-panel text-muted"
+                className="flex size-7 shrink-0 cursor-pointer items-center justify-center border border-border bg-panel text-muted"
               >
                 <IconChevronRight />
               </button>

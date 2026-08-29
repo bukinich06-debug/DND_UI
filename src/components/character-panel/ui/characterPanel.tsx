@@ -27,8 +27,8 @@ export const CharacterPanel = ({ onInventory, activeTab, setActiveTab }: ICharac
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className={`cursor-pointer rounded border py-[7px] font-sans text-sm transition-all ${
-              activeTab === tab ? "border-border-light bg-panel-alt text-gold" : "border-border bg-transparent text-muted"
+            className={`cursor-pointer border py-[7px] font-sans text-sm transition-all ${
+              activeTab === tab ? "border-accent bg-panel-alt text-foreground" : "border-border bg-transparent text-muted"
             }`}
           >
             {tNav(tab)}
@@ -37,7 +37,7 @@ export const CharacterPanel = ({ onInventory, activeTab, setActiveTab }: ICharac
         <button
           type="button"
           onClick={onInventory}
-          className="cursor-pointer rounded border border-border bg-transparent py-[7px] font-sans text-sm text-muted"
+          className="cursor-pointer border border-border bg-transparent py-[7px] font-sans text-sm text-muted"
         >
           {tNav("inventory")}
         </button>
@@ -57,7 +57,7 @@ export const CharacterPanel = ({ onInventory, activeTab, setActiveTab }: ICharac
   const init = player.initiativeBonus ?? abilityMod(player.dex);
 
   let portrait: ReactNode = (
-    <div className="flex size-[52px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-border-light bg-panel-alt text-muted">
+    <div className="flex size-[52px] shrink-0 items-center justify-center border-[1.5px] border-border-light bg-panel-alt text-muted">
       <IconUser />
     </div>
   );
@@ -66,7 +66,7 @@ export const CharacterPanel = ({ onInventory, activeTab, setActiveTab }: ICharac
       <img
         src={player.portraitUrl}
         alt={player.name}
-        className="size-[52px] shrink-0 rounded-full border-[1.5px] border-border-light object-cover"
+        className="size-[52px] shrink-0 border-[1.5px] border-border-light object-cover"
       />
     );
 
@@ -74,7 +74,7 @@ export const CharacterPanel = ({ onInventory, activeTab, setActiveTab }: ICharac
   if (player.inspiration)
     inspiration = (
       <div className="mt-0.5 flex items-center gap-1">
-        <span className="text-gold">
+        <span className="text-accent">
           <IconStar />
         </span>
       </div>
@@ -91,7 +91,7 @@ export const CharacterPanel = ({ onInventory, activeTab, setActiveTab }: ICharac
         {player.conditions.map((condition) => (
           <span
             key={condition}
-            className="rounded-[3px] border border-[#3d6040] bg-[#1e2a1e] px-2 py-0.5 text-[13px] text-hp"
+            className="border border-border bg-panel-alt px-2 py-0.5 text-[13px] text-hp"
           >
             {condition}
           </span>
@@ -105,27 +105,27 @@ export const CharacterPanel = ({ onInventory, activeTab, setActiveTab }: ICharac
         <div className="flex items-center gap-3">
           {portrait}
           <div className="flex flex-col gap-0.5">
-            <span className="font-serif text-xl font-medium leading-tight text-foreground">{player.name}</span>
-            <span className="font-sans text-xs text-gold">{t("classLevel", { className: classLabel, level: player.level })}</span>
+            <span className="font-sans text-xl font-bold uppercase leading-tight text-foreground">{player.name}</span>
+            <span className="font-sans text-xs text-muted">{t("classLevel", { className: classLabel, level: player.level })}</span>
             {inspiration}
           </div>
         </div>
       </div>
 
       <div className="flex flex-col gap-3 border-b border-border px-4 py-3.5">
-        <BarStat label={t("hp")} current={player.hpCurrent} max={player.hpMax} color="#7ab87a" icon={<IconHeart />} />
+        <BarStat label={t("hp")} current={player.hpCurrent} max={player.hpMax} color="#5cb85c" icon={<IconHeart />} />
         {xpBar}
 
         <div className="mt-1 flex gap-3">
-          <div className="flex-1 rounded border border-border bg-panel p-2 text-center">
+          <div className="flex-1 border border-border bg-panel p-2 text-center">
             <div className="font-sans text-[11px] uppercase tracking-widest text-muted">{t("ac")}</div>
             <div className="font-mono text-lg font-medium text-foreground">{player.ac}</div>
           </div>
-          <div className="flex-1 rounded border border-border bg-panel p-2 text-center">
+          <div className="flex-1 border border-border bg-panel p-2 text-center">
             <div className="font-sans text-[11px] uppercase tracking-widest text-muted">{t("prof")}</div>
             <div className="font-mono text-lg font-medium text-foreground">{formatBonus(player.proficiencyBonus)}</div>
           </div>
-          <div className="flex-1 rounded border border-border bg-panel p-2 text-center">
+          <div className="flex-1 border border-border bg-panel p-2 text-center">
             <div className="font-sans text-[11px] uppercase tracking-widest text-muted">{t("init")}</div>
             <div className="font-mono text-lg font-medium text-foreground">{formatBonus(init)}</div>
           </div>
@@ -152,7 +152,7 @@ export const CharacterPanel = ({ onInventory, activeTab, setActiveTab }: ICharac
       <div className="flex flex-col gap-2 border-b border-border px-4 py-3.5">
         <div className="mb-0.5 font-sans text-xs uppercase tracking-widest text-muted">{t("equipment")}</div>
         <div className="flex items-center gap-2">
-          <span className="text-gold">
+          <span className="text-accent">
             <IconSword />
           </span>
           <div>
@@ -161,7 +161,7 @@ export const CharacterPanel = ({ onInventory, activeTab, setActiveTab }: ICharac
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-gold">
+          <span className="text-accent">
             <IconShield />
           </span>
           <div>
@@ -170,13 +170,13 @@ export const CharacterPanel = ({ onInventory, activeTab, setActiveTab }: ICharac
           </div>
         </div>
         <div className="mt-1 flex flex-wrap gap-1.5">
-          <span className="rounded-[3px] border border-border bg-panel-alt px-2 py-0.5 font-sans text-[13px] text-muted">
+          <span className="border border-border bg-panel-alt px-2 py-0.5 font-sans text-[13px] text-muted">
             {t("tags.quiver", { count: 20 })}
           </span>
-          <span className="rounded-[3px] border border-border bg-panel-alt px-2 py-0.5 font-sans text-[13px] text-muted">
+          <span className="border border-border bg-panel-alt px-2 py-0.5 font-sans text-[13px] text-muted">
             {t("tags.potion", { count: 3 })}
           </span>
-          <span className="rounded-[3px] border border-border bg-panel-alt px-2 py-0.5 font-sans text-[13px] text-muted">{t("tags.rope")}</span>
+          <span className="border border-border bg-panel-alt px-2 py-0.5 font-sans text-[13px] text-muted">{t("tags.rope")}</span>
         </div>
       </div>
 

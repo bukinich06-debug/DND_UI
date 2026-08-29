@@ -28,7 +28,7 @@ export const AppLayout = () => {
         <button
           type="button"
           onClick={() => setRightOpen(true)}
-          className="absolute top-3.5 right-0 z-10 flex size-7 cursor-pointer items-center justify-center rounded-l border border-border bg-panel text-muted"
+          className="absolute top-3.5 right-0 z-10 flex size-7 cursor-pointer items-center justify-center border border-border bg-panel text-muted"
         >
           <IconChevronLeft />
         </button>

@@ -27,7 +27,7 @@ export const NearbyList = ({ locationEpoch }: INearbyListProps) => {
         <button
           key={row.npc.id}
           type="button"
-          className="flex w-full cursor-pointer items-center gap-2 rounded border border-transparent bg-transparent px-1.5 py-1 text-left hover:border-border hover:bg-panel"
+          className="flex w-full cursor-pointer items-center gap-2 border border-transparent bg-transparent px-1.5 py-1 text-left hover:border-border hover:bg-panel"
         >
           <span className="shrink-0 text-muted">
             <IconUser />

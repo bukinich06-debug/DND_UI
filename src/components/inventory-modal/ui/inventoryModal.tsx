@@ -27,10 +27,10 @@ export const InventoryModal = ({ onClose }: IInventoryModalProps) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="flex h-[620px] w-full max-w-[860px] flex-col overflow-hidden rounded-md border border-border-light bg-panel shadow-[0_24px_80px_rgba(0,0,0,0.8)]">
+      <div className="flex h-[620px] w-full max-w-[860px] flex-col overflow-hidden border border-border-light bg-panel shadow-[0_24px_80px_rgba(0,0,0,0.8)]">
         <div className="flex shrink-0 items-center justify-between border-b border-border px-5 py-4">
           <div>
-            <h2 className="m-0 font-serif text-[22px] font-medium text-foreground">{t("title")}</h2>
+            <h2 className="m-0 font-sans text-[22px] font-bold uppercase text-foreground">{t("title")}</h2>
             <div className="mt-0.5 text-xs text-muted">
               {t("weight")}:{" "}
               <span className="font-mono text-foreground-dim">
@@ -52,13 +52,13 @@ export const InventoryModal = ({ onClose }: IInventoryModalProps) => {
                 placeholder={t("searchPlaceholder")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-[180px] rounded border border-border-light bg-panel-alt py-[7px] pr-3 pl-8 font-sans text-[13px] text-foreground outline-none"
+                className="w-[180px] border border-border-light bg-panel-alt py-[7px] pr-3 pl-8 font-sans text-[13px] text-foreground outline-none"
               />
             </div>
             <button
               type="button"
               onClick={onClose}
-              className="flex size-8 cursor-pointer items-center justify-center rounded border border-border bg-transparent text-muted"
+              className="flex size-8 cursor-pointer items-center justify-center border border-border bg-transparent text-muted"
             >
               <IconX />
             </button>
@@ -71,8 +71,8 @@ export const InventoryModal = ({ onClose }: IInventoryModalProps) => {
               key={cat}
               type="button"
               onClick={() => setCategory(cat)}
-              className={`cursor-pointer rounded-[3px] border px-3 py-1 font-sans text-xs ${
-                category === cat ? "border-gold-dim bg-panel-alt text-gold" : "border-border bg-transparent text-muted"
+              className={`cursor-pointer border px-3 py-1 font-sans text-xs ${
+                category === cat ? "border-accent bg-panel-alt text-foreground" : "border-border bg-transparent text-muted"
               }`}
             >
               {t(`categories.${cat}`)}

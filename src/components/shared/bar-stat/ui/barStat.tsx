@@ -23,9 +23,9 @@ export const BarStat = ({ label, current, max, color, icon }: IBarStatProps) => 
           <span className="text-muted">/{max}</span>
         </span>
       </div>
-      <div className="h-[5px] overflow-hidden rounded-[2px] bg-border">
+      <div className="h-[5px] overflow-hidden bg-border">
         <div
-          className="h-full rounded-[2px] transition-[width] duration-300"
+          className="h-full transition-[width] duration-300"
           style={{ width: `${pct}%`, backgroundColor: color }}
         />
       </div>

@@ -23,7 +23,7 @@ export const ActionChips = ({ onPick }: IActionChipsProps) => {
             key={id}
             type="button"
             onClick={() => onPick(label)}
-            className="cursor-pointer rounded-[3px] border border-border-light bg-transparent px-[9px] py-[3px] font-sans text-xs text-foreground-dim transition-all hover:border-gold-dim hover:bg-[#1a1714] hover:text-gold"
+            className="cursor-pointer border border-border-light bg-transparent px-[9px] py-[3px] font-sans text-xs text-foreground-dim transition-all hover:border-accent hover:bg-panel hover:text-foreground"
           >
             {label}
           </button>

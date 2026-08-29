@@ -20,10 +20,10 @@ export const ItemDetail = ({ item, unit }: IItemDetailProps) => {
   return (
     <div className="scrollable w-[280px] shrink-0 overflow-y-auto p-5">
       <div className="mb-1 flex items-center gap-2">
-        <span className="text-gold">
+        <span className="text-accent">
           <ItemIcon category={item.category} />
         </span>
-        <h3 className="m-0 font-serif text-xl font-medium text-foreground">{item.name}</h3>
+        <h3 className="m-0 font-sans text-xl font-bold uppercase text-foreground">{item.name}</h3>
       </div>
       <div className="mb-3.5 font-sans text-xs text-muted">
         {t(`categories.${item.category}`)}
@@ -33,25 +33,25 @@ export const ItemDetail = ({ item, unit }: IItemDetailProps) => {
           </span>
         )}
       </div>
-      <p className="mb-4 font-serif text-[15px] leading-[1.6] text-foreground-dim italic">&ldquo;{item.description}&rdquo;</p>
+      <p className="mb-4 font-sans text-[15px] leading-[1.5] text-foreground-dim italic">&ldquo;{item.description}&rdquo;</p>
       {item.properties && (
         <div className="mb-4">
           <div className="mb-1.5 text-xs uppercase tracking-widest text-muted">{t("properties")}</div>
           {item.properties.map((p) => (
-            <div key={p} className="border-b border-[#1f1c18] py-[3px] font-sans text-xs text-foreground-dim">
+            <div key={p} className="border-b border-border py-[3px] font-sans text-xs text-foreground-dim">
               {p}
             </div>
           ))}
         </div>
       )}
       <div className="mb-3 flex gap-2">
-        <div className="flex-1 rounded border border-border bg-panel-alt p-2 text-center">
+        <div className="flex-1 border border-border bg-panel-alt p-2 text-center">
           <div className="text-[11px] uppercase tracking-widest text-muted">{t("weight")}</div>
           <div className="font-mono text-sm text-foreground">
             {item.weight} {unit}
           </div>
         </div>
-        <div className="flex-1 rounded border border-border bg-panel-alt p-2 text-center">
+        <div className="flex-1 border border-border bg-panel-alt p-2 text-center">
           <div className="text-[11px] uppercase tracking-widest text-muted">{t("value")}</div>
           <div className="font-mono text-sm text-foreground">{item.value}</div>
         </div>

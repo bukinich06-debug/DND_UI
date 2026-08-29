@@ -16,8 +16,8 @@ export const AdventureLog = () => {
         <MessageBubble key={msg.id} msg={msg} />
       ))}
       <div className="flex items-center gap-2 pb-2">
-        <div className="size-1.5 rounded-full bg-gold opacity-60" />
-        <span className="font-serif text-[13px] text-muted italic">{t("thinking")}</span>
+        <div className="size-1.5 bg-accent opacity-60" />
+        <span className="font-sans text-[13px] text-muted italic">{t("thinking")}</span>
       </div>
     </div>
   );
