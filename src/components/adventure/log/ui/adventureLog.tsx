@@ -1,24 +1,30 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { MessageBubble } from "../message-bubble";
-import { useLog } from "../hooks/useLog";
+import type { ILogEntry } from "@/components/shared/types";
 import { useLogScroll } from "../hooks/useLogScroll";
+import { LogEntry } from "../log-entry";
 
-export const AdventureLog = () => {
+interface IAdventureLogProps {
+  entries: ILogEntry[];
+  sending: boolean;
+}
+
+export const AdventureLog = ({ entries, sending }: IAdventureLogProps) => {
   const t = useTranslations("center");
-  const adventureLog = useLog();
-  const logRef = useLogScroll(adventureLog.length);
+  const logRef = useLogScroll(entries.length, sending);
 
   return (
     <div ref={logRef} className="scrollable flex-1 px-12 pt-8 pb-4">
-      {adventureLog.map((msg) => (
-        <MessageBubble key={msg.id} msg={msg} />
+      {entries.map((entry) => (
+        <LogEntry key={entry.id} entry={entry} />
       ))}
-      <div className="flex items-center gap-2 pb-2">
-        <div className="size-1.5 bg-accent opacity-60" />
-        <span className="font-sans text-[13px] text-muted italic">{t("thinking")}</span>
-      </div>
+      {sending && (
+        <div className="flex items-center gap-2 pb-2">
+          <div className="size-1.5 bg-accent opacity-60" />
+          <span className="font-sans text-[13px] text-muted italic">{t("thinking")}</span>
+        </div>
+      )}
     </div>
   );
 };

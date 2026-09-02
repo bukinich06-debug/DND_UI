@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
 
-export const useLogScroll = (logLength: number) => {
+export const useLogScroll = (logLength: number, sending: boolean) => {
   const logRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
-  }, [logLength]);
+  }, [logLength, sending]);
 
   return logRef;
 };

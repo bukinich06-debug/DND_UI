@@ -77,7 +77,13 @@
     "placeholder": "What do you want to do?",
     "execute": "Execute",
     "inputHint": "Enter to send · Shift+Enter for new line",
-    "yourAction": "Your action"
+    "yourAction": "Your action",
+    "locationSecret": "Hidden",
+    "locationRead": "Read full description",
+    "locationHide": "Collapse",
+    "masterStub": "Dungeon Master",
+    "checkSuccess": "Success",
+    "checkFailure": "Failure"
   },
   "actions": {
     "talk": "Talk",
@@ -161,45 +167,5 @@
       "inspect": "Inspect",
       "drop": "Drop"
     }
-  },
-  "content": {
-    "log": [
-      {
-        "id": 1,
-        "type": "narration",
-        "text": "The rain lashes against the shuttered windows of the Rusty Lantern. You push open the heavy oak door and step inside. Warm firelight fills the low-ceilinged common room, but conversation dies the moment you cross the threshold. A dozen pairs of eyes find you — then look away.",
-        "timestamp": "Evening"
-      },
-      {
-        "id": 2,
-        "type": "npc",
-        "speaker": "Gareth (Bartender)",
-        "text": "You're not from around here, are you? Last stranger who wandered in asking questions... well. What'll it be?"
-      },
-      {
-        "id": 3,
-        "type": "player",
-        "text": "You set two silver coins on the bar and lean in. \"I'm looking for the Harwick caravan — three wagons, left Millhaven six days ago. Never arrived at Thorngate. I'm told you might know something.\""
-      },
-      {
-        "id": 4,
-        "type": "system",
-        "text": "Persuasion Check",
-        "roll": "14 + 2 = 16",
-        "speaker": "Success"
-      },
-      {
-        "id": 5,
-        "type": "narration",
-        "text": "Gareth's jaw tightens. He wipes the bar slowly with a rag that was never going to clean anything. Then, without looking at you, he tips his head toward the back corner — where a cloaked figure nurses a drink alone.",
-        "timestamp": "Evening"
-      },
-      {
-        "id": 6,
-        "type": "combat",
-        "text": "A chair scrapes behind you. Two figures rise from a corner table — heavyset men, hands moving toward belt knives. One of them snarls: \"Harwick's business stays Harwick's business, ranger.\"",
-        "speaker": "Ambush — Roll for Initiative"
-      }
-    ]
   }
 }
