@@ -1,11 +1,13 @@
 import { useState } from "react";
 import type { ILogEntry, ITurnReply } from "@/components/shared/types";
+import { useRefreshPurse } from "@/components/shared/purse";
 import { postTurn, type IChatMessage } from "../composer/api/postTurn";
 import { npcChatText } from "../composer/helpers/npcChatText";
 
 const withId = (reply: ITurnReply): ILogEntry => ({ ...reply, id: crypto.randomUUID() });
 
 export const useTurn = () => {
+  const refreshPurse = useRefreshPurse();
   const [entries, setEntries] = useState<ILogEntry[]>([]);
   const [messages, setMessages] = useState<IChatMessage[]>([]);
   const [sending, setSending] = useState(false);
@@ -22,6 +24,7 @@ export const useTurn = () => {
       const npcText = npcChatText(replies);
       setMessages(npcText ? [...next, { role: "assistant", content: npcText }] : next);
       setEntries((prev) => [...prev, ...replies.map(withId)]);
+      await refreshPurse();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Не удалось выполнить ход.");
       throw err;

@@ -13,7 +13,12 @@ interface ICoinBalance {
   coins: IPurse;
 }
 
-export const getCoins = async ({ signal }: IGetCoinsParams = {}): Promise<IPurse> => {
+export interface ICoinsResult {
+  coins: IPurse;
+  coinsCp: number;
+}
+
+export const getCoins = async ({ signal }: IGetCoinsParams = {}): Promise<ICoinsResult> => {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const campaignId = process.env.NEXT_PUBLIC_COMPANY_ID;
   const playerId = process.env.NEXT_PUBLIC_PLAYER_ID;
@@ -31,5 +36,5 @@ export const getCoins = async ({ signal }: IGetCoinsParams = {}): Promise<IPurse
   const data = (await res.json()) as ICoinBalance;
   if (!data.coins) throw new Error("Некорректный ответ баланса монет.");
 
-  return data.coins;
+  return { coins: data.coins, coinsCp: data.coinsCp };
 };
