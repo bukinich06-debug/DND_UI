@@ -16,8 +16,21 @@ export interface INpcReply {
   do: string | null;
 }
 
+export type MasterVerdict = "allowed" | "denied" | "partial" | "check" | "defer_combat";
+
+export interface IToolCallLog {
+  name: string;
+  args: unknown;
+  ok: boolean;
+  result?: unknown;
+  error?: string;
+}
+
 export interface IMasterReply {
   agent: "master";
+  verdict: MasterVerdict;
+  say: string;
+  toolCalls: IToolCallLog[];
 }
 
 export type ITurnReply = ILocationReply | INpcReply | IMasterReply;

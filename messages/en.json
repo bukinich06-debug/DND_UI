@@ -81,7 +81,12 @@
     "locationSecret": "Hidden",
     "locationRead": "Read full description",
     "locationHide": "Collapse",
-    "masterStub": "Dungeon Master",
+    "masterLabel": "Dungeon Master",
+    "verdictAllowed": "Allowed",
+    "verdictDenied": "Denied",
+    "verdictPartial": "Partial",
+    "verdictCheck": "Check",
+    "verdictDeferCombat": "Combat",
     "checkSuccess": "Success",
     "checkFailure": "Failure",
     "form": {

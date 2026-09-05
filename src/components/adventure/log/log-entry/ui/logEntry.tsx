@@ -14,7 +14,7 @@ interface ILogEntryProps {
 export const LogEntry = ({ entry }: ILogEntryProps) => {
   if (entry.agent === "location") return <LocationEntry entry={entry} />;
   if (entry.agent === "npc") return <NpcEntry entry={entry} />;
-  if (entry.agent === "master") return <MasterEntry />;
+  if (entry.agent === "master") return <MasterEntry entry={entry} />;
   if (entry.agent === "player") return <PlayerEntry entry={entry} />;
   if (entry.agent === "check") return <CheckEntry entry={entry} />;
   return null;

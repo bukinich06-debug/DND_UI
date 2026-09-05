@@ -81,7 +81,12 @@
     "locationSecret": "Скрыто",
     "locationRead": "Подробнее",
     "locationHide": "Свернуть",
-    "masterStub": "Мастер",
+    "masterLabel": "Мастер",
+    "verdictAllowed": "Разрешено",
+    "verdictDenied": "Отказ",
+    "verdictPartial": "Частично",
+    "verdictCheck": "Проверка",
+    "verdictDeferCombat": "Бой",
     "checkSuccess": "Успех",
     "checkFailure": "Провал",
     "form": {

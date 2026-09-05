@@ -3,7 +3,7 @@ import type { ILogEntry, ITurnReply } from "@/components/shared/types";
 import { useRefreshPurse } from "@/components/shared/purse";
 import { getPlayerPlace } from "@/components/shared/player-place";
 import { postTurn, type IChatMessage } from "../composer/api/postTurn";
-import { npcChatText } from "../composer/helpers/npcChatText";
+import { assistantChatText } from "../composer/helpers/assistantChatText";
 
 const withId = (reply: ITurnReply): ILogEntry => ({ ...reply, id: crypto.randomUUID() });
 
@@ -54,8 +54,8 @@ export const useTurn = ({ onLocationChanged }: IParams) => {
     setError(null);
     try {
       const replies = await postTurn({ messages: next });
-      const npcText = npcChatText(replies);
-      setMessages(npcText ? [...next, { role: "assistant", content: npcText }] : next);
+      const assistantText = assistantChatText(replies);
+      setMessages(assistantText ? [...next, { role: "assistant", content: assistantText }] : next);
       setEntries((prev) => [...prev, ...replies.map(withId)]);
       await refreshPurse();
       await syncPlace();
