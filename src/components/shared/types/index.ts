@@ -80,4 +80,12 @@ export interface IPurse {
 }
 
 export type TabId = "character" | "spells" | "journal";
-export type ActionId = "talk" | "inspect" | "search" | "attack" | "move" | "rest" | "stealth";
+export type ActionId =
+  | "free"
+  | "talk"
+  | "inspect"
+  | "search"
+  | "attack"
+  | "move"
+  | "rest"
+  | "stealth";

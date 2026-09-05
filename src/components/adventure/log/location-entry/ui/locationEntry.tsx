@@ -21,8 +21,8 @@ export const LocationEntry = ({ entry }: ILocationEntryProps) => {
         )}
       </div>
       <p className="m-0 font-sans text-[15px] leading-[1.5] text-narration">{entry.summary}</p>
-      {entry.features && <p className="mt-1.5 m-0 font-sans text-[13px] text-muted">{entry.features}</p>}
-      {open && <p className="mt-3 m-0 font-sans text-[15px] leading-[1.5] text-narration">{entry.description}</p>}
+      {entry.features && <p className="mt-1.5 m-0 font-sans text-[15px] leading-[1.5] text-muted">{entry.features}</p>}
+      {open && <p className="mt-3 m-0 font-sans text-[15px] leading-[1.5] text-muted">{entry.description}</p>}
       <button
         type="button"
         onClick={toggle}

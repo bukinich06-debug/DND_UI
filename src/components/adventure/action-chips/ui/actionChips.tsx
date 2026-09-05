@@ -3,29 +3,46 @@
 import { useTranslations } from "next-intl";
 import type { ActionId } from "@/components/shared/types";
 
-const ACTION_IDS: ActionId[] = ["talk", "inspect", "search", "attack", "move", "rest", "stealth"];
+const ACTION_IDS: ActionId[] = [
+  "free",
+  "talk",
+  "inspect",
+  "search",
+  "attack",
+  "move",
+  "rest",
+  "stealth",
+];
 
 interface IActionChipsProps {
-  onPick: (label: string) => void;
+  selected: ActionId;
+  onSelect: (id: ActionId) => void;
 }
 
-export const ActionChips = ({ onPick }: IActionChipsProps) => {
+export const ActionChips = ({ selected, onSelect }: IActionChipsProps) => {
   const t = useTranslations("center");
   const tActions = useTranslations("actions");
 
   return (
     <div className="mb-3 flex flex-wrap items-center gap-2">
-      <span className="font-sans text-[13px] text-foreground-dim">{t("suggest")}</span>
+      <span className="font-sans text-[13px] text-foreground-dim">{t("action")}</span>
       {ACTION_IDS.map((id) => {
-        const label = tActions(id);
+        const active = selected === id;
         return (
           <button
             key={id}
             type="button"
-            onClick={() => onPick(label)}
-            className="cursor-pointer border border-border-light bg-transparent px-[9px] py-[3px] font-sans text-xs text-foreground-dim transition-all hover:border-accent hover:bg-panel hover:text-foreground"
+            onClick={() => {
+              if (active) return;
+              onSelect(id);
+            }}
+            className={`cursor-pointer border px-[9px] py-[3px] font-sans text-xs transition-all ${
+              active
+                ? "border-accent bg-panel text-foreground"
+                : "border-border-light bg-transparent text-foreground-dim hover:border-accent hover:bg-panel hover:text-foreground"
+            }`}
           >
-            {label}
+            {tActions(id)}
           </button>
         );
       })}
