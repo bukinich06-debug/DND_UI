@@ -45,9 +45,13 @@ export interface IPlayerEntry {
 export interface ICheckEntry {
   id: string;
   agent: "check";
-  skill: string;
-  roll: string;
-  result: "success" | "failure";
+  skillLabel: string;
+  dc: number;
+  bonus: number;
+  die: "d20";
+  d20?: number;
+  total?: number;
+  passed?: boolean;
 }
 
 export type ILogEntry = (ITurnReply & { id: string }) | IPlayerEntry | ICheckEntry;

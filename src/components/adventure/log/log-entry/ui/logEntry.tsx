@@ -9,13 +9,15 @@ import { CheckEntry } from "../../check-entry";
 
 interface ILogEntryProps {
   entry: ILogEntry;
+  onRoll: () => void;
+  rolling: boolean;
 }
 
-export const LogEntry = ({ entry }: ILogEntryProps) => {
+export const LogEntry = ({ entry, onRoll, rolling }: ILogEntryProps) => {
   if (entry.agent === "location") return <LocationEntry entry={entry} />;
   if (entry.agent === "npc") return <NpcEntry entry={entry} />;
   if (entry.agent === "master") return <MasterEntry entry={entry} />;
   if (entry.agent === "player") return <PlayerEntry entry={entry} />;
-  if (entry.agent === "check") return <CheckEntry entry={entry} />;
+  if (entry.agent === "check") return <CheckEntry entry={entry} onRoll={onRoll} rolling={rolling} />;
   return null;
 };

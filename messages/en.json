@@ -89,6 +89,8 @@
     "verdictDeferCombat": "Combat",
     "checkSuccess": "Success",
     "checkFailure": "Failure",
+    "checkDc": "DC {dc}",
+    "checkRoll": "Roll d20 ({skill} {bonus}, DC {dc})",
     "form": {
       "npc": "Addressee",
       "pickNpc": "Choose an NPC",

@@ -89,6 +89,8 @@
     "verdictDeferCombat": "Бой",
     "checkSuccess": "Успех",
     "checkFailure": "Провал",
+    "checkDc": "Сл {dc}",
+    "checkRoll": "Бросить d20 ({skill} {bonus}, Сл {dc})",
     "form": {
       "npc": "Собеседник",
       "pickNpc": "Выберите NPC",
