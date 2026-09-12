@@ -1,7 +1,7 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import type { ILogEntry } from "@/components/shared/types";
+import { useTranslations } from "next-intl";
 import { useLogScroll } from "../hooks/useLogScroll";
 import { LogEntry } from "../log-entry";
 
@@ -21,6 +21,7 @@ export const AdventureLog = ({ entries, sending, onRoll, rolling }: IAdventureLo
       {entries.map((entry) => (
         <LogEntry key={entry.id} entry={entry} onRoll={onRoll} rolling={rolling} />
       ))}
+
       {sending && (
         <div className="flex items-center gap-2 pb-2">
           <div className="size-1.5 bg-accent opacity-60" />
