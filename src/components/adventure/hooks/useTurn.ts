@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ICheckEntry, ILogEntry, ITurnReply } from "@/components/shared/types";
 import { useRefreshPurse } from "@/components/shared/purse";
 import { getPlayerPlace } from "@/components/shared/player-place";
+import { requestLocationLook } from "@/components/shared/location-narration";
 import { postDiceRoll } from "../composer/api/postDiceRoll";
 import {
   postTurn,
@@ -75,11 +76,22 @@ export const useTurn = ({ onLocationChanged }: IParams) => {
       if (nextId !== locationIdRef.current) {
         locationIdRef.current = nextId;
         onLocationChanged();
+        await requestAndAddLocationLook();
       }
     } catch {
       /* ход уже показан — ошибка места не валит UI */
     }
   };
+
+  const requestAndAddLocationLook = useCallback(async () => {
+    try {
+      const replies = await requestLocationLook();
+      const extra: ILogEntry[] = replies.map(withId);
+      setEntries((prev) => [...prev, ...extra]);
+    } catch {
+      /* если описание локации не удалось — не валит UI */
+    }
+  }, []);
 
   const applyReplies = (result: ITurnResult, resumeChat: IChatMessage[]) => {
     const extra: ILogEntry[] = result.replies.map(withId);
@@ -155,5 +167,6 @@ export const useTurn = ({ onLocationChanged }: IParams) => {
     sending,
     locked: sending || Boolean(pending),
     error,
+    requestLocationLook: requestAndAddLocationLook,
   };
 };
