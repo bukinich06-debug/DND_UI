@@ -96,9 +96,8 @@ export const useTurn = ({ onLocationChanged }: IParams) => {
 
   const requestAndAddLocationLook = useCallback(async () => {
     try {
-      const replies = await requestLocationLook()
-      const extra: ILogEntry[] = replies.map(withId)
-      setEntries((prev) => [...prev, ...extra])
+      const reply = await requestLocationLook()
+      setEntries((prev) => [...prev, withId(reply)])
     } catch {
       /* если описание локации не удалось — не валит UI */
     }
