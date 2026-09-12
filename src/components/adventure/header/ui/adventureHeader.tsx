@@ -10,7 +10,10 @@ interface IAdventureHeaderProps {
   locationEpoch: number
 }
 
-export const AdventureHeader = ({ onWorld, locationEpoch }: IAdventureHeaderProps) => {
+export const AdventureHeader = ({
+  onWorld,
+  locationEpoch,
+}: IAdventureHeaderProps) => {
   const t = useTranslations("center")
   const tNav = useTranslations("nav")
   const { name, summary, loading, error } = usePlayerPlace(locationEpoch)
@@ -32,7 +35,9 @@ export const AdventureHeader = ({ onWorld, locationEpoch }: IAdventureHeaderProp
       <div>
         <div className="flex items-center gap-2">
           <h1
-            className={`m-0 font-sans text-[28px] font-bold uppercase leading-none ${error ? "text-combat" : "text-foreground"}`}
+            className={`m-0 font-sans text-[28px] font-bold uppercase leading-none ${
+              error ? "text-combat" : "text-foreground"
+            }`}
           >
             {title}
           </h1>
@@ -41,7 +46,9 @@ export const AdventureHeader = ({ onWorld, locationEpoch }: IAdventureHeaderProp
             {t("aiDmActive")}
           </span>
         </div>
-        <p className="mt-1 mb-0 font-sans text-[13px] text-muted">{situationLine}</p>
+        <p className="mt-1 mb-0 font-sans text-[13px] text-muted">
+          {situationLine}
+        </p>
       </div>
       <div className="flex items-center gap-2">
         <LanguageSwitcher />

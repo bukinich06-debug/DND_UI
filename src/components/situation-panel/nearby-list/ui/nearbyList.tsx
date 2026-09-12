@@ -1,25 +1,37 @@
-"use client";
+"use client"
 
-import { useTranslations } from "next-intl";
-import { IconUser } from "@/components/shared/icon";
-import { useNearby } from "../hooks/useNearby";
+import { useTranslations } from "next-intl"
+import { IconUser } from "@/components/shared/icon"
+import { useNearby } from "../hooks/useNearby"
 
 interface INearbyListProps {
-  locationEpoch: number;
+  locationEpoch: number
 }
 
 export const NearbyList = ({ locationEpoch }: INearbyListProps) => {
-  const t = useTranslations("sidebar");
-  const { npcs, loading, error } = useNearby(locationEpoch);
+  const t = useTranslations("sidebar")
+  const { npcs, loading, error } = useNearby(locationEpoch)
 
   if (loading)
-    return <p className="m-0 px-1.5 font-sans text-[13px] text-muted">{t("nearbyLoading")}</p>;
+    return (
+      <p className="m-0 px-1.5 font-sans text-[13px] text-muted">
+        {t("nearbyLoading")}
+      </p>
+    )
 
   if (error)
-    return <p className="m-0 px-1.5 font-sans text-[13px] text-combat">{t("nearbyError")}</p>;
+    return (
+      <p className="m-0 px-1.5 font-sans text-[13px] text-combat">
+        {t("nearbyError")}
+      </p>
+    )
 
   if (!npcs.length)
-    return <p className="m-0 px-1.5 font-sans text-[13px] text-muted">{t("nearbyEmpty")}</p>;
+    return (
+      <p className="m-0 px-1.5 font-sans text-[13px] text-muted">
+        {t("nearbyEmpty")}
+      </p>
+    )
 
   return (
     <div className="flex flex-col gap-1">
@@ -33,11 +45,15 @@ export const NearbyList = ({ locationEpoch }: INearbyListProps) => {
             <IconUser />
           </span>
           <div>
-            <div className="font-sans text-[13px] text-foreground">{row.npc.name}</div>
-            {row.role && <div className="text-[13px] text-muted">{row.role}</div>}
+            <div className="font-sans text-[13px] text-foreground">
+              {row.npc.name}
+            </div>
+            {row.role && (
+              <div className="text-[13px] text-muted">{row.role}</div>
+            )}
           </div>
         </button>
       ))}
     </div>
-  );
-};
+  )
+}

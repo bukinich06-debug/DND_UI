@@ -1,1 +1,1 @@
-export { MasterEntry } from "./ui/masterEntry";
+export { MasterEntry } from "./ui/masterEntry"

@@ -1,13 +1,18 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from "react"
 
 interface IStrokeIconProps {
-  children: ReactNode;
-  size?: number;
-  fill?: string;
-  strokeWidth?: string;
+  children: ReactNode
+  size?: number
+  fill?: string
+  strokeWidth?: string
 }
 
-export const StrokeIcon = ({ children, size = 14, fill = "none", strokeWidth = "2" }: IStrokeIconProps) => (
+export const StrokeIcon = ({
+  children,
+  size = 14,
+  fill = "none",
+  strokeWidth = "2",
+}: IStrokeIconProps) => (
   <svg
     width={size}
     height={size}
@@ -20,4 +25,4 @@ export const StrokeIcon = ({ children, size = 14, fill = "none", strokeWidth = "
   >
     {children}
   </svg>
-);
+)

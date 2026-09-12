@@ -1,19 +1,19 @@
-"use client";
+"use client"
 
-import { useTranslations } from "next-intl";
-import type { ICheckEntry } from "@/components/shared/types";
-import { IconDice } from "@/components/shared/icon";
+import { useTranslations } from "next-intl"
+import type { ICheckEntry } from "@/components/shared/types"
+import { IconDice } from "@/components/shared/icon"
 
 interface ICheckEntryProps {
-  entry: ICheckEntry;
-  onRoll: () => void;
-  rolling: boolean;
+  entry: ICheckEntry
+  onRoll: () => void
+  rolling: boolean
 }
 
 export const CheckEntry = ({ entry, onRoll, rolling }: ICheckEntryProps) => {
-  const t = useTranslations("center");
-  const bonus = entry.bonus >= 0 ? `+${entry.bonus}` : `${entry.bonus}`;
-  const rolled = entry.d20 !== undefined;
+  const t = useTranslations("center")
+  const bonus = entry.bonus >= 0 ? `+${entry.bonus}` : `${entry.bonus}`
+  const rolled = entry.d20 !== undefined
 
   return (
     <div className="mb-5 flex items-center gap-2.5 border border-border bg-[#142014] px-3 py-2">
@@ -21,8 +21,12 @@ export const CheckEntry = ({ entry, onRoll, rolling }: ICheckEntryProps) => {
         <IconDice />
       </span>
       <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-        <span className="font-mono text-[13px] font-medium text-system">{entry.skillLabel}</span>
-        <span className="font-mono text-[13px] text-foreground-dim">{t("checkDc", { dc: entry.dc })}</span>
+        <span className="font-mono text-[13px] font-medium text-system">
+          {entry.skillLabel}
+        </span>
+        <span className="font-mono text-[13px] text-foreground-dim">
+          {t("checkDc", { dc: entry.dc })}
+        </span>
         {rolled && (
           <span className="font-mono text-[13px] text-foreground-dim">
             {entry.d20}
@@ -46,5 +50,5 @@ export const CheckEntry = ({ entry, onRoll, rolling }: ICheckEntryProps) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}

@@ -12,9 +12,20 @@ interface IAdventureProps {
   locationEpoch: number
 }
 
-export const Adventure = ({ onLocationChanged, locationEpoch }: IAdventureProps) => {
+export const Adventure = ({
+  onLocationChanged,
+  locationEpoch,
+}: IAdventureProps) => {
   const [worldOpen, setWorldOpen] = useState(false)
-  const { entries, send, rollCheck, sending, locked, error, requestLocationLook } = useTurn({ onLocationChanged })
+  const {
+    entries,
+    send,
+    rollCheck,
+    sending,
+    locked,
+    error,
+    requestLocationLook,
+  } = useTurn({ onLocationChanged })
 
   const handleLocationMoved = async () => {
     setWorldOpen(false)
@@ -24,9 +35,22 @@ export const Adventure = ({ onLocationChanged, locationEpoch }: IAdventureProps)
 
   return (
     <main className="flex min-w-0 flex-1 flex-col bg-background">
-      <AdventureHeader onWorld={() => setWorldOpen(true)} locationEpoch={locationEpoch} />
-      <AdventureLog entries={entries} sending={sending} onRoll={rollCheck} rolling={sending} />
-      <Composer onSend={send} sending={locked} error={error} locationEpoch={locationEpoch} />
+      <AdventureHeader
+        onWorld={() => setWorldOpen(true)}
+        locationEpoch={locationEpoch}
+      />
+      <AdventureLog
+        entries={entries}
+        sending={sending}
+        onRoll={rollCheck}
+        rolling={sending}
+      />
+      <Composer
+        onSend={send}
+        sending={locked}
+        error={error}
+        locationEpoch={locationEpoch}
+      />
       {worldOpen && (
         <WorldModal
           onClose={() => setWorldOpen(false)}

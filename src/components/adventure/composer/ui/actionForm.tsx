@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
-import type { KeyboardEvent, ReactNode } from "react";
-import { useTranslations } from "next-intl";
-import type { StructuredActionId } from "../types";
+import type { KeyboardEvent, ReactNode } from "react"
+import { useTranslations } from "next-intl"
+import type { StructuredActionId } from "../types"
 import type {
   IActionFormState,
   IComposerExit,
@@ -11,24 +11,24 @@ import type {
   InspectKind,
   RestKind,
   SearchScope,
-} from "../types";
-import { ENV_NPC_ID, UNARMED_ID } from "../types";
+} from "../types"
+import { ENV_NPC_ID, UNARMED_ID } from "../types"
 
 const fieldClass =
-  "w-full border border-border-light bg-panel px-3 py-2 font-sans text-sm text-foreground outline-none transition-colors focus:border-accent disabled:opacity-60";
+  "w-full border border-border-light bg-panel px-3 py-2 font-sans text-sm text-foreground outline-none transition-colors focus:border-accent disabled:opacity-60"
 
-const labelClass = "mb-1 block font-sans text-[13px] text-foreground-dim";
+const labelClass = "mb-1 block font-sans text-[13px] text-foreground-dim"
 
 interface IActionFormProps {
-  action: StructuredActionId;
-  form: IActionFormState;
-  onChange: (patch: Partial<IActionFormState>) => void;
-  npcs: IComposerNpc[];
-  items: IComposerItem[];
-  exits: IComposerExit[];
-  exitsLoading: boolean;
-  sending: boolean;
-  onSubmit: () => void;
+  action: StructuredActionId
+  form: IActionFormState
+  onChange: (patch: Partial<IActionFormState>) => void
+  npcs: IComposerNpc[]
+  items: IComposerItem[]
+  exits: IComposerExit[]
+  exitsLoading: boolean
+  sending: boolean
+  onSubmit: () => void
 }
 
 export const ActionForm = ({
@@ -42,15 +42,19 @@ export const ActionForm = ({
   sending,
   onSubmit,
 }: IActionFormProps) => {
-  const t = useTranslations("center.form");
-  const weapons = items.filter((item) => item.kind === "weapon");
+  const t = useTranslations("center.form")
+  const weapons = items.filter((item) => item.kind === "weapon")
 
   const onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey && (e.target as HTMLElement).tagName !== "TEXTAREA") {
-      e.preventDefault();
-      onSubmit();
+    if (
+      e.key === "Enter" &&
+      !e.shiftKey &&
+      (e.target as HTMLElement).tagName !== "TEXTAREA"
+    ) {
+      e.preventDefault()
+      onSubmit()
     }
-  };
+  }
 
   if (action === "talk")
     return (
@@ -90,7 +94,7 @@ export const ActionForm = ({
           />
         </Field>
       </div>
-    );
+    )
 
   if (action === "inspect")
     return (
@@ -100,7 +104,9 @@ export const ActionForm = ({
             className={fieldClass}
             value={form.inspectKind}
             disabled={sending}
-            onChange={(e) => onChange({ inspectKind: e.target.value as InspectKind })}
+            onChange={(e) =>
+              onChange({ inspectKind: e.target.value as InspectKind })
+            }
           >
             <option value="location">{t("kindLocation")}</option>
             <option value="npc">{t("kindNpc")}</option>
@@ -163,7 +169,7 @@ export const ActionForm = ({
           />
         </Field>
       </div>
-    );
+    )
 
   if (action === "search")
     return (
@@ -173,7 +179,9 @@ export const ActionForm = ({
             className={fieldClass}
             value={form.searchScope}
             disabled={sending}
-            onChange={(e) => onChange({ searchScope: e.target.value as SearchScope })}
+            onChange={(e) =>
+              onChange({ searchScope: e.target.value as SearchScope })
+            }
           >
             <option value="location">{t("kindLocation")}</option>
             <option value="npc">{t("kindNpc")}</option>
@@ -206,7 +214,7 @@ export const ActionForm = ({
           />
         </Field>
       </div>
-    );
+    )
 
   if (action === "attack")
     return (
@@ -251,7 +259,7 @@ export const ActionForm = ({
           />
         </Field>
       </div>
-    );
+    )
 
   if (action === "move")
     return (
@@ -261,12 +269,18 @@ export const ActionForm = ({
             className={fieldClass}
             value={form.exitId}
             disabled={sending || exitsLoading || Boolean(form.localPath.trim())}
-            onChange={(e) => onChange({ exitId: e.target.value, localPath: "" })}
+            onChange={(e) =>
+              onChange({ exitId: e.target.value, localPath: "" })
+            }
           >
-            <option value="">{exitsLoading ? t("loadingExits") : t("pickExit")}</option>
+            <option value="">
+              {exitsLoading ? t("loadingExits") : t("pickExit")}
+            </option>
             {exits.map((exit) => (
               <option key={exit.id} value={exit.id}>
-                {exit.kind === "parent" ? t("leaveTo", { name: exit.name }) : exit.name}
+                {exit.kind === "parent"
+                  ? t("leaveTo", { name: exit.name })
+                  : exit.name}
               </option>
             ))}
           </select>
@@ -277,11 +291,13 @@ export const ActionForm = ({
             value={form.localPath}
             disabled={sending || Boolean(form.exitId)}
             placeholder={t("localPathPlaceholder")}
-            onChange={(e) => onChange({ localPath: e.target.value, exitId: "" })}
+            onChange={(e) =>
+              onChange({ localPath: e.target.value, exitId: "" })
+            }
           />
         </Field>
       </div>
-    );
+    )
 
   if (action === "rest")
     return (
@@ -308,7 +324,7 @@ export const ActionForm = ({
           />
         </Field>
       </div>
-    );
+    )
 
   return (
     <div className="flex flex-1 flex-col gap-2" onKeyDown={onKeyDown}>
@@ -337,12 +353,12 @@ export const ActionForm = ({
         />
       </Field>
     </div>
-  );
-};
+  )
+}
 
 interface IFieldProps {
-  label: string;
-  children: ReactNode;
+  label: string
+  children: ReactNode
 }
 
 const Field = ({ label, children }: IFieldProps) => (
@@ -350,4 +366,4 @@ const Field = ({ label, children }: IFieldProps) => (
     <span className={labelClass}>{label}</span>
     {children}
   </label>
-);
+)

@@ -1,13 +1,13 @@
-"use client";
+"use client"
 
-import type { ReactNode } from "react";
-import { PurseContextProvider, usePurseState } from "../hooks/usePurseState";
+import type { ReactNode } from "react"
+import { PurseContextProvider, usePurseState } from "../hooks/usePurseState"
 
 interface IPurseProviderProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 export const PurseProvider = ({ children }: IPurseProviderProps) => {
-  const value = usePurseState();
-  return <PurseContextProvider value={value}>{children}</PurseContextProvider>;
-};
+  const value = usePurseState()
+  return <PurseContextProvider value={value}>{children}</PurseContextProvider>
+}

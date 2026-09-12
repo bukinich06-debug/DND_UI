@@ -1,4 +1,4 @@
-import { StrokeIcon } from "../helpers/strokeIcon";
+import { StrokeIcon } from "../helpers/strokeIcon"
 
 export const IconSword = () => (
   <StrokeIcon>
@@ -7,4 +7,4 @@ export const IconSword = () => (
     <line x1="16" y1="16" x2="20" y2="20" />
     <line x1="19" y1="21" x2="21" y2="19" />
   </StrokeIcon>
-);
+)

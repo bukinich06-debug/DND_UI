@@ -36,7 +36,9 @@ export const LocationCard = ({
     <span className="text-[10px] tracking-wide text-muted uppercase">
       {kindLabel}
     </span>
-    <span className="mt-0.5 font-sans text-sm font-semibold text-foreground">{name}</span>
+    <span className="mt-0.5 font-sans text-sm font-semibold text-foreground">
+      {name}
+    </span>
     {summary && (
       <span className="mt-1 line-clamp-2 text-[11px] leading-snug text-muted">
         {summary}

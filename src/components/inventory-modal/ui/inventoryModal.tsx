@@ -1,30 +1,52 @@
-"use client";
+"use client"
 
-import { IconSearch, IconX } from "@/components/shared/icon";
-import { Purse } from "@/components/shared/purse";
-import type { CategoryFilter } from "@/components/shared/types";
-import { useTranslations } from "next-intl";
-import { useInventoryFilter } from "../hooks/useInventoryFilter";
-import { useItems } from "../hooks/useItems";
-import { ItemDetail } from "../item-detail";
-import { ItemList } from "../item-list";
+import { IconSearch, IconX } from "@/components/shared/icon"
+import { Purse } from "@/components/shared/purse"
+import type { CategoryFilter } from "@/components/shared/types"
+import { useTranslations } from "next-intl"
+import { useInventoryFilter } from "../hooks/useInventoryFilter"
+import { useItems } from "../hooks/useItems"
+import { ItemDetail } from "../item-detail"
+import { ItemList } from "../item-list"
 
-const CATEGORY_FILTERS: CategoryFilter[] = ["all", "weapons", "armor", "consumables", "quest", "other"];
+const CATEGORY_FILTERS: CategoryFilter[] = [
+  "all",
+  "weapons",
+  "armor",
+  "consumables",
+  "quest",
+  "other",
+]
 
 interface IInventoryModalProps {
-  onClose: () => void;
+  onClose: () => void
 }
 
 export const InventoryModal = ({ onClose }: IInventoryModalProps) => {
-  const t = useTranslations("inventory");
-  const { items, loading, error, busy, actionError, equip, unequip } = useItems();
-  const { search, setSearch, category, setCategory, selected, setSelected, filtered, totalWeight } =
-    useInventoryFilter(items);
-  const unit = t("unit");
+  const t = useTranslations("inventory")
+  const { items, loading, error, busy, actionError, equip, unequip } =
+    useItems()
+  const {
+    search,
+    setSearch,
+    category,
+    setCategory,
+    selected,
+    setSelected,
+    filtered,
+    totalWeight,
+  } = useInventoryFilter(items)
+  const unit = t("unit")
 
   let listArea = (
     <div className="flex flex-1 overflow-hidden">
-      <ItemList items={filtered} selected={selected} onSelect={setSelected} empty={t("empty")} unit={unit} />
+      <ItemList
+        items={filtered}
+        selected={selected}
+        onSelect={setSelected}
+        empty={t("empty")}
+        unit={unit}
+      />
       {selected && (
         <ItemDetail
           item={selected}
@@ -36,23 +58,33 @@ export const InventoryModal = ({ onClose }: IInventoryModalProps) => {
         />
       )}
     </div>
-  );
+  )
   if (loading)
-    listArea = <p className="m-0 flex-1 px-5 py-8 font-sans text-sm text-muted">{t("loading")}</p>;
+    listArea = (
+      <p className="m-0 flex-1 px-5 py-8 font-sans text-sm text-muted">
+        {t("loading")}
+      </p>
+    )
   if (error)
-    listArea = <p className="m-0 flex-1 px-5 py-8 font-sans text-sm text-combat">{t("error")}</p>;
+    listArea = (
+      <p className="m-0 flex-1 px-5 py-8 font-sans text-sm text-combat">
+        {t("error")}
+      </p>
+    )
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6 backdrop-blur-[4px]"
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) onClose()
       }}
     >
       <div className="flex h-[620px] w-full max-w-[860px] flex-col overflow-hidden border border-border-light bg-panel shadow-[0_24px_80px_rgba(0,0,0,0.8)]">
         <div className="flex shrink-0 items-center justify-between border-b border-border px-5 py-4">
           <div>
-            <h2 className="m-0 font-sans text-[22px] font-bold uppercase text-foreground">{t("title")}</h2>
+            <h2 className="m-0 font-sans text-[22px] font-bold uppercase text-foreground">
+              {t("title")}
+            </h2>
             <div className="mt-0.5 text-xs text-muted">
               {t("weight")}:{" "}
               <span className="font-mono text-foreground-dim">
@@ -94,7 +126,9 @@ export const InventoryModal = ({ onClose }: IInventoryModalProps) => {
               type="button"
               onClick={() => setCategory(cat)}
               className={`cursor-pointer border px-3 py-1 font-sans text-xs ${
-                category === cat ? "border-accent bg-panel-alt text-foreground" : "border-border bg-transparent text-muted"
+                category === cat
+                  ? "border-accent bg-panel-alt text-foreground"
+                  : "border-border bg-transparent text-muted"
               }`}
             >
               {t(`categories.${cat}`)}
@@ -105,5 +139,5 @@ export const InventoryModal = ({ onClose }: IInventoryModalProps) => {
         {listArea}
       </div>
     </div>
-  );
-};
+  )
+}

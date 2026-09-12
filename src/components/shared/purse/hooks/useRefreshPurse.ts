@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
-import { usePurseContext } from "./usePurseState";
+import { usePurseContext } from "./usePurseState"
 
-export const useRefreshPurse = (): (() => Promise<void>) => {
-  const { refresh } = usePurseContext();
-  return refresh;
-};
+export const useRefreshPurse = (): () => Promise<void> => {
+  const { refresh } = usePurseContext()
+  return refresh
+}

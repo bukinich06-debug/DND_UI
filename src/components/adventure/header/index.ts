@@ -1,1 +1,1 @@
-export { AdventureHeader } from "./ui/adventureHeader";
+export { AdventureHeader } from "./ui/adventureHeader"
