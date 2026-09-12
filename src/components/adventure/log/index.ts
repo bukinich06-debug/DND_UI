@@ -1,1 +1,1 @@
-export { AdventureLog } from "./ui/adventureLog";
+export { AdventureLog } from "./ui/adventureLog"

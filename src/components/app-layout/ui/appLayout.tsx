@@ -1,12 +1,12 @@
-"use client";
+"use client"
 
-import { Adventure } from "@/components/adventure";
-import { CharacterPanel } from "@/components/character-panel";
-import { InventoryModal } from "@/components/inventory-modal";
-import { SituationPanel } from "@/components/situation-panel";
-import { IconChevronLeft } from "@/components/shared/icon";
-import { PurseProvider } from "@/components/shared/purse";
-import { useShell } from "../hooks/useShell";
+import { Adventure } from "@/components/adventure"
+import { CharacterPanel } from "@/components/character-panel"
+import { InventoryModal } from "@/components/inventory-modal"
+import { SituationPanel } from "@/components/situation-panel"
+import { IconChevronLeft } from "@/components/shared/icon"
+import { PurseProvider } from "@/components/shared/purse"
+import { useShell } from "../hooks/useShell"
 
 export const AppLayout = () => {
   const {
@@ -18,13 +18,20 @@ export const AppLayout = () => {
     setActiveTab,
     locationEpoch,
     bumpLocation,
-  } = useShell();
+  } = useShell()
 
   return (
     <PurseProvider>
       <div className="relative flex h-full w-full overflow-hidden bg-background">
-        <CharacterPanel onInventory={() => setInventoryOpen(true)} activeTab={activeTab} setActiveTab={setActiveTab} />
-        <Adventure onLocationChanged={bumpLocation} locationEpoch={locationEpoch} />
+        <CharacterPanel
+          onInventory={() => setInventoryOpen(true)}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
+        <Adventure
+          onLocationChanged={bumpLocation}
+          locationEpoch={locationEpoch}
+        />
 
         {!rightOpen && (
           <button
@@ -42,8 +49,10 @@ export const AppLayout = () => {
           locationEpoch={locationEpoch}
         />
 
-        {inventoryOpen && <InventoryModal onClose={() => setInventoryOpen(false)} />}
+        {inventoryOpen && (
+          <InventoryModal onClose={() => setInventoryOpen(false)} />
+        )}
       </div>
     </PurseProvider>
-  );
-};
+  )
+}

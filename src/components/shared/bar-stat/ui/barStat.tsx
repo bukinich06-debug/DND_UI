@@ -1,15 +1,21 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from "react"
 
 interface IBarStatProps {
-  label: string;
-  current: number;
-  max: number;
-  color: string;
-  icon?: ReactNode;
+  label: string
+  current: number
+  max: number
+  color: string
+  icon?: ReactNode
 }
 
-export const BarStat = ({ label, current, max, color, icon }: IBarStatProps) => {
-  const pct = Math.min(100, (current / max) * 100);
+export const BarStat = ({
+  label,
+  current,
+  max,
+  color,
+  icon,
+}: IBarStatProps) => {
+  const pct = Math.min(100, (current / max) * 100)
 
   return (
     <div className="flex flex-col gap-1">
@@ -30,5 +36,5 @@ export const BarStat = ({ label, current, max, color, icon }: IBarStatProps) => 
         />
       </div>
     </div>
-  );
-};
+  )
+}

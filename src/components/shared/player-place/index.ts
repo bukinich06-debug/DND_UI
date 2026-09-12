@@ -1,2 +1,2 @@
-export { getPlayerPlace } from "./api/getPlayerPlace";
-export { usePlayerPlace } from "./hooks/usePlayerPlace";
+export { getPlayerPlace } from "./api/getPlayerPlace"
+export { usePlayerPlace } from "./hooks/usePlayerPlace"

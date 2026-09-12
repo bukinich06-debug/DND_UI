@@ -1,23 +1,23 @@
-"use client";
+"use client"
 
-import { useLocale } from "next-intl";
-import { usePathname, useRouter } from "@/i18n/navigation";
-import type { Locale } from "@/i18n/routing";
+import { useLocale } from "next-intl"
+import { usePathname, useRouter } from "@/i18n/navigation"
+import type { Locale } from "@/i18n/routing"
 
 export const LanguageSwitcher = () => {
-  const locale = useLocale() as Locale;
-  const router = useRouter();
-  const pathname = usePathname();
+  const locale = useLocale() as Locale
+  const router = useRouter()
+  const pathname = usePathname()
 
   const switchLocale = (next: Locale) => {
-    if (next === locale) return;
-    router.replace(pathname, { locale: next });
-  };
+    if (next === locale) return
+    router.replace(pathname, { locale: next })
+  }
 
   return (
     <div className="flex items-center overflow-hidden border border-border">
       {(["en", "ru"] as const).map((code) => {
-        const active = locale === code;
+        const active = locale === code
         return (
           <button
             key={code}
@@ -31,8 +31,8 @@ export const LanguageSwitcher = () => {
           >
             {code.toUpperCase()}
           </button>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}

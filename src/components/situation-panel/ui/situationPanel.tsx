@@ -1,22 +1,26 @@
-"use client";
+"use client"
 
-import { useTranslations } from "next-intl";
-import { IconChevronRight } from "@/components/shared/icon";
-import { usePlayerPlace } from "@/components/shared/player-place";
-import { Section, SectionDivider } from "@/components/shared/section";
-import { NearbyList } from "../nearby-list";
-import { PartyCard } from "../party-card";
-import { QuestCard } from "../quest-card";
-import type { ISituationPanelProps } from "../types";
+import { useTranslations } from "next-intl"
+import { IconChevronRight } from "@/components/shared/icon"
+import { usePlayerPlace } from "@/components/shared/player-place"
+import { Section, SectionDivider } from "@/components/shared/section"
+import { NearbyList } from "../nearby-list"
+import { PartyCard } from "../party-card"
+import { QuestCard } from "../quest-card"
+import type { ISituationPanelProps } from "../types"
 
-export const SituationPanel = ({ open, onToggle, locationEpoch }: ISituationPanelProps) => {
-  const t = useTranslations("sidebar");
-  const { name, loading, error } = usePlayerPlace(locationEpoch);
+export const SituationPanel = ({
+  open,
+  onToggle,
+  locationEpoch,
+}: ISituationPanelProps) => {
+  const t = useTranslations("sidebar")
+  const { name, loading, error } = usePlayerPlace(locationEpoch)
 
-  let placeText = t("locationEmpty");
-  if (loading) placeText = t("locationLoading");
-  else if (error) placeText = t("locationError");
-  else if (name) placeText = name;
+  let placeText = t("locationEmpty")
+  if (loading) placeText = t("locationLoading")
+  else if (error) placeText = t("locationError")
+  else if (name) placeText = name
 
   return (
     <aside
@@ -40,24 +44,40 @@ export const SituationPanel = ({ open, onToggle, locationEpoch }: ISituationPane
           >
             <div className="flex flex-col gap-1.5">
               <div className="flex justify-between">
-                <span className="font-sans text-xs text-muted">{t("location")}</span>
+                <span className="font-sans text-xs text-muted">
+                  {t("location")}
+                </span>
                 <span
-                  className={`max-w-[60%] text-right font-sans text-xs ${error ? "text-combat" : "text-foreground-dim"}`}
+                  className={`max-w-[60%] text-right font-sans text-xs ${
+                    error ? "text-combat" : "text-foreground-dim"
+                  }`}
                 >
                   {placeText}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-sans text-xs text-muted">{t("time")}</span>
-                <span className="max-w-[60%] text-right font-sans text-xs text-foreground-dim">{t("timeValue")}</span>
+                <span className="font-sans text-xs text-muted">
+                  {t("time")}
+                </span>
+                <span className="max-w-[60%] text-right font-sans text-xs text-foreground-dim">
+                  {t("timeValue")}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-sans text-xs text-muted">{t("weather")}</span>
-                <span className="max-w-[60%] text-right font-sans text-xs text-foreground-dim">{t("weatherValue")}</span>
+                <span className="font-sans text-xs text-muted">
+                  {t("weather")}
+                </span>
+                <span className="max-w-[60%] text-right font-sans text-xs text-foreground-dim">
+                  {t("weatherValue")}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-sans text-xs text-muted">{t("threat")}</span>
-                <span className="max-w-[60%] text-right font-sans text-xs text-foreground-dim">{t("threatValue")}</span>
+                <span className="font-sans text-xs text-muted">
+                  {t("threat")}
+                </span>
+                <span className="max-w-[60%] text-right font-sans text-xs text-foreground-dim">
+                  {t("threatValue")}
+                </span>
               </div>
             </div>
           </Section>
@@ -82,5 +102,5 @@ export const SituationPanel = ({ open, onToggle, locationEpoch }: ISituationPane
         </div>
       )}
     </aside>
-  );
-};
+  )
+}

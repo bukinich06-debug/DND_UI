@@ -1,1 +1,1 @@
-export { NearbyList } from "./ui/nearbyList";
+export { NearbyList } from "./ui/nearbyList"

@@ -1,13 +1,19 @@
 interface IActionBtnProps {
-  label: string;
-  primary?: boolean;
-  danger?: boolean;
-  disabled?: boolean;
-  onClick?: () => void;
+  label: string
+  primary?: boolean
+  danger?: boolean
+  disabled?: boolean
+  onClick?: () => void
 }
 
-export const ActionBtn = ({ label, primary, danger, disabled, onClick }: IActionBtnProps) => {
-  const state = disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer";
+export const ActionBtn = ({
+  label,
+  primary,
+  danger,
+  disabled,
+  onClick,
+}: IActionBtnProps) => {
+  const state = disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"
 
   if (primary)
     return (
@@ -19,7 +25,7 @@ export const ActionBtn = ({ label, primary, danger, disabled, onClick }: IAction
       >
         {label}
       </button>
-    );
+    )
 
   if (danger)
     return (
@@ -31,7 +37,7 @@ export const ActionBtn = ({ label, primary, danger, disabled, onClick }: IAction
       >
         {label}
       </button>
-    );
+    )
 
   return (
     <button
@@ -42,5 +48,5 @@ export const ActionBtn = ({ label, primary, danger, disabled, onClick }: IAction
     >
       {label}
     </button>
-  );
-};
+  )
+}

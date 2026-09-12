@@ -5,4 +5,4 @@ export const RARITY_COLORS: Record<string, string> = {
   veryRare: "#5b7fd4",
   legendary: "#c9a227",
   artifact: "#c45c2a",
-};
+}

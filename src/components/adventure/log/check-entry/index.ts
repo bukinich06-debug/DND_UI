@@ -1,1 +1,1 @@
-export { CheckEntry } from "./ui/checkEntry";
+export { CheckEntry } from "./ui/checkEntry"

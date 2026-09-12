@@ -1,1 +1,1 @@
-export { Adventure } from "./ui/adventure";
+export { Adventure } from "./ui/adventure"

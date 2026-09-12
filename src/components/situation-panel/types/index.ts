@@ -1,7 +1,7 @@
 interface ISituationPanelProps {
-  open: boolean;
-  onToggle: () => void;
-  locationEpoch: number;
+  open: boolean
+  onToggle: () => void
+  locationEpoch: number
 }
 
-export type { ISituationPanelProps };
+export type { ISituationPanelProps }

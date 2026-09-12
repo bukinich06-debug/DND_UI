@@ -1,1 +1,1 @@
-export { InventoryModal } from "./ui/inventoryModal";
+export { InventoryModal } from "./ui/inventoryModal"

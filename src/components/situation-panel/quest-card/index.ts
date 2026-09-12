@@ -1,1 +1,1 @@
-export { QuestCard } from "./ui/questCard";
+export { QuestCard } from "./ui/questCard"

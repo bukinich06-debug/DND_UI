@@ -1,1 +1,1 @@
-export { NpcEntry } from "./ui/npcEntry";
+export { NpcEntry } from "./ui/npcEntry"

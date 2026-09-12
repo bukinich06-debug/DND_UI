@@ -1,1 +1,1 @@
-export { BarStat } from "./ui/barStat";
+export { BarStat } from "./ui/barStat"

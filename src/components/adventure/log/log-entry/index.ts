@@ -1,1 +1,1 @@
-export { LogEntry } from "./ui/logEntry";
+export { LogEntry } from "./ui/logEntry"
