@@ -3,6 +3,7 @@ import type {
   ICheckEntry,
   ILogEntry,
   ITurnReply,
+  IOpenShopSignal,
 } from "@/components/shared/types"
 import { useRefreshPurse } from "@/components/shared/purse"
 import { getPlayerPlace } from "@/components/shared/player-place"
@@ -31,6 +32,7 @@ interface IPendingCheck {
 
 interface IParams {
   onLocationChanged: () => void
+  onShopOpen?: (signal: IOpenShopSignal) => void
 }
 
 const placeId = (data: Awaited<ReturnType<typeof getPlayerPlace>>) =>
@@ -59,7 +61,7 @@ const appendAssistant = (
   return [...chat, { role: "assistant", content: assistantText }]
 }
 
-export const useTurn = ({ onLocationChanged }: IParams) => {
+export const useTurn = ({ onLocationChanged, onShopOpen }: IParams) => {
   const refreshPurse = useRefreshPurse()
   const locationIdRef = useRef<string | null>(null)
   const [entries, setEntries] = useState<ILogEntry[]>([])
@@ -118,6 +120,9 @@ export const useTurn = ({ onLocationChanged }: IParams) => {
       setPending(null)
     }
     setEntries((prev) => [...prev, ...extra])
+    if (result.ui?.openShop && onShopOpen) {
+      onShopOpen(result.ui.openShop)
+    }
   }
 
   const send = async (text: string) => {

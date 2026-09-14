@@ -35,6 +35,11 @@ export interface IMasterReply {
 
 export type ITurnReply = ILocationReply | INpcReply | IMasterReply
 
+export interface IOpenShopSignal {
+  npcId: string
+  npcName: string
+}
+
 export interface IPlayerEntry {
   id: string
   agent: "player"

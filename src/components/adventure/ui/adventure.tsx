@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import type { IOpenShopSignal } from "@/components/shared/types"
 import { WorldModal } from "@/components/world-modal"
 import { AdventureHeader } from "../header"
 import { useTurn } from "../hooks/useTurn"
@@ -10,11 +11,13 @@ import { Composer } from "../composer"
 interface IAdventureProps {
   onLocationChanged: () => void
   locationEpoch: number
+  onShopOpen?: (signal: IOpenShopSignal) => void
 }
 
 export const Adventure = ({
   onLocationChanged,
   locationEpoch,
+  onShopOpen,
 }: IAdventureProps) => {
   const [worldOpen, setWorldOpen] = useState(false)
   const {
@@ -25,7 +28,7 @@ export const Adventure = ({
     locked,
     error,
     requestLocationLook,
-  } = useTurn({ onLocationChanged })
+  } = useTurn({ onLocationChanged, onShopOpen })
 
   const handleLocationMoved = async () => {
     setWorldOpen(false)
