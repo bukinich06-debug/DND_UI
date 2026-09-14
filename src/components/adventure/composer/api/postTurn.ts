@@ -1,4 +1,4 @@
-import type { ITurnReply } from "@/components/shared/types"
+import type { ITurnReply, IOpenShopSignal } from "@/components/shared/types"
 import { getTurnApiEnv, readApiError } from "./env"
 
 export interface IChatMessage {
@@ -26,7 +26,8 @@ export type ITurnResult = {
   replies: ITurnReply[]
   check: IResolvedCheck
   resume: ITurnResume
-} | { status: "done" replies: ITurnReply[] }
+  ui?: { openShop?: IOpenShopSignal }
+} | { status: "done" replies: ITurnReply[] ui?: { openShop?: IOpenShopSignal } }
 
 interface IPostTurnParams {
   messages: IChatMessage[]

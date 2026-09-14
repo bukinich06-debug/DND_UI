@@ -218,5 +218,18 @@
       "inspect": "Inspect",
       "drop": "Drop"
     }
+  },
+  "shop": {
+    "title": "Shop",
+    "loading": "Loading goods…",
+    "error": "Failed to load merchant's goods.",
+    "empty": "No goods available.",
+    "purse": "Coins",
+    "itemsCount": "{count, plural, one {# item} other {# items}}",
+    "price": "Price",
+    "quantity": "Quantity",
+    "available": "Available",
+    "canAfford": "You can buy",
+    "buy": "Buy"
   }
 }

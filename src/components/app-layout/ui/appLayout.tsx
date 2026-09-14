@@ -3,9 +3,11 @@
 import { Adventure } from "@/components/adventure"
 import { CharacterPanel } from "@/components/character-panel"
 import { InventoryModal } from "@/components/inventory-modal"
+import { ShopModal } from "@/components/shop-modal"
 import { SituationPanel } from "@/components/situation-panel"
 import { IconChevronLeft } from "@/components/shared/icon"
 import { PurseProvider } from "@/components/shared/purse"
+import type { IOpenShopSignal } from "@/components/shared/types"
 import { useShell } from "../hooks/useShell"
 
 export const AppLayout = () => {
@@ -14,6 +16,8 @@ export const AppLayout = () => {
     setRightOpen,
     inventoryOpen,
     setInventoryOpen,
+    shopSignal,
+    setShopSignal,
     activeTab,
     setActiveTab,
     locationEpoch,
@@ -31,6 +35,7 @@ export const AppLayout = () => {
         <Adventure
           onLocationChanged={bumpLocation}
           locationEpoch={locationEpoch}
+          onShopOpen={(signal: IOpenShopSignal) => setShopSignal(signal)}
         />
 
         {!rightOpen && (
@@ -51,6 +56,13 @@ export const AppLayout = () => {
 
         {inventoryOpen && (
           <InventoryModal onClose={() => setInventoryOpen(false)} />
+        )}
+
+        {shopSignal && (
+          <ShopModal
+            npcId={shopSignal.npcId}
+            onClose={() => setShopSignal(null)}
+          />
         )}
       </div>
     </PurseProvider>
