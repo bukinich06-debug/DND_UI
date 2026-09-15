@@ -120,8 +120,14 @@ export const useTurn = ({ onLocationChanged, onShopOpen }: IParams) => {
       setPending(null)
     }
     setEntries((prev) => [...prev, ...extra])
-    if (result.ui?.openShop && onShopOpen) {
-      onShopOpen(result.ui.openShop)
+
+    const shopSignal = result.ui?.openShop || result.replies.find((r) => {
+      if (r.agent === "npc" || r.agent === "master") return r.ui?.openShop
+      return false
+    })?.ui?.openShop
+
+    if (shopSignal && onShopOpen) {
+      onShopOpen(shopSignal)
     }
   }
 
