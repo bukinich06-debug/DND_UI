@@ -8,12 +8,18 @@ export interface ILocationReply {
   features: string
 }
 
+export interface IOpenShopSignal {
+  npcId: string
+  npcName: string
+}
+
 export interface INpcReply {
   agent: "npc"
   npcId: string
   npcName: string
   say: string
   do: string | null
+  ui?: { openShop?: IOpenShopSignal }
 }
 
 export type MasterVerdict = "allowed" | "denied" | "partial" | "check" | "defer_combat"
@@ -31,14 +37,10 @@ export interface IMasterReply {
   verdict: MasterVerdict
   say: string
   toolCalls: IToolCallLog[]
+  ui?: { openShop?: IOpenShopSignal }
 }
 
 export type ITurnReply = ILocationReply | INpcReply | IMasterReply
-
-export interface IOpenShopSignal {
-  npcId: string
-  npcName: string
-}
 
 export interface IPlayerEntry {
   id: string
