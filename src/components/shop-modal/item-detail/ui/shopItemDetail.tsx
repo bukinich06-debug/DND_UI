@@ -8,6 +8,7 @@ interface IShopItemDetailProps {
   playerCoinsCp: number
   buying: boolean
   buyError: string | null
+  cooldown: boolean
   onBuy: (item: IShopItem, quantity: number) => void
 }
 
@@ -16,6 +17,7 @@ export const ShopItemDetail = ({
   playerCoinsCp,
   buying,
   buyError,
+  cooldown,
   onBuy,
 }: IShopItemDetailProps) => {
   const t = useTranslations("shop")
@@ -115,7 +117,7 @@ export const ShopItemDetail = ({
             : t("buy")
         }
         primary
-        disabled={buying || !canAfford || quantity > item.quantity}
+        disabled={buying || cooldown || !canAfford || quantity > item.quantity}
         onClick={() => onBuy(item, quantity)}
       />
     </div>
