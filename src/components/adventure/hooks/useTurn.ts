@@ -121,10 +121,24 @@ export const useTurn = ({ onLocationChanged, onShopOpen }: IParams) => {
     }
     setEntries((prev) => [...prev, ...extra])
 
-    const shopSignal = result.ui?.openShop || result.replies.find((r) => {
-      if (r.agent === "npc" || r.agent === "master") return r.ui?.openShop
-      return false
-    })?.ui?.openShop
+    let shopSignal: IOpenShopSignal | undefined = result.ui?.openShop
+
+    if (!shopSignal) {
+      for (const r of result.replies) {
+        if (r.agent === "npc" && r.openShop) {
+          shopSignal = {
+            npcId: r.npcId,
+            npcName: r.npcName,
+            specialtyKey: r.openShop.specialtyKey,
+          }
+          break
+        }
+        if ((r.agent === "npc" || r.agent === "master") && r.ui?.openShop) {
+          shopSignal = r.ui.openShop
+          break
+        }
+      }
+    }
 
     if (shopSignal && onShopOpen) {
       onShopOpen(shopSignal)
