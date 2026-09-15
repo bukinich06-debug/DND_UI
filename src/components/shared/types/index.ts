@@ -21,7 +21,6 @@ export interface INpcReply {
   say: string
   do: string | null
   openShop?: { specialtyKey: string }
-  ui?: { openShop?: IOpenShopSignal }
 }
 
 export type MasterVerdict = "allowed" | "denied" | "partial" | "check" | "defer_combat"
@@ -39,7 +38,6 @@ export interface IMasterReply {
   verdict: MasterVerdict
   say: string
   toolCalls: IToolCallLog[]
-  ui?: { openShop?: IOpenShopSignal }
 }
 
 export type ITurnReply = ILocationReply | INpcReply | IMasterReply
