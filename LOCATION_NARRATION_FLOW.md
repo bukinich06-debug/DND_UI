@@ -55,9 +55,11 @@ This document describes how player location changes trigger Master descriptions 
 **File:** `src/components/shared/location-narration/api/requestLocationLook.ts`
 
 **Function:** `requestLocationLook(): Promise<IMasterReply>`
-- Calls POST `/api/location/describe` with `campaignId` and `playerId`
-- Backend returns `{ description: string, locationId: string, locationName: string }`
-- Maps to Master reply format: `{ agent: "master", verdict: "allowed", say: description, toolCalls: [] }`
+- Calls POST `/api/master` with `campaignId`, `playerId`, and a user message asking for location description
+- Message: `"Опиши, где я нахожусь и что вижу вокруг. Это прибытие в локацию."`
+- Master uses tools (e.g., location state) to generate the description
+- Backend returns `{ verdict, say, check?, toolCalls? }` (standard Master adjudicate result)
+- Maps directly to `IMasterReply` format: `{ agent: "master", verdict, say, toolCalls }`
 
 #### 2. Modified `useTurn` Hook
 **File:** `src/components/adventure/hooks/useTurn.ts`
@@ -67,6 +69,7 @@ This document describes how player location changes trigger Master descriptions 
 - Exposed `requestLocationLook` in return value
 - Modified `syncPlace()` to auto-call location look when location changes
 - Location reply is added to entries as a Master entry with unique ID
+- Master response includes verdict and tool calls from backend adjudication
 
 #### 3. Adventure Component Wiring
 **File:** `src/components/adventure/ui/adventure.tsx`
@@ -83,9 +86,9 @@ This document describes how player location changes trigger Master descriptions 
 **File:** `src/components/adventure/log/master-entry/ui/masterEntry.tsx`
 
 Location narration appears as a Master entry in the log:
-- Verdict badge (always "allowed" for location descriptions)
-- Narration text (the `description` from backend)
-- No tool calls for location descriptions
+- Verdict badge (reflects Master's actual verdict from adjudication)
+- Narration text (the `say` field from Master response)
+- Tool calls (tools Master used to generate the description, if any)
 
 ## UI State Synchronization
 
@@ -117,11 +120,13 @@ All these components react to `locationEpoch` changes:
 
 ### Expected Endpoints
 
-1. **POST `/api/location/describe`**
-   - Request: `{ campaignId, playerId }`
-   - Response: `{ description: string, locationId: string, locationName: string }`
-   - Backend Master describes the current location where player stands
-   - UI maps `description` to a Master reply entry for the log
+1. **POST `/api/master`**
+   - Request: `{ campaignId, playerId, messages: [{ role, content }] }`
+   - Response: `{ verdict, say, check?, toolCalls? }` (standard Master adjudicate result)
+   - Used for location arrival descriptions
+   - Master uses tools to determine current location and generate description
+   - Client sends a user message requesting location description
+   - For in-play location "look" commands, use standard turn flow (POST `/api/turn`)
 
 2. **PATCH `/api/location/player`** (existing)
    - Request: `{ playerId, locationId }`
@@ -129,18 +134,18 @@ All these components react to `locationEpoch` changes:
    - Direct location change from map
 
 3. **POST `/api/turn`** (existing)
-   - Handles all player actions including move
+   - Handles all player actions including move and in-play "look" commands
    - May result in location changes
 
 ### Reply Format
 Location narration returns:
-- Backend: `{ description: string, locationId: string, locationName: string }`
+- Backend: `{ verdict, say, check?, toolCalls? }` (Master adjudicate result)
 - UI maps to: `IMasterReply` - Master narration entry in the log
 
 ## Error Handling
 
 - Location look failures are silent (don't break UI)
-- If `/api/turn/look` fails, log continues without narration entry
+- If `/api/master` request fails, log continues without narration entry
 - Location display shows error states for fetch failures
 - Move action errors shown in composer error area
 
@@ -173,9 +178,9 @@ Location narration returns:
 
 1. **Narration timing**: Location description is requested immediately after detecting change. No debouncing or deduplication if multiple rapid changes occur.
 
-2. **Chat context**: Location description request is separate from turn chat history. Backend maintains its own session/context for descriptions.
+2. **Separate from turn chat**: Location arrival requests are direct Master calls, not part of the turn chat history. For in-play "look around" commands, use the standard turn flow which maintains chat context.
 
-3. **Simple verdict**: Location descriptions always use verdict "allowed" since they're narrative, not action outcomes.
+3. **Master adjudication**: Location arrival now goes through full Master adjudication, which may include tool calls and different verdicts based on game state.
 
 ## Future Enhancements
 
