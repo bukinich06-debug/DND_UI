@@ -29,9 +29,13 @@ export const getShop = async ({
     specialtyKey: data.specialtyKey,
     specialtyName: data.specialtyName,
     playerCoinsCp: data.playerCoinsCp,
-    items: data.items.map((item) => ({
-      ...item,
-      priceFormatted: formatPrice(item.priceCp),
-    })),
+    items: data.items.map((item) => {
+      const properties = item.properties?.map((p) => p.text).filter(Boolean) ?? null
+      return {
+        ...item,
+        priceFormatted: formatPrice(item.priceCp),
+        properties: properties?.length ? properties : null,
+      }
+    }),
   }
 }

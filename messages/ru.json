@@ -230,6 +230,9 @@
     "quantity": "Количество",
     "available": "Доступно",
     "canAfford": "Вы можете купить",
-    "buy": "Купить"
+    "buy": "Купить",
+    "properties": "Свойства",
+    "weight": "Вес",
+    "weightUnit": "кг"
   }
 }

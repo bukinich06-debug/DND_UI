@@ -44,14 +44,41 @@ export const ShopItemDetail = ({
       <p className="mb-4 font-sans text-[15px] leading-[1.5] text-foreground-dim italic">
         &ldquo;{item.description}&rdquo;
       </p>
-      <div className="mb-3 border border-border bg-panel-alt p-2">
-        <div className="text-[11px] uppercase tracking-widest text-muted">
-          {t("price")}
+      {item.properties && (
+        <div className="mb-4">
+          <div className="mb-1.5 text-xs uppercase tracking-widest text-muted">
+            {t("properties")}
+          </div>
+          {item.properties.map((p, idx) => (
+            <div
+              key={idx}
+              className="border-b border-border py-[3px] font-sans text-xs text-foreground-dim"
+            >
+              {p}
+            </div>
+          ))}
         </div>
-        <div
-          className={`font-mono text-sm ${canAfford ? "text-foreground" : "text-combat"}`}
-        >
-          {item.priceFormatted}
+      )}
+      <div className="mb-3 flex gap-2">
+        {item.weight != null && (
+          <div className="flex-1 border border-border bg-panel-alt p-2 text-center">
+            <div className="text-[11px] uppercase tracking-widest text-muted">
+              {t("weight")}
+            </div>
+            <div className="font-mono text-sm text-foreground">
+              {item.weight} {t("weightUnit")}
+            </div>
+          </div>
+        )}
+        <div className={`${item.weight != null ? "flex-1" : ""} border border-border bg-panel-alt p-2 ${item.weight != null ? "text-center" : ""}`}>
+          <div className="text-[11px] uppercase tracking-widest text-muted">
+            {t("price")}
+          </div>
+          <div
+            className={`font-mono text-sm ${canAfford ? "text-foreground" : "text-combat"}`}
+          >
+            {item.priceFormatted}
+          </div>
         </div>
       </div>
       {item.quantity > 1 && (
