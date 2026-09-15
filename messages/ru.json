@@ -231,6 +231,8 @@
     "available": "Доступно",
     "canAfford": "Вы можете купить",
     "buy": "Купить",
+    "bought": "Куплено",
+    "boughtItem": "Куплено: {name}",
     "properties": "Свойства",
     "weight": "Вес",
     "weightUnit": "кг"

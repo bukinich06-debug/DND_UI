@@ -12,6 +12,8 @@ interface IUseShopResult {
   error: string | null
   buying: boolean
   buyError: string | null
+  buySuccess: { itemName: string } | null
+  cooldown: boolean
   buy: (item: IShopItem, quantity: number) => Promise<void>
 }
 
@@ -25,6 +27,10 @@ export const useShop = ({ npcId }: IUseShopParams): IUseShopResult => {
   const [error, setError] = useState<string | null>(null)
   const [buying, setBuying] = useState(false)
   const [buyError, setBuyError] = useState<string | null>(null)
+  const [buySuccess, setBuySuccess] = useState<{ itemName: string } | null>(
+    null,
+  )
+  const [cooldown, setCooldown] = useState(false)
   const refreshPurse = useRefreshPurse()
 
   useEffect(() => {
@@ -59,10 +65,17 @@ export const useShop = ({ npcId }: IUseShopParams): IUseShopResult => {
     if (!shop) return
     setBuying(true)
     setBuyError(null)
+    setBuySuccess(null)
     try {
       await buyItem({ npcId: shop.npcId, itemId: item.id, quantity })
       await reload()
       await refreshPurse()
+
+      setBuySuccess({ itemName: item.name })
+      setTimeout(() => setBuySuccess(null), 2000)
+
+      setCooldown(true)
+      setTimeout(() => setCooldown(false), 1200)
     } catch (err: unknown) {
       setBuyError(
         err instanceof Error ? err.message : "Не удалось купить предмет.",
@@ -72,5 +85,5 @@ export const useShop = ({ npcId }: IUseShopParams): IUseShopResult => {
     }
   }
 
-  return { shop, loading, error, buying, buyError, buy }
+  return { shop, loading, error, buying, buyError, buySuccess, cooldown, buy }
 }

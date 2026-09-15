@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { IconX } from "@/components/shared/icon"
 import { Purse } from "@/components/shared/purse"
 import { useTranslations } from "next-intl"
 import { useShop } from "../hooks/useShop"
 import { ShopItemList } from "../item-list"
 import { ShopItemDetail } from "../item-detail"
+import { SuccessToast } from "../success-toast"
 import type { IShopItem } from "../types"
 
 interface IShopModalProps {
@@ -16,8 +17,15 @@ interface IShopModalProps {
 
 export const ShopModal = ({ npcId, onClose }: IShopModalProps) => {
   const t = useTranslations("shop")
-  const { shop, loading, error, buying, buyError, buy } = useShop({ npcId })
+  const { shop, loading, error, buying, buyError, buySuccess, cooldown, buy } =
+    useShop({ npcId })
   const [selected, setSelected] = useState<IShopItem | null>(null)
+
+  useEffect(() => {
+    if (!shop || !selected) return
+    const stillAvailable = shop.items.some((item) => item.id === selected.id)
+    if (!stillAvailable) setSelected(null)
+  }, [shop, selected])
 
   let listArea = (
     <div className="flex flex-1 overflow-hidden">
@@ -36,6 +44,7 @@ export const ShopModal = ({ npcId, onClose }: IShopModalProps) => {
               playerCoinsCp={shop.playerCoinsCp}
               buying={buying}
               buyError={buyError}
+              cooldown={cooldown}
               onBuy={buy}
             />
           )}
@@ -103,6 +112,8 @@ export const ShopModal = ({ npcId, onClose }: IShopModalProps) => {
         </div>
 
         {listArea}
+
+        {buySuccess && <SuccessToast itemName={buySuccess.itemName} />}
       </div>
     </div>
   )

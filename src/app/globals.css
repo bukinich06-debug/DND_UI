@@ -68,6 +68,17 @@ body {
   color: #ffffff;
 }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes purse-flash-up {
   0% {
     color: #5cb85c;

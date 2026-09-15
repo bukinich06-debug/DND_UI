@@ -231,6 +231,8 @@
     "available": "Available",
     "canAfford": "You can buy",
     "buy": "Buy",
+    "bought": "Bought",
+    "boughtItem": "Bought: {name}",
     "properties": "Properties",
     "weight": "Weight",
     "weightUnit": "lb"
