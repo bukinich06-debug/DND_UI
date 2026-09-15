@@ -4,6 +4,7 @@ import type {
   ILogEntry,
   ITurnReply,
   IOpenShopSignal,
+  INpcReply,
 } from "@/components/shared/types"
 import { useRefreshPurse } from "@/components/shared/purse"
 import { getPlayerPlace } from "@/components/shared/player-place"

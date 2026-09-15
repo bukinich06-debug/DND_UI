@@ -1,4 +1,4 @@
-import type { IShopItem } from "../types"
+import type { IShopItem } from "../../types"
 
 interface IShopItemListProps {
   items: IShopItem[]
