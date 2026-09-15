@@ -1,3 +1,8 @@
+interface IItemProp {
+  type: string
+  text: string
+}
+
 export interface IApiShopItem {
   id: string
   catalogKey: string
@@ -8,6 +13,8 @@ export interface IApiShopItem {
   priceCp: number
   rarity: string | null
   isMagical: boolean
+  properties: IItemProp[] | null
+  weight: number | null
 }
 
 export interface IApiShopData {
@@ -30,6 +37,8 @@ export interface IShopItem {
   priceFormatted: string
   rarity: string | null
   isMagical: boolean
+  properties: string[] | null
+  weight: number | null
 }
 
 export interface IShopData {
