@@ -15,24 +15,28 @@ export interface IResolvedCheck {
   knowledgeId: string | null
 }
 
-export type ITurnResume = {
-  agent: "npc"
-  npcId: string
-  remainingSteps: unknown[]
-} | { agent: "master" remainingSteps: unknown[] }
+export type ITurnResume =
+  | {
+      agent: "npc"
+      npcId: string
+      remainingSteps: unknown[]
+    }
+  | { agent: "master"; remainingSteps: unknown[] }
 
-export type ITurnResult = {
-  status: "need_check"
-  replies: ITurnReply[]
-  check: IResolvedCheck
-  resume: ITurnResume
-  ui?: { openShop?: IOpenShopSignal }
-} | { status: "done" replies: ITurnReply[] ui?: { openShop?: IOpenShopSignal } }
+export type ITurnResult =
+  | {
+      status: "need_check"
+      replies: ITurnReply[]
+      check: IResolvedCheck
+      resume: ITurnResume
+      ui?: { openShop?: IOpenShopSignal }
+    }
+  | { status: "done"; replies: ITurnReply[]; ui?: { openShop?: IOpenShopSignal } }
 
 interface IPostTurnParams {
   messages: IChatMessage[]
   resume?: ITurnResume
-  check?: { skill: string dc: number knowledgeId?: string | null }
+  check?: { skill: string; dc: number; knowledgeId?: string | null }
   rollId?: string
 }
 

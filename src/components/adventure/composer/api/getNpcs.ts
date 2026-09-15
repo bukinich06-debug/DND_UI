@@ -2,7 +2,7 @@ import type { IComposerNpc } from "../types"
 import { getTurnApiEnv, readApiError } from "./env"
 
 interface INpcRow {
-  npc: { id: string name: string }
+  npc: { id: string; name: string }
 }
 
 interface IParams {

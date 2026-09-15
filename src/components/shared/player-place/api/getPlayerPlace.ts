@@ -1,5 +1,5 @@
 interface IPlayerPlace {
-  location: { id: string name: string summary: string } | null
+  location: { id: string; name: string; summary: string } | null
 }
 
 interface IGetPlayerPlaceParams {

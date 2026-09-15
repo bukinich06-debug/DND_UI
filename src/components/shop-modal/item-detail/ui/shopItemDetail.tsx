@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useTranslations } from "next-intl"
-import type { IShopItem } from "../types"
+import type { IShopItem } from "../../types"
 import { ActionBtn } from "@/components/shared/action-btn"
 
 interface IShopItemDetailProps {
