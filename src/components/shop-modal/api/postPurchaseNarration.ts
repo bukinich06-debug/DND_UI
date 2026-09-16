@@ -1,5 +1,9 @@
 import type { ITurnReply } from "@/components/shared/types"
-import { getTurnApiEnv } from "@/components/adventure/composer/api/env"
+import {
+  getTurnApiEnv,
+  readApiError,
+} from "@/components/adventure/composer/api/env"
+import type { ITurnResult } from "@/components/adventure/composer/api/postTurn"
 
 interface IPostPurchaseNarrationParams {
   npcId: string
@@ -8,18 +12,13 @@ interface IPostPurchaseNarrationParams {
   totalPriceCp: number
 }
 
-interface IPurchaseNarrationResult {
-  status: "done" | "need_check"
-  replies: ITurnReply[]
-}
-
-const isPurchaseNarrationResult = (
-  value: unknown,
-): value is IPurchaseNarrationResult => {
+const isTurnResult = (value: unknown): value is ITurnResult => {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false
   const obj = value as Record<string, unknown>
   if (obj.status !== "done" && obj.status !== "need_check") return false
-  return Array.isArray(obj.replies)
+  if (!Array.isArray(obj.replies)) return false
+  if (obj.status === "done") return true
+  return Boolean(obj.check && obj.resume && typeof obj.check === "object")
 }
 
 export const postPurchaseNarration = async ({
@@ -50,6 +49,6 @@ export const postPurchaseNarration = async ({
   if (!res.ok) return []
 
   const data: unknown = await res.json()
-  if (!isPurchaseNarrationResult(data)) return []
+  if (!isTurnResult(data)) return []
   return data.replies
 }
