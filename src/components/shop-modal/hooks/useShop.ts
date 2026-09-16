@@ -1,10 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import type { ITurnReply } from "@/components/shared/types"
 import { useRefreshPurse } from "@/components/shared/purse"
 import type { IShopData, IShopItem } from "../types"
 import { getShop } from "../api/getShop"
 import { buyItem } from "../api/buyItem"
+import { postPurchaseNarration } from "../api/postPurchaseNarration"
 
 interface IUseShopResult {
   shop: IShopData | null
@@ -19,9 +21,13 @@ interface IUseShopResult {
 
 interface IUseShopParams {
   npcId: string
+  onPurchaseSuccess?: (replies: ITurnReply[]) => Promise<void>
 }
 
-export const useShop = ({ npcId }: IUseShopParams): IUseShopResult => {
+export const useShop = ({
+  npcId,
+  onPurchaseSuccess,
+}: IUseShopParams): IUseShopResult => {
   const [shop, setShop] = useState<IShopData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -76,6 +82,21 @@ export const useShop = ({ npcId }: IUseShopParams): IUseShopResult => {
 
       setCooldown(true)
       setTimeout(() => setCooldown(false), 1200)
+
+      if (onPurchaseSuccess) {
+        postPurchaseNarration({
+          npcId: shop.npcId,
+          itemName: item.name,
+          itemId: item.id,
+          catalogKey: item.catalogKey,
+          quantity,
+          priceCp: item.priceCp * quantity,
+        })
+          .then(onPurchaseSuccess)
+          .catch(() => {
+            /* Narration failure should not undo the purchase */
+          })
+      }
     } catch (err: unknown) {
       setBuyError(
         err instanceof Error ? err.message : "Не удалось купить предмет.",

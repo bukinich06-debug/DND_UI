@@ -1,5 +1,7 @@
 "use client"
 
+import { useState } from "react"
+import type { IOpenShopSignal, ITurnReply } from "@/components/shared/types"
 import { Adventure } from "@/components/adventure"
 import { CharacterPanel } from "@/components/character-panel"
 import { InventoryModal } from "@/components/inventory-modal"
@@ -7,7 +9,6 @@ import { ShopModal } from "@/components/shop-modal"
 import { SituationPanel } from "@/components/situation-panel"
 import { IconChevronLeft } from "@/components/shared/icon"
 import { PurseProvider } from "@/components/shared/purse"
-import type { IOpenShopSignal } from "@/components/shared/types"
 import { useShell } from "../hooks/useShell"
 
 export const AppLayout = () => {
@@ -24,6 +25,10 @@ export const AppLayout = () => {
     bumpLocation,
   } = useShell()
 
+  const [addPurchaseNarration, setAddPurchaseNarration] = useState<
+    ((replies: ITurnReply[]) => Promise<void>) | null
+  >(null)
+
   return (
     <PurseProvider>
       <div className="relative flex h-full w-full overflow-hidden bg-background">
@@ -36,6 +41,9 @@ export const AppLayout = () => {
           onLocationChanged={bumpLocation}
           locationEpoch={locationEpoch}
           onShopOpen={(signal: IOpenShopSignal) => setShopSignal(signal)}
+          onAddPurchaseNarrationReady={(callback) =>
+            setAddPurchaseNarration(() => callback)
+          }
         />
 
         {!rightOpen && (
@@ -62,6 +70,7 @@ export const AppLayout = () => {
           <ShopModal
             npcId={shopSignal.npcId}
             onClose={() => setShopSignal(null)}
+            onPurchaseSuccess={addPurchaseNarration ?? undefined}
           />
         )}
       </div>
