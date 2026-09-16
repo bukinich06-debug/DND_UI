@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import type { IOpenShopSignal } from "@/components/shared/types"
+import { useState, useEffect } from "react"
+import type { IOpenShopSignal, ITurnReply } from "@/components/shared/types"
 import { WorldModal } from "@/components/world-modal"
 import { AdventureHeader } from "../header"
 import { useTurn } from "../hooks/useTurn"
@@ -12,12 +12,16 @@ interface IAdventureProps {
   onLocationChanged: () => void
   locationEpoch: number
   onShopOpen?: (signal: IOpenShopSignal) => void
+  onAddPurchaseNarrationReady?: (
+    callback: (replies: ITurnReply[]) => Promise<void>,
+  ) => void
 }
 
 export const Adventure = ({
   onLocationChanged,
   locationEpoch,
   onShopOpen,
+  onAddPurchaseNarrationReady,
 }: IAdventureProps) => {
   const [worldOpen, setWorldOpen] = useState(false)
   const {
@@ -28,7 +32,14 @@ export const Adventure = ({
     locked,
     error,
     requestLocationLook,
+    addPurchaseNarration,
   } = useTurn({ onLocationChanged, onShopOpen })
+
+  useEffect(() => {
+    if (onAddPurchaseNarrationReady) {
+      onAddPurchaseNarrationReady(addPurchaseNarration)
+    }
+  }, [onAddPurchaseNarrationReady, addPurchaseNarration])
 
   const handleLocationMoved = async () => {
     setWorldOpen(false)

@@ -205,6 +205,15 @@ export const useTurn = ({ onLocationChanged, onShopOpen }: IParams) => {
     }
   }
 
+  const addPurchaseNarration = useCallback(
+    async (replies: ITurnReply[]) => {
+      if (replies.length === 0) return
+      const extra: ILogEntry[] = replies.map(withId)
+      setEntries((prev) => [...prev, ...extra])
+    },
+    [],
+  )
+
   return {
     entries,
     send,
@@ -213,5 +222,6 @@ export const useTurn = ({ onLocationChanged, onShopOpen }: IParams) => {
     locked: sending || Boolean(pending),
     error,
     requestLocationLook: requestAndAddLocationLook,
+    addPurchaseNarration,
   }
 }

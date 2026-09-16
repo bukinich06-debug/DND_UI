@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import type { ITurnReply } from "@/components/shared/types"
 import { IconX } from "@/components/shared/icon"
 import { Purse } from "@/components/shared/purse"
 import { useTranslations } from "next-intl"
@@ -13,12 +14,17 @@ import type { IShopItem } from "../types"
 interface IShopModalProps {
   npcId: string
   onClose: () => void
+  onPurchaseSuccess?: (replies: ITurnReply[]) => Promise<void>
 }
 
-export const ShopModal = ({ npcId, onClose }: IShopModalProps) => {
+export const ShopModal = ({
+  npcId,
+  onClose,
+  onPurchaseSuccess,
+}: IShopModalProps) => {
   const t = useTranslations("shop")
   const { shop, loading, error, buying, buyError, buySuccess, cooldown, buy } =
-    useShop({ npcId })
+    useShop({ npcId, onPurchaseSuccess })
   const [selected, setSelected] = useState<IShopItem | null>(null)
 
   useEffect(() => {
