@@ -87,10 +87,8 @@ export const useShop = ({
         postPurchaseNarration({
           npcId: shop.npcId,
           itemName: item.name,
-          itemId: item.id,
-          catalogKey: item.catalogKey,
           quantity,
-          priceCp: item.priceCp * quantity,
+          totalPriceCp: item.priceCp * quantity,
         })
           .then(onPurchaseSuccess)
           .catch(() => {

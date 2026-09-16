@@ -4,13 +4,12 @@ import { getTurnApiEnv } from "@/components/adventure/composer/api/env"
 interface IPostPurchaseNarrationParams {
   npcId: string
   itemName: string
-  itemId: string
-  catalogKey: string
   quantity: number
-  priceCp: number
+  totalPriceCp: number
 }
 
 interface IPurchaseNarrationResult {
+  status: "done" | "need_check"
   replies: ITurnReply[]
 }
 
@@ -19,16 +18,15 @@ const isPurchaseNarrationResult = (
 ): value is IPurchaseNarrationResult => {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false
   const obj = value as Record<string, unknown>
+  if (obj.status !== "done" && obj.status !== "need_check") return false
   return Array.isArray(obj.replies)
 }
 
 export const postPurchaseNarration = async ({
   npcId,
   itemName,
-  itemId,
-  catalogKey,
   quantity,
-  priceCp,
+  totalPriceCp,
 }: IPostPurchaseNarrationParams): Promise<ITurnReply[]> => {
   const { baseUrl, campaignId, playerId } = getTurnApiEnv()
   const url = new URL("/api/turn", baseUrl)
@@ -39,14 +37,12 @@ export const postPurchaseNarration = async ({
     body: JSON.stringify({
       campaignId,
       playerId,
-      purchase: {
+      messages: [],
+      postPurchase: {
         npcId,
         itemName,
-        itemId,
-        catalogKey,
         quantity,
-        priceCp,
-        settled: true,
+        totalPriceCp,
       },
     }),
   })
