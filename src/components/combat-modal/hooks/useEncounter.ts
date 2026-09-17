@@ -10,6 +10,7 @@ interface IUseEncounterResult {
   encounter: IEncounter | null
   loading: boolean
   error: string | null
+  setEncounter: (encounter: IEncounter | null) => void
 }
 
 export const useEncounter = (): IUseEncounterResult => {
@@ -49,5 +50,5 @@ export const useEncounter = (): IUseEncounterResult => {
     }
   }, [])
 
-  return { encounter, loading, error }
+  return { encounter, loading, error, setEncounter }
 }

@@ -243,6 +243,8 @@
     "round": "Раунд {number}",
     "yourTurn": "Ваш ход",
     "enemyTurn": "Ход врага",
+    "nextTurn": "Следующий ход",
+    "advancing": "Продвигаем ход…",
     "hp": "ОЗ",
     "distance": "{feet} фт.",
     "distanceUnknown": "? фт.",

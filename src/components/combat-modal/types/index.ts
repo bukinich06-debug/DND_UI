@@ -63,6 +63,7 @@ export interface IApiEncounter {
   currentParticipantId: string
   isPlayerTurn: boolean
   participants: IApiParticipant[]
+  log?: ICombatLogEntry[]
 }
 
 export interface IApiEncounterResponse {

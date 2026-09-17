@@ -243,6 +243,8 @@
     "round": "Round {number}",
     "yourTurn": "Your turn",
     "enemyTurn": "Enemy turn",
+    "nextTurn": "Next Turn",
+    "advancing": "Advancing turn…",
     "hp": "HP",
     "distance": "{feet} ft.",
     "distanceUnknown": "? ft.",

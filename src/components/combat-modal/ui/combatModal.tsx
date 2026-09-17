@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl"
 import { useEncounter } from "../hooks/useEncounter"
+import { useAdvanceEncounter } from "../hooks/useAdvanceEncounter"
 import { ParticipantList } from "../participant-list"
 import { CombatChat } from "../combat-chat"
 import { AbilitiesPanel } from "../abilities-panel"
@@ -15,7 +16,17 @@ interface ICombatModalProps {
 
 export const CombatModal = ({ items, playerId }: ICombatModalProps) => {
   const t = useTranslations("combat")
-  const { encounter, loading } = useEncounter()
+  const { encounter, loading, setEncounter } = useEncounter()
+  const {
+    advance,
+    loading: advanceLoading,
+    error: advanceError,
+  } = useAdvanceEncounter()
+
+  const handleAdvanceTurn = async () => {
+    const result = await advance()
+    if (result) setEncounter(result)
+  }
 
   if (loading) {
     return (
@@ -50,14 +61,33 @@ export const CombatModal = ({ items, playerId }: ICombatModalProps) => {
               {t("round", { number: encounter.round })}
             </div>
           </div>
-          <div className="font-sans text-xs text-muted">
-            {encounter.isPlayerTurn ? (
-              <span className="font-bold text-accent">{t("yourTurn")}</span>
-            ) : (
-              t("enemyTurn")
+          <div className="flex items-center gap-4">
+            <div className="font-sans text-xs text-muted">
+              {encounter.isPlayerTurn ? (
+                <span className="font-bold text-accent">{t("yourTurn")}</span>
+              ) : (
+                t("enemyTurn")
+              )}
+            </div>
+            {!encounter.isPlayerTurn && (
+              <button
+                onClick={handleAdvanceTurn}
+                disabled={advanceLoading}
+                className="cursor-pointer border border-accent bg-accent px-4 py-2 font-sans text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {advanceLoading ? t("advancing") : t("nextTurn")}
+              </button>
             )}
           </div>
         </div>
+
+        {advanceError && (
+          <div className="border-b border-border bg-red-900/20 px-5 py-2">
+            <p className="m-0 font-sans text-sm text-red-400">
+              {advanceError}
+            </p>
+          </div>
+        )}
 
         <div className="flex flex-1 overflow-hidden">
           <ParticipantList combatants={encounter.combatants} />
