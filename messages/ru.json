@@ -236,5 +236,33 @@
     "properties": "Свойства",
     "weight": "Вес",
     "weightUnit": "кг"
+  },
+  "combat": {
+    "title": "Боевой режим",
+    "loading": "Загрузка боя…",
+    "yourTurn": "Ваш ход",
+    "enemyTurn": "Ход врага",
+    "hp": "ОЗ",
+    "distance": "{feet} фт.",
+    "feet": "фт.",
+    "type": {
+      "player": "Игрок",
+      "npc": "NPC",
+      "monster": "Монстр",
+      "ally": "Союзник"
+    },
+    "logEmpty": "Начало боя.",
+    "chatPlaceholder": "Ваше действие или реплика…",
+    "chatDisabled": "Не ваш ход",
+    "send": "Отправить",
+    "weapons": "Оружие",
+    "noWeapons": "Нет оружия",
+    "potions": "Зелья",
+    "noPotions": "Нет зелий",
+    "healingPotion": "Зелье лечения",
+    "drink": "Выпить",
+    "selectTarget": "Выберите цель",
+    "noTargets": "Нет доступных целей",
+    "attack": "Ударить"
   }
 }

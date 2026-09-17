@@ -7,9 +7,11 @@ import { CharacterPanel } from "@/components/character-panel"
 import { InventoryModal } from "@/components/inventory-modal"
 import { ShopModal } from "@/components/shop-modal"
 import { SituationPanel } from "@/components/situation-panel"
+import { CombatModal } from "@/components/combat-modal"
 import { IconChevronLeft } from "@/components/shared/icon"
 import { PurseProvider } from "@/components/shared/purse"
 import { useShell } from "../hooks/useShell"
+import { useCombatItems } from "../hooks/useCombatItems"
 
 export const AppLayout = () => {
   const {
@@ -25,9 +27,13 @@ export const AppLayout = () => {
     bumpLocation,
   } = useShell()
 
+  const { items, loading: itemsLoading } = useCombatItems()
+
   const [addPurchaseNarration, setAddPurchaseNarration] = useState<
     ((replies: ITurnReply[]) => Promise<void>) | null
   >(null)
+
+  const playerId = process.env.NEXT_PUBLIC_PLAYER_ID ?? ""
 
   return (
     <PurseProvider>
@@ -73,6 +79,8 @@ export const AppLayout = () => {
             onPurchaseSuccess={addPurchaseNarration ?? undefined}
           />
         )}
+
+        {!itemsLoading && <CombatModal items={items} playerId={playerId} />}
       </div>
     </PurseProvider>
   )
