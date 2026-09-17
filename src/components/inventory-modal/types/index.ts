@@ -1,11 +1,6 @@
-import type { ItemKind, ItemRarity } from "@/components/shared/types"
+import type { ItemKind, ItemRarity, IItemProp } from "@/components/shared/types"
 
 export type EquipSlot = "armor" | "mainHand" | "offHand"
-
-interface IItemProp {
-  type: "twoHanded" | string
-  text: string
-}
 
 export interface IApiItem {
   id: string

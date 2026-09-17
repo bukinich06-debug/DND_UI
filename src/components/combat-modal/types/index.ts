@@ -13,10 +13,12 @@ export interface ICombatant {
 }
 
 export interface IWeaponProperty {
-  type: "range" | "twoHanded" | string
+  type: "range" | "twoHanded" | "damage" | string
+  text: string
   normal?: number
   long?: number
-  text?: string
+  dice?: string
+  damageType?: string
 }
 
 export interface IWeaponSlot {

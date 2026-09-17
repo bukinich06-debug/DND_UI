@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl"
 import type { ICombatant, IWeaponSlot } from "../../types"
+import type { IPlayer } from "@/components/character-panel/types"
 import { WeaponSlot } from "../weapon-slot"
 import { PotionSlot } from "../potion-slot"
 
@@ -10,6 +11,7 @@ interface IAbilitiesPanelProps {
   combatants: ICombatant[]
   playerId: string
   potionCount: number
+  player: IPlayer | null
 }
 
 export const AbilitiesPanel = ({
@@ -17,6 +19,7 @@ export const AbilitiesPanel = ({
   combatants,
   playerId,
   potionCount,
+  player,
 }: IAbilitiesPanelProps) => {
   const t = useTranslations("combat")
 
@@ -38,6 +41,7 @@ export const AbilitiesPanel = ({
               weapon={weapon}
               combatants={combatants}
               playerId={playerId}
+              player={player}
             />
           ))}
         </div>

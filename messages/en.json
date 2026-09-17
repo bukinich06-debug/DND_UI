@@ -264,6 +264,22 @@
     "drink": "Drink",
     "selectTarget": "Select target",
     "noTargets": "No available targets",
-    "attack": "Attack"
+    "attack": "Attack",
+    "toHit": "to hit",
+    "damageType": {
+      "slashing": "slashing",
+      "piercing": "piercing",
+      "bludgeoning": "bludgeoning",
+      "fire": "fire",
+      "cold": "cold",
+      "lightning": "lightning",
+      "thunder": "thunder",
+      "acid": "acid",
+      "poison": "poison",
+      "necrotic": "necrotic",
+      "radiant": "radiant",
+      "psychic": "psychic",
+      "force": "force"
+    }
   }
 }

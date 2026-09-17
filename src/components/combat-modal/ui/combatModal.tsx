@@ -7,13 +7,15 @@ import { CombatChat } from "../combat-chat"
 import { AbilitiesPanel } from "../abilities-panel"
 import { getWeaponsFromInventory } from "../helpers/getWeaponsFromInventory"
 import type { IInventoryItem } from "@/components/shared/types"
+import type { IPlayer } from "@/components/character-panel/types"
 
 interface ICombatModalProps {
   items: IInventoryItem[]
   playerId: string
+  player: IPlayer | null
 }
 
-export const CombatModal = ({ items, playerId }: ICombatModalProps) => {
+export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
   const t = useTranslations("combat")
   const { encounter, loading } = useEncounter()
 
@@ -67,6 +69,7 @@ export const CombatModal = ({ items, playerId }: ICombatModalProps) => {
             combatants={encounter.combatants}
             playerId={playerId}
             potionCount={potionCount}
+            player={player}
           />
         </div>
       </div>

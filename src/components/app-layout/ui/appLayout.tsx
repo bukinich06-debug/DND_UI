@@ -12,6 +12,7 @@ import { IconChevronLeft } from "@/components/shared/icon"
 import { PurseProvider } from "@/components/shared/purse"
 import { useShell } from "../hooks/useShell"
 import { useCombatItems } from "../hooks/useCombatItems"
+import { usePlayer } from "@/components/character-panel/hooks/usePlayer"
 
 export const AppLayout = () => {
   const {
@@ -28,6 +29,7 @@ export const AppLayout = () => {
   } = useShell()
 
   const { items, loading: itemsLoading } = useCombatItems()
+  const player = usePlayer()
 
   const [addPurchaseNarration, setAddPurchaseNarration] = useState<
     ((replies: ITurnReply[]) => Promise<void>) | null
@@ -80,7 +82,9 @@ export const AppLayout = () => {
           />
         )}
 
-        {!itemsLoading && <CombatModal items={items} playerId={playerId} />}
+        {!itemsLoading && (
+          <CombatModal items={items} playerId={playerId} player={player} />
+        )}
       </div>
     </PurseProvider>
   )

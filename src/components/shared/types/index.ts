@@ -71,11 +71,16 @@ export type ItemRarity = "common" | "uncommon" | "rare" | "veryRare" | "legendar
 export type ItemKind = "weapon" | "armor" | "shield" | "tool" | "gear" | "consumable" | "treasure" | "key" | "junk" | "other"
 
 export interface IItemProperty {
-  type: "range" | "twoHanded" | string
+  type: "range" | "twoHanded" | "damage" | string
   text: string
   normal?: number
   long?: number
+  dice?: string
+  damageType?: string
 }
+
+/** Alias used by inventory API mapping */
+export type IItemProp = IItemProperty
 
 export interface IInventoryItem {
   id: string

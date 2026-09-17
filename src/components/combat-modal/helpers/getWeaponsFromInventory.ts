@@ -1,4 +1,4 @@
-import type { IInventoryItem } from "@/components/shared/types"
+import type { IInventoryItem, IItemProperty } from "@/components/shared/types"
 import type { IWeaponSlot, IWeaponProperty } from "../types"
 
 const isCombatDebug = () =>
@@ -34,6 +34,30 @@ const parseRangeFromString = (
   return null
 }
 
+const toWeaponProperty = (prop: string | IItemProperty): IWeaponProperty => {
+  if (typeof prop === "object" && prop !== null) {
+    return {
+      type: prop.type,
+      text: prop.text,
+      normal: prop.normal,
+      long: prop.long,
+      dice: prop.dice,
+      damageType: prop.damageType,
+    }
+  }
+
+  const propText = String(prop)
+  const propLower = propText.toLowerCase()
+  const rangeData = parseRangeFromString(propText)
+  if (rangeData) {
+    return { type: "range", text: propText, ...rangeData }
+  }
+  if (propLower.includes("two-handed") || propLower.includes("двуруч")) {
+    return { type: "twoHanded", text: propText }
+  }
+  return { type: propText, text: propText }
+}
+
 export const getWeaponsFromInventory = (
   items: IInventoryItem[],
 ): IWeaponSlot[] => {
@@ -49,63 +73,7 @@ export const getWeaponsFromInventory = (
         )
       }
 
-      const properties: IWeaponProperty[] = (item.properties ?? []).map(
-        (prop): IWeaponProperty => {
-          if (typeof prop === "object" && prop !== null) {
-            if (isCombatDebug()) {
-              console.log("  structured prop:", prop)
-            }
-
-            if (prop.type === "range" && prop.normal !== undefined) {
-              return {
-                type: "range",
-                normal: prop.normal,
-                long: prop.long,
-                text: prop.text,
-              }
-            }
-
-            if (prop.type === "twoHanded" || prop.type === "two-handed") {
-              return {
-                type: "twoHanded",
-                text: prop.text,
-              }
-            }
-
-            return {
-              type: prop.type,
-              text: prop.text,
-            }
-          }
-
-          const propText = String(prop)
-          const propLower = propText.toLowerCase()
-
-          const rangeData = parseRangeFromString(propText)
-          if (rangeData) {
-            if (isCombatDebug()) {
-              console.log("  parsed range from string:", rangeData)
-            }
-            return {
-              type: "range",
-              ...rangeData,
-              text: propText,
-            }
-          }
-
-          if (propLower.includes("two-handed") || propLower.includes("двуруч")) {
-            return {
-              type: "twoHanded",
-              text: propText,
-            }
-          }
-
-          return {
-            type: propText,
-            text: propText,
-          }
-        },
-      )
+      const properties = (item.properties ?? []).map(toWeaponProperty)
 
       if (isCombatDebug()) {
         console.log("  final properties:", properties)
