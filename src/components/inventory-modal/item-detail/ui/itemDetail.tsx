@@ -50,12 +50,12 @@ export const ItemDetail = ({
           <div className="mb-1.5 text-xs uppercase tracking-widest text-muted">
             {t("properties")}
           </div>
-          {item.properties.map((p) => (
+          {item.properties.map((p, idx) => (
             <div
-              key={p}
+              key={idx}
               className="border-b border-border py-[3px] font-sans text-xs text-foreground-dim"
             >
-              {p}
+              {p.text}
             </div>
           ))}
         </div>

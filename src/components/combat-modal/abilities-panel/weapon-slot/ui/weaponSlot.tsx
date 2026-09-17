@@ -3,18 +3,23 @@
 import { useState } from "react"
 import { useTranslations } from "next-intl"
 import type { ICombatant, IWeaponSlot } from "../../../types"
+import type { IPlayer } from "@/components/character-panel/types"
 import { useWeaponTargets } from "../../../hooks/useWeaponTargets"
+import { getAttackBonus } from "../../../helpers/getAttackBonus"
+import { formatBonus, getDamageInfo } from "../../../helpers/formatWeaponStats"
 
 interface IWeaponSlotProps {
   weapon: IWeaponSlot
   combatants: ICombatant[]
   playerId: string
+  player: IPlayer | null
 }
 
 export const WeaponSlot = ({
   weapon,
   combatants,
   playerId,
+  player,
 }: IWeaponSlotProps) => {
   const t = useTranslations("combat")
   const [selectedTargetId, setSelectedTargetId] = useState("")
@@ -32,11 +37,30 @@ export const WeaponSlot = ({
     )
   }
 
+  const attackBonus = getAttackBonus(weapon, player)
+  const damageInfo = getDamageInfo(weapon.properties)
+
   return (
     <div className="border border-border bg-panel p-3">
       <div className="mb-2 font-sans text-sm font-semibold text-foreground">
         {weapon.name}
       </div>
+
+      {(attackBonus !== null || damageInfo) && (
+        <div className="mb-2 font-sans text-xs text-muted">
+          {attackBonus !== null && (
+            <span>
+              {formatBonus(attackBonus)} {t("toHit")}
+            </span>
+          )}
+          {attackBonus !== null && damageInfo && <span> · </span>}
+          {damageInfo && (
+            <span>
+              {damageInfo.dice} {t(`damageType.${damageInfo.damageType}`)}
+            </span>
+          )}
+        </div>
+      )}
 
       {availableTargets.length === 0 && (
         <p className="m-0 mb-2 font-sans text-xs text-muted">
