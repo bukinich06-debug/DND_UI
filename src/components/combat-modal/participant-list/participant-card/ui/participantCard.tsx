@@ -34,7 +34,7 @@ export const ParticipantCard = ({ combatant }: IParticipantCardProps) => {
           </div>
           <div className="mt-0.5 font-sans text-xs text-muted">{typeLabel}</div>
         </div>
-        {combatant.isPlayerTurn && (
+        {combatant.isPlayerTurn && combatant.type === "player" && (
           <div className="ml-2 font-sans text-xs font-bold uppercase text-accent">
             {t("yourTurn")}
           </div>
