@@ -16,7 +16,10 @@ export const ParticipantCard = ({ combatant }: IParticipantCardProps) => {
   )
 
   const typeLabel = t(`type.${combatant.type}`)
-  const distanceLabel = t("distance", { feet: combatant.feetFromPlayer })
+  const distanceLabel =
+    combatant.feetFromPlayer !== undefined
+      ? t("distance", { feet: combatant.feetFromPlayer })
+      : t("distanceUnknown")
 
   return (
     <div

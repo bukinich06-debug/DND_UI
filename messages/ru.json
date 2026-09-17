@@ -244,6 +244,7 @@
     "enemyTurn": "Ход врага",
     "hp": "ОЗ",
     "distance": "{feet} фт.",
+    "distanceUnknown": "? фт.",
     "feet": "фт.",
     "type": {
       "player": "Игрок",
