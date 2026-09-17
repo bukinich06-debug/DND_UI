@@ -50,14 +50,17 @@ export const ItemDetail = ({
           <div className="mb-1.5 text-xs uppercase tracking-widest text-muted">
             {t("properties")}
           </div>
-          {item.properties.map((p) => (
-            <div
-              key={p}
-              className="border-b border-border py-[3px] font-sans text-xs text-foreground-dim"
-            >
-              {p}
-            </div>
-          ))}
+          {item.properties.map((p, idx) => {
+            const text = typeof p === "string" ? p : p.text
+            return (
+              <div
+                key={idx}
+                className="border-b border-border py-[3px] font-sans text-xs text-foreground-dim"
+              >
+                {text}
+              </div>
+            )
+          })}
         </div>
       )}
       <div className="mb-3 flex gap-2">
