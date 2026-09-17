@@ -6,8 +6,8 @@ const abilityMod = (score: number): number => Math.floor((score - 10) / 2)
 const isFinesse = (properties: IWeaponProperty[]): boolean => {
   return properties.some(
     (p) =>
-      p.text.toLowerCase().includes("finesse") ||
-      p.text.toLowerCase().includes("фехтовальн"),
+      (p.text ?? "").toLowerCase().includes("finesse") ||
+      (p.text ?? "").toLowerCase().includes("фехтовальн"),
   )
 }
 

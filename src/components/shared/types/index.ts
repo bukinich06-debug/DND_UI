@@ -70,14 +70,17 @@ export type ItemRarity = "common" | "uncommon" | "rare" | "veryRare" | "legendar
 
 export type ItemKind = "weapon" | "armor" | "shield" | "tool" | "gear" | "consumable" | "treasure" | "key" | "junk" | "other"
 
-export interface IItemProp {
-  type: "twoHanded" | "damage" | "range" | string
+export interface IItemProperty {
+  type: "range" | "twoHanded" | "damage" | string
   text: string
-  dice?: string
-  damageType?: string
   normal?: number
   long?: number
+  dice?: string
+  damageType?: string
 }
+
+/** Alias used by inventory API mapping */
+export type IItemProp = IItemProperty
 
 export interface IInventoryItem {
   id: string
@@ -91,7 +94,7 @@ export interface IInventoryItem {
   equipped?: boolean
   isTwoHanded?: boolean
   value?: string
-  properties?: IItemProp[]
+  properties?: Array<string | IItemProperty>
 }
 
 export interface IPurse {

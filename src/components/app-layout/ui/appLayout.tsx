@@ -82,7 +82,9 @@ export const AppLayout = () => {
           />
         )}
 
-        {!itemsLoading && <CombatModal items={items} playerId={playerId} player={player} />}
+        {!itemsLoading && (
+          <CombatModal items={items} playerId={playerId} player={player} />
+        )}
       </div>
     </PurseProvider>
   )
