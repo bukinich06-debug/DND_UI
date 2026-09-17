@@ -236,5 +236,34 @@
     "properties": "Properties",
     "weight": "Weight",
     "weightUnit": "lb"
+  },
+  "combat": {
+    "title": "Combat Mode",
+    "loading": "Loading combat…",
+    "round": "Round {number}",
+    "yourTurn": "Your turn",
+    "enemyTurn": "Enemy turn",
+    "hp": "HP",
+    "distance": "{feet} ft.",
+    "distanceUnknown": "? ft.",
+    "feet": "ft.",
+    "type": {
+      "player": "Player",
+      "npc": "NPC",
+      "monster": "Monster"
+    },
+    "logEmpty": "Combat starts.",
+    "chatPlaceholder": "Your action or message…",
+    "chatDisabled": "Not your turn",
+    "send": "Send",
+    "weapons": "Weapons",
+    "noWeapons": "No weapons",
+    "potions": "Potions",
+    "noPotions": "No potions",
+    "healingPotion": "Healing Potion",
+    "drink": "Drink",
+    "selectTarget": "Select target",
+    "noTargets": "No available targets",
+    "attack": "Attack"
   }
 }
