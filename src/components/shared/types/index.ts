@@ -71,7 +71,7 @@ export type ItemRarity = "common" | "uncommon" | "rare" | "veryRare" | "legendar
 export type ItemKind = "weapon" | "armor" | "shield" | "tool" | "gear" | "consumable" | "treasure" | "key" | "junk" | "other"
 
 export interface IItemProperty {
-  type: string
+  type: "range" | "twoHanded" | string
   text: string
   normal?: number
   long?: number

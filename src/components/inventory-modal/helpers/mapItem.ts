@@ -24,8 +24,6 @@ const formatValueCp = (valueCp: number | null): string | undefined => {
 }
 
 export const mapItem = (item: IApiItem): IInventoryItem => {
-  const texts = item.properties?.map((p) => p.text).filter(Boolean)
-
   return {
     id: item.id,
     name: item.name,
@@ -38,6 +36,6 @@ export const mapItem = (item: IApiItem): IInventoryItem => {
     equipped: item.equipSlot != null,
     isTwoHanded: item.properties?.some((p) => p.type === "twoHanded") ?? false,
     value: formatValueCp(item.valueCp),
-    properties: texts?.length ? texts : undefined,
+    properties: item.properties?.length ? item.properties : undefined,
   }
 }
