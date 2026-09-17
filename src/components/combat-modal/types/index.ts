@@ -1,4 +1,4 @@
-export type CombatantType = "player" | "npc" | "monster" | "ally"
+export type CombatantType = "player" | "npc" | "monster"
 
 export interface ICombatant {
   id: string
@@ -7,7 +7,8 @@ export interface ICombatant {
   hp: number
   maxHp: number
   feetFromPlayer: number
-  order: number
+  initiative: number
+  isOut: boolean
   isPlayerTurn?: boolean
 }
 
@@ -27,8 +28,9 @@ export interface IWeaponSlot {
 export interface IEncounter {
   id: string
   active: boolean
+  round: number
+  isPlayerTurn: boolean
   combatants: ICombatant[]
-  currentTurnPlayerId: string | null
   log: ICombatLogEntry[]
 }
 
@@ -37,4 +39,33 @@ export interface ICombatLogEntry {
   timestamp: number
   message: string
   actorName?: string
+}
+
+export interface IApiParticipant {
+  id: string
+  kind: "player" | "npc" | "monster"
+  displayName: string
+  hpCurrent: number
+  hpMax: number
+  initiative: number
+  feetFromPlayer: number
+  isOut: boolean
+  playerId: string | null
+  npcId: string | null
+  monsterInstanceId: string | null
+}
+
+export interface IApiEncounter {
+  encounterId: string
+  round: number
+  currentTurnIndex: number
+  status: string
+  currentParticipantId: string
+  isPlayerTurn: boolean
+  participants: IApiParticipant[]
+}
+
+export interface IApiEncounterResponse {
+  hasActiveEncounter: boolean
+  encounter: IApiEncounter | null
 }

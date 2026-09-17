@@ -4,6 +4,8 @@
 
 UI-only реализация модального окна для боя в DND_UI. Модалка автоматически открывается при наличии активного боя (active encounter) и закрывается по его завершении.
 
+**Интеграция с бэкендом:** Контракт API соответствует DND_AI PR #22 (ветка `cursor/combat-ui-backend-8f68`).
+
 ## Архитектура
 
 Модалка состоит из трех колонок:
@@ -74,63 +76,104 @@ return (
 ```
 
 Модалка сама:
-- Опрашивает API `/api/encounter` каждые 3 секунды
-- Показывается, если `encounter.active === true`
-- Скрывается, если `encounter === null || encounter.active === false`
+- Опрашивает API `/api/encounter/active` каждые 3 секунды
+- Показывается, если `hasActiveEncounter === true`
+- Скрывается, если `hasActiveEncounter === false` или `encounter === null`
 - Нельзя закрыть вручную (нет крестика/Escape)
 
-## Контракт API
+## Контракт API (реализован в DND_AI PR #22)
 
-### GET /api/encounter?playerId={playerId}
+### GET /api/encounter/active?campaignId={id}&playerId={id}
 
 **Ответ при наличии активного боя:**
 
 ```json
 {
-  "id": "enc_123",
-  "active": true,
-  "currentTurnPlayerId": "player_456",
-  "combatants": [
-    {
-      "id": "player_456",
-      "name": "Эльдар",
-      "type": "player",
-      "hp": 45,
-      "maxHp": 50,
-      "feetFromPlayer": 0,
-      "order": 2,
-      "isPlayerTurn": true
-    },
-    {
-      "id": "monster_789",
-      "name": "Гоблин",
-      "type": "monster",
-      "hp": 12,
-      "maxHp": 15,
-      "feetFromPlayer": 20,
-      "order": 1
-    }
-  ],
-  "log": [
-    {
-      "id": "log_1",
-      "timestamp": 1705000000000,
-      "message": "Начало боя!",
-      "actorName": "Мастер"
-    }
-  ]
+  "hasActiveEncounter": true,
+  "encounter": {
+    "encounterId": "enc_abc123",
+    "round": 1,
+    "currentTurnIndex": 0,
+    "status": "active",
+    "currentParticipantId": "participant_xyz",
+    "isPlayerTurn": true,
+    "participants": [
+      {
+        "id": "participant_player",
+        "kind": "player",
+        "displayName": "Эльдар",
+        "hpCurrent": 45,
+        "hpMax": 50,
+        "initiative": 18,
+        "feetFromPlayer": 0,
+        "isOut": false,
+        "playerId": "player_123",
+        "npcId": null,
+        "monsterInstanceId": null
+      },
+      {
+        "id": "participant_goblin",
+        "kind": "monster",
+        "displayName": "Гоблин",
+        "hpCurrent": 12,
+        "hpMax": 15,
+        "initiative": 14,
+        "feetFromPlayer": 20,
+        "isOut": false,
+        "playerId": null,
+        "npcId": null,
+        "monsterInstanceId": "monster_456"
+      }
+    ]
+  }
 }
 ```
 
 **Ответ при отсутствии боя:**
-- `404 Not Found` или `{ "active": false }`
+
+```json
+{
+  "hasActiveEncounter": false,
+  "encounter": null
+}
+```
+
+### Маппинг полей в UI типы
+
+| Бэкенд поле | UI поле | Описание |
+|-------------|---------|----------|
+| `hasActiveEncounter` | `encounter.active` | Флаг активного боя |
+| `encounter.encounterId` | `encounter.id` | ID боя |
+| `encounter.round` | `encounter.round` | Номер раунда |
+| `encounter.isPlayerTurn` | `encounter.isPlayerTurn` | Ход игрока |
+| `encounter.currentParticipantId` | используется для `isPlayerTurn` в карточке | Чей сейчас ход |
+| `participants[].id` | `combatants[].id` | ID участника |
+| `participants[].kind` | `combatants[].type` | Тип: `player`, `npc`, `monster` |
+| `participants[].displayName` | `combatants[].name` | Отображаемое имя |
+| `participants[].hpCurrent` | `combatants[].hp` | Текущее HP |
+| `participants[].hpMax` | `combatants[].maxHp` | Максимальное HP |
+| `participants[].initiative` | `combatants[].initiative` | Инициатива (для сортировки) |
+| `participants[].feetFromPlayer` | `combatants[].feetFromPlayer` | Расстояние до игрока в футах |
+| `participants[].isOut` | `combatants[].isOut` | Выбыл из боя |
+
+### Сортировка участников
+
+Участники отображаются в порядке убывания инициативы (`initiative DESC`):
+
+```typescript
+const sortedParticipants = [...data.encounter.participants].sort(
+  (a, b) => b.initiative - a.initiative,
+)
+```
 
 ### Требования к полям
 
-- **`feetFromPlayer`** (NEW!) — расстояние от игрока в футах. **Критически важно** для фильтрации целей оружия.
-- **`order`** — порядок инициативы (меньше = раньше ходит)
-- **`currentTurnPlayerId`** — ID игрока, чей сейчас ход (для блокировки чата)
-- **`type`** — `"player" | "npc" | "monster" | "ally"` (только `monster`/`npc` могут быть целями атаки)
+- **`feetFromPlayer`** — расстояние от игрока в футах. Критично для фильтрации целей оружия.
+  - ⚠️ **Graceful degradation**: Если поле отсутствует (`undefined`), показывается "? фт." и враг исключается из целей атаки
+- **`initiative`** — для сортировки участников по порядку хода
+- **`isPlayerTurn`** — для блокировки чата и визуальной индикации
+- **`kind`** — `"player" | "npc" | "monster"` (только `monster`/`npc` могут быть целями атаки)
+- **`status`** — для определения активности боя (`"active"`)
 
 ## Фильтрация целей оружия
 
@@ -178,8 +221,9 @@ return (
    - Требуется endpoint: `POST /api/combat/message`
    - Payload: `{ message, encounterId }`
 
-4. **Ходы врагов** — не логируются в чат
-   - Требуется DND_AI добавить события в `log` при ходе врага
+4. **Лог боя** — пока не реализован на бэкенде
+   - UI показывает пустой массив `log: []`
+   - Требуется добавление событий в `encounter.log` при ходах
 
 ## Локализация
 
@@ -189,10 +233,12 @@ return (
 {
   "combat": {
     "title": "Боевой режим",
+    "round": "Раунд {number}",
     "yourTurn": "Ваш ход",
     "enemyTurn": "Ход врага",
     "hp": "ОЗ",
     "distance": "{feet} фт.",
+    "distanceUnknown": "? фт.",
     "attack": "Ударить",
     // ...
   }
@@ -201,17 +247,28 @@ return (
 
 ## Зависимости от DND_AI
 
-### Критично для работы:
-1. **`feetFromPlayer`** в `ICombatant` — без этого поля фильтрация целей не работает
-2. **`GET /api/encounter`** — endpoint должен возвращать структуру выше
-3. **`active` флаг** — для автоматического открытия/закрытия модалки
+### Реализовано в DND_AI PR #22 (`cursor/combat-ui-backend-8f68`):
+1. ✅ **`GET /api/encounter/active`** — endpoint возвращает структуру выше
+2. ✅ **`feetFromPlayer`** в `participants` — для фильтрации целей
+3. ✅ **`isPlayerTurn` флаг** — для блокировки чата
+4. ✅ **`hasActiveEncounter`** — для автоматического открытия/закрытия модалки
 
-### Опционально (для будущих фич):
+### Ожидается (для будущих фич):
 - `POST /api/combat/attack` — для реализации атак
 - `POST /api/combat/use-potion` — для питья зелий
-- Логирование ходов врагов в `encounter.log`
+- `POST /api/combat/message` — для отправки сообщений в чат
+- Логирование ходов в `encounter.log[]`
 
 ## Тестирование
+
+### С бэкендом (DND_AI PR #22)
+1. Убедиться, что `NEXT_PUBLIC_API_URL` указывает на DND_AI с PR #22
+2. Убедиться, что `NEXT_PUBLIC_COMPANY_ID` и `NEXT_PUBLIC_PLAYER_ID` заданы
+3. Запустить бой через мастера
+4. Модалка откроется при появлении active encounter
+5. Проверить отображение участников, их HP и дистанции
+6. Проверить фильтрацию целей по дистанции оружия
+7. Проверить блокировку чата не в ход игрока
 
 ### Без бэкенда (моки)
 1. Временно изменить `getEncounter.ts`:
@@ -219,10 +276,30 @@ return (
    return {
      id: "mock_enc",
      active: true,
-     currentTurnPlayerId: playerId,
+     round: 1,
+     isPlayerTurn: true,
      combatants: [
-       { id: playerId, name: "Игрок", type: "player", hp: 50, maxHp: 50, feetFromPlayer: 0, order: 1 },
-       { id: "m1", name: "Гоблин", type: "monster", hp: 15, maxHp: 15, feetFromPlayer: 10, order: 2 }
+       {
+         id: playerId,
+         name: "Игрок",
+         type: "player",
+         hp: 50,
+         maxHp: 50,
+         feetFromPlayer: 0,
+         initiative: 20,
+         isOut: false,
+         isPlayerTurn: true
+       },
+       {
+         id: "m1",
+         name: "Гоблин",
+         type: "monster",
+         hp: 15,
+         maxHp: 15,
+         feetFromPlayer: 10,
+         initiative: 14,
+         isOut: false
+       }
      ],
      log: []
    }
@@ -231,16 +308,12 @@ return (
 2. Запустить `npm run dev`
 3. Модалка откроется автоматически
 
-### С бэкендом
-1. Убедиться, что `NEXT_PUBLIC_API_URL` указывает на DND_AI
-2. Запустить бой через мастера
-3. Модалка откроется при появлении active encounter
-
 ## Производительность
 
 - **Polling interval**: 3 секунды (настраивается в `useEncounter.ts`)
-- **Авто-закрытие**: при `active: false` или 404 модалка скрывается
+- **Авто-закрытие**: при `hasActiveEncounter: false` или `encounter: null` модалка скрывается
 - **Ленивая загрузка**: инвентарь загружается один раз при монтировании `AppLayout`
+- **Сортировка**: участники сортируются по `initiative DESC` на стороне клиента
 
 ## Стилизация
 
@@ -253,4 +326,5 @@ return (
 
 **Автор:** Cloud Agent  
 **Дата:** 2026-09-17  
-**PR:** #11
+**PR:** [#11](https://github.com/bukinich06-debug/DND_UI/pull/11)  
+**Бэкенд:** DND_AI [PR #22](https://github.com/bukinich06-debug/DND_AI/pull/22) (`cursor/combat-ui-backend-8f68`)

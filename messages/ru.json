@@ -240,6 +240,7 @@
   "combat": {
     "title": "Боевой режим",
     "loading": "Загрузка боя…",
+    "round": "Раунд {number}",
     "yourTurn": "Ваш ход",
     "enemyTurn": "Ход врага",
     "hp": "ОЗ",
@@ -249,8 +250,7 @@
     "type": {
       "player": "Игрок",
       "npc": "NPC",
-      "monster": "Монстр",
-      "ally": "Союзник"
+      "monster": "Монстр"
     },
     "logEmpty": "Начало боя.",
     "chatPlaceholder": "Ваше действие или реплика…",

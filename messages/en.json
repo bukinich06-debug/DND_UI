@@ -240,6 +240,7 @@
   "combat": {
     "title": "Combat Mode",
     "loading": "Loading combat…",
+    "round": "Round {number}",
     "yourTurn": "Your turn",
     "enemyTurn": "Enemy turn",
     "hp": "HP",
@@ -249,8 +250,7 @@
     "type": {
       "player": "Player",
       "npc": "NPC",
-      "monster": "Monster",
-      "ally": "Ally"
+      "monster": "Monster"
     },
     "logEmpty": "Combat starts.",
     "chatPlaceholder": "Your action or message…",

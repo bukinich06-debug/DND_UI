@@ -38,18 +38,20 @@ export const CombatModal = ({ items, playerId }: ICombatModalProps) => {
   )
   const potionCount = potions.reduce((sum, p) => sum + p.qty, 0)
 
-  const isPlayerTurn =
-    encounter.currentTurnPlayerId === playerId
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6 backdrop-blur-[4px]">
       <div className="flex h-[680px] w-full max-w-[1200px] flex-col overflow-hidden border border-border-light bg-panel shadow-[0_24px_80px_rgba(0,0,0,0.8)]">
         <div className="flex shrink-0 items-center justify-between border-b border-border px-5 py-4">
-          <h2 className="m-0 font-sans text-[22px] font-bold uppercase text-foreground">
-            {t("title")}
-          </h2>
+          <div>
+            <h2 className="m-0 font-sans text-[22px] font-bold uppercase text-foreground">
+              {t("title")}
+            </h2>
+            <div className="mt-0.5 font-sans text-xs text-muted">
+              {t("round", { number: encounter.round })}
+            </div>
+          </div>
           <div className="font-sans text-xs text-muted">
-            {isPlayerTurn ? (
+            {encounter.isPlayerTurn ? (
               <span className="font-bold text-accent">{t("yourTurn")}</span>
             ) : (
               t("enemyTurn")
@@ -59,7 +61,7 @@ export const CombatModal = ({ items, playerId }: ICombatModalProps) => {
 
         <div className="flex flex-1 overflow-hidden">
           <ParticipantList combatants={encounter.combatants} />
-          <CombatChat log={encounter.log} isPlayerTurn={isPlayerTurn} />
+          <CombatChat log={encounter.log} isPlayerTurn={encounter.isPlayerTurn} />
           <AbilitiesPanel
             weapons={weapons}
             combatants={encounter.combatants}
