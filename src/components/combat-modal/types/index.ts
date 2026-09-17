@@ -36,11 +36,22 @@ export interface IEncounter {
   log: ICombatLogEntry[]
 }
 
+export interface ICombatLogEntryMeta {
+  attackRoll?: number
+  attackBonus?: number
+  attackTotal?: number
+  targetAc?: number
+  damageTotal?: number
+  hpBefore?: number
+  hpAfter?: number
+}
+
 export interface ICombatLogEntry {
   id: string
   timestamp: number
   message: string
   actorName?: string
+  meta?: ICombatLogEntryMeta
 }
 
 export interface IApiParticipant {

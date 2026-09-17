@@ -9,6 +9,31 @@ interface ICombatChatProps {
   isPlayerTurn: boolean
 }
 
+const formatDiceRoll = (entry: ICombatLogEntry, t: (key: string) => string): string | null => {
+  if (!entry.meta) return null
+
+  const { attackRoll, attackBonus, attackTotal, targetAc, damageTotal, hpBefore, hpAfter } = entry.meta
+
+  const parts: string[] = []
+
+  if (attackRoll !== undefined && attackBonus !== undefined && attackTotal !== undefined) {
+    const bonus = attackBonus >= 0 ? `+${attackBonus}` : `${attackBonus}`
+    if (targetAc !== undefined) {
+      parts.push(`d20 ${attackRoll} ${bonus} = ${attackTotal} ${t("vs")} AC ${targetAc}`)
+    } else {
+      parts.push(`d20 ${attackRoll} ${bonus} = ${attackTotal}`)
+    }
+  }
+
+  if (damageTotal !== undefined && hpBefore !== undefined && hpAfter !== undefined) {
+    parts.push(`${t("damage")} ${damageTotal} (${t("hp")} ${hpBefore}→${hpAfter})`)
+  } else if (damageTotal !== undefined) {
+    parts.push(`${t("damage")} ${damageTotal}`)
+  }
+
+  return parts.length > 0 ? parts.join(", ") : null
+}
+
 export const CombatChat = ({ log, isPlayerTurn }: ICombatChatProps) => {
   const t = useTranslations("combat")
   const [message, setMessage] = useState("")
@@ -39,18 +64,26 @@ export const CombatChat = ({ log, isPlayerTurn }: ICombatChatProps) => {
             {t("logEmpty")}
           </p>
         )}
-        {log.map((entry) => (
-          <div key={entry.id} className="mb-3">
-            {entry.actorName && (
-              <div className="mb-0.5 font-sans text-xs font-semibold text-accent">
-                {entry.actorName}
+        {log.map((entry) => {
+          const diceRoll = formatDiceRoll(entry, t)
+          return (
+            <div key={entry.id} className="mb-3">
+              {entry.actorName && (
+                <div className="mb-0.5 font-sans text-xs font-semibold text-accent">
+                  {entry.actorName}
+                </div>
+              )}
+              <div className="font-sans text-sm text-foreground">
+                {entry.message}
               </div>
-            )}
-            <div className="font-sans text-sm text-foreground">
-              {entry.message}
+              {diceRoll && (
+                <div className="mt-0.5 font-mono text-xs text-muted">
+                  {diceRoll}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       <form onSubmit={handleSubmit} className="shrink-0 p-4">
