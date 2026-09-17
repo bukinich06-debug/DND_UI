@@ -3,11 +3,26 @@ import type {
   IApiEncounterResponse,
   IApiParticipant,
   ICombatant,
+  ICombatLogEntry,
 } from "../types"
 import { getCombatApiEnv } from "./env"
 
-interface IGetEncounterParams {
+interface IAdvanceEncounterParams {
   signal?: AbortSignal
+}
+
+interface IApiAdvanceResponse {
+  hasActiveEncounter: boolean
+  encounter: {
+    encounterId: string
+    round: number
+    currentTurnIndex: number
+    status: string
+    currentParticipantId: string
+    isPlayerTurn: boolean
+    participants: IApiParticipant[]
+    log?: ICombatLogEntry[]
+  } | null
 }
 
 const mapParticipantToCombatant = (
@@ -25,22 +40,36 @@ const mapParticipantToCombatant = (
   isPlayerTurn: participant.id === currentParticipantId,
 })
 
-export const getEncounter = async ({
+export const advanceEncounter = async ({
   signal,
-}: IGetEncounterParams = {}): Promise<IEncounter | null> => {
+}: IAdvanceEncounterParams = {}): Promise<IEncounter> => {
   const { baseUrl, playerId, campaignId } = getCombatApiEnv()
 
-  const url = new URL("/api/encounter/active", baseUrl)
+  const url = new URL("/api/encounter/advance", baseUrl)
   url.searchParams.set("campaignId", campaignId)
   url.searchParams.set("playerId", playerId)
 
   try {
-    const res = await fetch(url, { signal })
-    if (!res.ok) throw new Error("Не удалось получить данные боя.")
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ campaignId, playerId }),
+      signal,
+    })
 
-    const data = (await res.json()) as IApiEncounterResponse
+    if (!res.ok) {
+      if (res.status === 400) {
+        const errorData = await res.json().catch(() => ({}))
+        if (errorData.code === "PLAYER_TURN")
+          throw new Error("Сейчас ход игрока, нельзя продвинуть ход.")
+      }
+      throw new Error("Не удалось продвинуть ход.")
+    }
 
-    if (!data.hasActiveEncounter || !data.encounter) return null
+    const data = (await res.json()) as IApiAdvanceResponse
+
+    if (!data.hasActiveEncounter || !data.encounter)
+      throw new Error("Бой завершён.")
 
     const sortedParticipants = [...data.encounter.participants].sort(
       (a, b) => b.initiative - a.initiative,
@@ -58,7 +87,7 @@ export const getEncounter = async ({
     }
   } catch (err) {
     if (err instanceof DOMException && err.name === "AbortError") throw err
-    console.error("Failed to fetch encounter:", err)
-    return null
+    if (err instanceof Error) throw err
+    throw new Error("Не удалось продвинуть ход.")
   }
 }

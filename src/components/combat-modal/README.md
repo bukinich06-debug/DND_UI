@@ -207,6 +207,67 @@ const sortedParticipants = [...data.encounter.participants].sort(
 - Ищет паттерн `range\s*\((\d+)(?:\/(\d+))?\)`
 - Извлекает `normal` (150 ft) и опционально `long` (600 ft)
 
+## Продвижение хода врага
+
+### POST /api/encounter/advance
+
+**Цель:** Продвинуть ход врага (монстра) и получить обновлённое состояние боя.
+
+**Контракт (адаптивный):**
+- **Query params** или **Body**: `campaignId`, `playerId`
+- Клиент поддерживает оба варианта: query params в URL + те же поля в body
+
+**Запрос:**
+```http
+POST /api/encounter/advance?campaignId={id}&playerId={id}
+Content-Type: application/json
+
+{
+  "campaignId": "...",
+  "playerId": "..."
+}
+```
+
+**Ответ (успех):**
+```json
+{
+  "hasActiveEncounter": true,
+  "encounter": {
+    "encounterId": "enc_abc123",
+    "round": 1,
+    "currentTurnIndex": 1,
+    "status": "active",
+    "currentParticipantId": "participant_player",
+    "isPlayerTurn": true,
+    "participants": [...],
+    "log": [
+      {
+        "id": "log_1",
+        "timestamp": 1726611234000,
+        "message": "Гоблин атакует игрока и промахивается.",
+        "actorName": "Гоблин"
+      }
+    ]
+  }
+}
+```
+
+**Ответ (ошибка — ход игрока):**
+```json
+{
+  "code": "PLAYER_TURN",
+  "message": "Cannot advance during player turn"
+}
+```
+HTTP 400
+
+**UI реализация:**
+- Кнопка «Следующий ход» видна только когда `!isPlayerTurn`
+- При клике отправляется `POST /api/encounter/advance`
+- Loading state: кнопка disabled с текстом "Продвигаем ход…"
+- После успеха: `encounter` обновляется, лог и HP участников обновляются
+- Ошибка `PLAYER_TURN` показывается в красной полосе над чатом
+
 ## Текущие ограничения (TODO)
 
 1. **Кнопка "Ударить"** — только `console.log`, не вызывает API
@@ -220,10 +281,6 @@ const sortedParticipants = [...data.encounter.participants].sort(
 3. **Отправка сообщений в чат** — только `console.log`
    - Требуется endpoint: `POST /api/combat/message`
    - Payload: `{ message, encounterId }`
-
-4. **Лог боя** — пока не реализован на бэкенде
-   - UI показывает пустой массив `log: []`
-   - Требуется добавление событий в `encounter.log` при ходах
 
 ## Локализация
 
