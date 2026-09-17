@@ -65,11 +65,22 @@ const appendAssistant = (
 export const useTurn = ({ onLocationChanged, onShopOpen }: IParams) => {
   const refreshPurse = useRefreshPurse()
   const locationIdRef = useRef<string | null>(null)
+  const awaitingDepthRef = useRef(0)
   const [entries, setEntries] = useState<ILogEntry[]>([])
   const [messages, setMessages] = useState<IChatMessage[]>([])
   const [pending, setPending] = useState<IPendingCheck | null>(null)
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const beginAwaiting = useCallback(() => {
+    awaitingDepthRef.current += 1
+    setSending(true)
+  }, [])
+
+  const endAwaiting = useCallback(() => {
+    awaitingDepthRef.current = Math.max(0, awaitingDepthRef.current - 1)
+    if (awaitingDepthRef.current === 0) setSending(false)
+  }, [])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -98,13 +109,16 @@ export const useTurn = ({ onLocationChanged, onShopOpen }: IParams) => {
   }
 
   const requestAndAddLocationLook = useCallback(async () => {
+    beginAwaiting()
     try {
       const reply = await requestLocationLook()
       setEntries((prev) => [...prev, withId(reply)])
     } catch {
       /* если описание локации не удалось — не валит UI */
+    } finally {
+      endAwaiting()
     }
-  }, [])
+  }, [beginAwaiting, endAwaiting])
 
   const applyReplies = (result: ITurnResult, resumeChat: IChatMessage[]) => {
     const extra: ILogEntry[] = result.replies.map(withId)
@@ -152,7 +166,7 @@ export const useTurn = ({ onLocationChanged, onShopOpen }: IParams) => {
     }
     const next: IChatMessage[] = [...messages, { role: "user", content: text }]
     setEntries((prev) => [...prev, player])
-    setSending(true)
+    beginAwaiting()
     setError(null)
     try {
       const result = await postTurn({ messages: next })
@@ -164,13 +178,13 @@ export const useTurn = ({ onLocationChanged, onShopOpen }: IParams) => {
       setError(err instanceof Error ? err.message : "Не удалось выполнить ход.")
       throw err
     } finally {
-      setSending(false)
+      endAwaiting()
     }
   }
 
   const rollCheck = async () => {
     if (!pending || sending) return
-    setSending(true)
+    beginAwaiting()
     setError(null)
     const current = pending
     try {
@@ -201,7 +215,7 @@ export const useTurn = ({ onLocationChanged, onShopOpen }: IParams) => {
         err instanceof Error ? err.message : "Не удалось выполнить проверку.",
       )
     } finally {
-      setSending(false)
+      endAwaiting()
     }
   }
 
@@ -223,5 +237,7 @@ export const useTurn = ({ onLocationChanged, onShopOpen }: IParams) => {
     error,
     requestLocationLook: requestAndAddLocationLook,
     addPurchaseNarration,
+    beginAwaiting,
+    endAwaiting,
   }
 }
