@@ -70,6 +70,13 @@ export type ItemRarity = "common" | "uncommon" | "rare" | "veryRare" | "legendar
 
 export type ItemKind = "weapon" | "armor" | "shield" | "tool" | "gear" | "consumable" | "treasure" | "key" | "junk" | "other"
 
+export interface IItemProperty {
+  type: string
+  text: string
+  normal?: number
+  long?: number
+}
+
 export interface IInventoryItem {
   id: string
   name: string
@@ -82,7 +89,7 @@ export interface IInventoryItem {
   equipped?: boolean
   isTwoHanded?: boolean
   value?: string
-  properties?: string[]
+  properties?: Array<string | IItemProperty>
 }
 
 export interface IPurse {

@@ -9,6 +9,29 @@ export const getWeaponsFromInventory = (
     .map((item) => {
       const properties: IWeaponProperty[] = (item.properties ?? []).map(
         (prop) => {
+          if (typeof prop === "object") {
+            if (prop.type === "range" && prop.normal !== undefined) {
+              return {
+                type: "range",
+                normal: prop.normal,
+                long: prop.long,
+                text: prop.text,
+              }
+            }
+            
+            if (prop.type === "twoHanded" || prop.type === "two-handed") {
+              return {
+                type: "twoHanded",
+                text: prop.text,
+              }
+            }
+
+            return {
+              type: prop.type,
+              text: prop.text,
+            }
+          }
+
           const rangeMatch = prop.match(/range\s*\((\d+)(?:\/(\d+))?\)/i)
           if (rangeMatch) {
             return {
