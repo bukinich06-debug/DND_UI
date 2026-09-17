@@ -12,8 +12,9 @@ interface IAdvanceEncounterParams {
 }
 
 interface IApiAdvanceResponse {
-  hasActiveEncounter: boolean
-  encounter: {
+  success: boolean
+  errorCode?: string
+  encounter?: {
     encounterId: string
     round: number
     currentTurnIndex: number
@@ -22,7 +23,8 @@ interface IApiAdvanceResponse {
     isPlayerTurn: boolean
     participants: IApiParticipant[]
     log?: ICombatLogEntry[]
-  } | null
+  }
+  newLogEntries?: ICombatLogEntry[]
 }
 
 const mapParticipantToCombatant = (
@@ -68,7 +70,13 @@ export const advanceEncounter = async ({
 
     const data = (await res.json()) as IApiAdvanceResponse
 
-    if (!data.hasActiveEncounter || !data.encounter)
+    if (!data.success) {
+      if (data.errorCode === "PLAYER_TURN")
+        throw new Error("Сейчас ход игрока, нельзя продвинуть ход.")
+      throw new Error("Бой завершён.")
+    }
+
+    if (!data.encounter || data.encounter.status === "ended")
       throw new Error("Бой завершён.")
 
     const sortedParticipants = [...data.encounter.participants].sort(
