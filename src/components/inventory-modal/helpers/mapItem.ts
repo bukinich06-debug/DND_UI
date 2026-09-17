@@ -36,6 +36,7 @@ export const mapItem = (item: IApiItem): IInventoryItem => {
     equipped: item.equipSlot != null,
     isTwoHanded: item.properties?.some((p) => p.type === "twoHanded") ?? false,
     value: formatValueCp(item.valueCp),
+    // Keep full structured props (type/normal/long). Do NOT strip to text-only.
     properties: item.properties?.length ? item.properties : undefined,
   }
 }

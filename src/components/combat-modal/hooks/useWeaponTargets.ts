@@ -8,6 +8,9 @@ interface IUseWeaponTargetsParams {
   playerId: string
 }
 
+const isCombatDebug = () =>
+  typeof window !== "undefined" && localStorage.getItem("combatDebug") === "1"
+
 export const useWeaponTargets = ({
   weapon,
   combatants,
@@ -17,11 +20,14 @@ export const useWeaponTargets = ({
 
   const maxRange = rangeProperty?.normal ?? 5
 
-  if (typeof window !== "undefined" && localStorage.getItem("combatDebug") === "1") {
+  if (isCombatDebug()) {
     console.log("[useWeaponTargets]", weapon.name)
     console.log("  rangeProperty:", rangeProperty)
     console.log("  maxRange:", maxRange)
-    console.log("  combatants distances:", combatants.map(c => `${c.name}: ${c.feetFromPlayer}ft`))
+    console.log(
+      "  combatants distances:",
+      combatants.map((c) => `${c.name}: ${c.feetFromPlayer}ft`),
+    )
   }
 
   const targets = combatants.filter((c) => {
@@ -32,8 +38,11 @@ export const useWeaponTargets = ({
     return true
   })
 
-  if (typeof window !== "undefined" && localStorage.getItem("combatDebug") === "1") {
-    console.log("  filtered targets:", targets.map(t => t.name))
+  if (isCombatDebug()) {
+    console.log(
+      "  filtered targets:",
+      targets.map((t) => t.name),
+    )
   }
 
   return targets

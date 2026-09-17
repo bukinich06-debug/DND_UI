@@ -1,7 +1,12 @@
 import type { IInventoryItem } from "@/components/shared/types"
 import type { IWeaponSlot, IWeaponProperty } from "../types"
 
-const parseRangeFromString = (text: string): { normal: number; long?: number } | null => {
+const isCombatDebug = () =>
+  typeof window !== "undefined" && localStorage.getItem("combatDebug") === "1"
+
+const parseRangeFromString = (
+  text: string,
+): { normal: number; long?: number } | null => {
   const englishMatch = text.match(/range\s*\(?(\d+)(?:\/(\d+))?\)?/i)
   if (englishMatch) {
     return {
@@ -35,14 +40,19 @@ export const getWeaponsFromInventory = (
   return items
     .filter((item) => item.kind === "weapon")
     .map((item) => {
-      if (typeof window !== "undefined" && localStorage.getItem("combatDebug") === "1") {
-        console.log("[getWeaponsFromInventory]", item.name, "raw properties:", item.properties)
+      if (isCombatDebug()) {
+        console.log(
+          "[getWeaponsFromInventory]",
+          item.name,
+          "raw properties:",
+          item.properties,
+        )
       }
 
       const properties: IWeaponProperty[] = (item.properties ?? []).map(
         (prop): IWeaponProperty => {
-          if (typeof prop === "object") {
-            if (typeof window !== "undefined" && localStorage.getItem("combatDebug") === "1") {
+          if (typeof prop === "object" && prop !== null) {
+            if (isCombatDebug()) {
               console.log("  structured prop:", prop)
             }
 
@@ -54,7 +64,7 @@ export const getWeaponsFromInventory = (
                 text: prop.text,
               }
             }
-            
+
             if (prop.type === "twoHanded" || prop.type === "two-handed") {
               return {
                 type: "twoHanded",
@@ -68,12 +78,12 @@ export const getWeaponsFromInventory = (
             }
           }
 
-          const propText = prop
-          const propLower = prop.toLowerCase()
+          const propText = String(prop)
+          const propLower = propText.toLowerCase()
 
           const rangeData = parseRangeFromString(propText)
           if (rangeData) {
-            if (typeof window !== "undefined" && localStorage.getItem("combatDebug") === "1") {
+            if (isCombatDebug()) {
               console.log("  parsed range from string:", rangeData)
             }
             return {
@@ -83,7 +93,7 @@ export const getWeaponsFromInventory = (
             }
           }
 
-          if (propLower.includes("two-handed")) {
+          if (propLower.includes("two-handed") || propLower.includes("двуруч")) {
             return {
               type: "twoHanded",
               text: propText,
@@ -97,7 +107,7 @@ export const getWeaponsFromInventory = (
         },
       )
 
-      if (typeof window !== "undefined" && localStorage.getItem("combatDebug") === "1") {
+      if (isCombatDebug()) {
         console.log("  final properties:", properties)
       }
 
