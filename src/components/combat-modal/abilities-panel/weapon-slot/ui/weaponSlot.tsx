@@ -13,6 +13,7 @@ interface IWeaponSlotProps {
   combatants: ICombatant[]
   playerId: string
   player: IPlayer | null
+  onAttack: (targetName: string, weaponName: string) => void
 }
 
 export const WeaponSlot = ({
@@ -20,6 +21,7 @@ export const WeaponSlot = ({
   combatants,
   playerId,
   player,
+  onAttack,
 }: IWeaponSlotProps) => {
   const t = useTranslations("combat")
   const [selectedTargetId, setSelectedTargetId] = useState("")
@@ -32,9 +34,11 @@ export const WeaponSlot = ({
 
   const handleAttack = () => {
     if (!selectedTargetId) return
-    console.log(
-      `TODO: Attack with ${weapon.name} against target ${selectedTargetId}`,
-    )
+
+    const target = availableTargets.find((t) => t.id === selectedTargetId)
+    if (!target) return
+
+    onAttack(target.name, weapon.name)
   }
 
   const attackBonus = getAttackBonus(weapon, player)

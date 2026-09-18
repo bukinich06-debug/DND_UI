@@ -12,6 +12,7 @@ interface IAbilitiesPanelProps {
   playerId: string
   potionCount: number
   player: IPlayer | null
+  onAttack: (targetName: string, weaponName: string) => void
 }
 
 export const AbilitiesPanel = ({
@@ -20,6 +21,7 @@ export const AbilitiesPanel = ({
   playerId,
   potionCount,
   player,
+  onAttack,
 }: IAbilitiesPanelProps) => {
   const t = useTranslations("combat")
 
@@ -42,6 +44,7 @@ export const AbilitiesPanel = ({
               combatants={combatants}
               playerId={playerId}
               player={player}
+              onAttack={onAttack}
             />
           ))}
         </div>

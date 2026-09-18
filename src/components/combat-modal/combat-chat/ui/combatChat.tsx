@@ -2,11 +2,15 @@
 
 import { useTranslations } from "next-intl"
 import type { ICombatLogEntry } from "../../types"
-import { useState, useRef, useEffect } from "react"
+import { useRef, useEffect } from "react"
 
 interface ICombatChatProps {
   log: ICombatLogEntry[]
   isPlayerTurn: boolean
+  message: string
+  onMessageChange: (message: string) => void
+  onSubmit: (message: string) => void
+  loading: boolean
 }
 
 const formatDiceRoll = (entry: ICombatLogEntry, t: (key: string) => string): string | null => {
@@ -34,9 +38,15 @@ const formatDiceRoll = (entry: ICombatLogEntry, t: (key: string) => string): str
   return parts.length > 0 ? parts.join(", ") : null
 }
 
-export const CombatChat = ({ log, isPlayerTurn }: ICombatChatProps) => {
+export const CombatChat = ({
+  log,
+  isPlayerTurn,
+  message,
+  onMessageChange,
+  onSubmit,
+  loading,
+}: ICombatChatProps) => {
   const t = useTranslations("combat")
-  const [message, setMessage] = useState("")
   const logRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -47,10 +57,8 @@ export const CombatChat = ({ log, isPlayerTurn }: ICombatChatProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!message.trim() || !isPlayerTurn) return
-
-    console.log("TODO: Send combat message:", message)
-    setMessage("")
+    if (!message.trim() || !isPlayerTurn || loading) return
+    onSubmit(message)
   }
 
   return (
@@ -89,8 +97,8 @@ export const CombatChat = ({ log, isPlayerTurn }: ICombatChatProps) => {
       <form onSubmit={handleSubmit} className="shrink-0 p-4">
         <textarea
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          disabled={!isPlayerTurn}
+          onChange={(e) => onMessageChange(e.target.value)}
+          disabled={!isPlayerTurn || loading}
           placeholder={
             isPlayerTurn ? t("chatPlaceholder") : t("chatDisabled")
           }
@@ -100,10 +108,10 @@ export const CombatChat = ({ log, isPlayerTurn }: ICombatChatProps) => {
         <div className="mt-2 flex justify-end">
           <button
             type="submit"
-            disabled={!isPlayerTurn || !message.trim()}
+            disabled={!isPlayerTurn || !message.trim() || loading}
             className="cursor-pointer border border-accent bg-accent px-4 py-2 font-sans text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {t("send")}
+            {loading ? t("sending") : t("send")}
           </button>
         </div>
       </form>

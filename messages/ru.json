@@ -258,6 +258,8 @@
     "chatPlaceholder": "Ваше действие или реплика…",
     "chatDisabled": "Не ваш ход",
     "send": "Отправить",
+    "sending": "Отправка…",
+    "attackMessage": "Атакую {targetName} оружием «{weaponName}»",
     "weapons": "Оружие",
     "noWeapons": "Нет оружия",
     "potions": "Зелья",
