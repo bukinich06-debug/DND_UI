@@ -258,6 +258,8 @@
     "chatPlaceholder": "Your action or message…",
     "chatDisabled": "Not your turn",
     "send": "Send",
+    "sending": "Sending…",
+    "attackMessage": "Attack {targetName} with «{weaponName}»",
     "weapons": "Weapons",
     "noWeapons": "No weapons",
     "potions": "Potions",
