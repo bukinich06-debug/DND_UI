@@ -1,6 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
+import { useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
 import { AbilityCard } from "../ability-card"
 import { BarStat } from "@/components/shared/bar-stat"
@@ -12,11 +13,14 @@ import {
   IconUser,
 } from "@/components/shared/icon"
 import { Purse } from "@/components/shared/purse"
-import type { TabId } from "@/components/shared/types"
+import type { TabId, IInventoryItem } from "@/components/shared/types"
 import { abilityMod, formatBonus } from "../helpers/abilityMod"
 import { xpToNext } from "../helpers/xpToNext"
 import { usePlayer } from "../hooks/usePlayer"
 import type { ICharacterPanelProps } from "../types"
+import { getItems } from "@/components/inventory-modal/api/getItems"
+import { getEquipmentSubtitle } from "../helpers/getEquipmentSubtitle"
+import { getSlotIcon } from "../helpers/getSlotIcon"
 
 const TAB_IDS: TabId[] = ["character", "spells", "journal"]
 
@@ -27,7 +31,20 @@ export const CharacterPanel = ({
 }: ICharacterPanelProps) => {
   const t = useTranslations("character")
   const tNav = useTranslations("nav")
+  const tInv = useTranslations("inventory")
   const player = usePlayer()
+  const [items, setItems] = useState<IInventoryItem[]>([])
+
+  useEffect(() => {
+    const controller = new AbortController()
+    getItems({ signal: controller.signal })
+      .then(setItems)
+      .catch((err: unknown) => {
+        if (err instanceof DOMException && err.name === "AbortError") return
+        setItems([])
+      })
+    return () => controller.abort()
+  }, [])
 
   const tabs = (
     <div className="border-t border-border px-4 py-3">
@@ -200,32 +217,41 @@ export const CharacterPanel = ({
         <div className="mb-0.5 font-sans text-xs uppercase tracking-widest text-muted">
           {t("equipment")}
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-accent">
-            <IconSword />
-          </span>
-          <div>
-            <div className="font-sans text-[13px] text-foreground">
-              {t("equipped.longbow")}
+        {["mainHand", "offHand", "ranged", "armor"].map((slot) => {
+          const item = items.find((i) => i.equipSlot === slot)
+          if (!item) {
+            return (
+              <div key={slot} className="flex items-center gap-2">
+                <span className="text-muted opacity-50">
+                  {getSlotIcon(slot as "mainHand" | "offHand" | "ranged" | "armor")}
+                </span>
+                <div>
+                  <div className="font-sans text-[13px] text-muted">
+                    {tInv(`equipSlot.${slot}`)}
+                  </div>
+                  <div className="text-[13px] text-muted">—</div>
+                </div>
+              </div>
+            )
+          }
+
+          const subtitle = getEquipmentSubtitle(item)
+          return (
+            <div key={slot} className="flex items-center gap-2">
+              <span className="text-accent">
+                {getSlotIcon(slot as "mainHand" | "offHand" | "ranged" | "armor")}
+              </span>
+              <div>
+                <div className="font-sans text-[13px] text-foreground">
+                  {item.name}
+                </div>
+                <div className="text-[13px] text-muted">
+                  {subtitle || tInv(`equipSlot.${slot}`)}
+                </div>
+              </div>
             </div>
-            <div className="text-[13px] text-muted">
-              {t("equipped.longbowSub")}
-            </div>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-accent">
-            <IconShield />
-          </span>
-          <div>
-            <div className="font-sans text-[13px] text-foreground">
-              {t("equipped.leatherArmor")}
-            </div>
-            <div className="text-[13px] text-muted">
-              {t("equipped.leatherArmorSub")}
-            </div>
-          </div>
-        </div>
+          )
+        })}
         <div className="mt-1 flex flex-wrap gap-1.5">
           <span className="border border-border bg-panel-alt px-2 py-0.5 font-sans text-[13px] text-muted">
             {t("tags.quiver", { count: 20 })}

@@ -46,9 +46,9 @@ export const ItemList = ({
                   ×{item.qty}
                 </span>
               )}
-              {item.equipped && (
+              {item.equipped && item.equipSlot && (
                 <span className="border border-border bg-panel-alt px-[5px] py-px text-xs text-system">
-                  {t("equipped")}
+                  {t(`equipSlot.${item.equipSlot}`)}
                 </span>
               )}
               {item.rarity && item.rarity !== "common" && (

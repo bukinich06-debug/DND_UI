@@ -49,12 +49,6 @@
       "wis": "WIS",
       "cha": "CHA"
     },
-    "equipped": {
-      "longbow": "Longbow",
-      "longbowSub": "Weapon · 1d8+3",
-      "leatherArmor": "Leather Armor",
-      "leatherArmorSub": "AC 12 + DEX"
-    },
     "tags": {
       "quiver": "Quiver ×{count}",
       "potion": "Potion ×{count}",
@@ -192,6 +186,12 @@
     "error": "Could not load items.",
     "equipError": "Could not equip or unequip the item.",
     "equipped": "Equipped",
+    "equipSlot": {
+      "mainHand": "Main hand",
+      "offHand": "Off-hand",
+      "ranged": "Ranged",
+      "armor": "Armor"
+    },
     "properties": "Properties",
     "value": "Value",
     "categoryWeight": "{category} · {weight} {unit}",

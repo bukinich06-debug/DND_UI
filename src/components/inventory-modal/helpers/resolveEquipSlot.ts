@@ -1,8 +1,9 @@
-import type { IInventoryItem } from "@/components/shared/types"
-import type { EquipSlot } from "../types"
+import type { IInventoryItem, EquipSlot } from "@/components/shared/types"
+import { isRangedWeapon } from "./isRangedWeapon"
 
 export const resolveEquipSlot = (item: IInventoryItem): EquipSlot => {
   if (item.kind === "armor") return "armor"
+  if (isRangedWeapon(item)) return "ranged"
   return "mainHand"
 }
 

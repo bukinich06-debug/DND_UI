@@ -49,12 +49,6 @@
       "wis": "МДР",
       "cha": "ХАР"
     },
-    "equipped": {
-      "longbow": "Длинный лук",
-      "longbowSub": "Оружие · 1d8+3",
-      "leatherArmor": "Кожаный доспех",
-      "leatherArmorSub": "КД 12 + ЛОВ"
-    },
     "tags": {
       "quiver": "Колчан ×{count}",
       "potion": "Зелье ×{count}",
@@ -192,6 +186,12 @@
     "error": "Не удалось загрузить предметы.",
     "equipError": "Не удалось надеть или снять предмет.",
     "equipped": "Надето",
+    "equipSlot": {
+      "mainHand": "В руке",
+      "offHand": "Во второй руке",
+      "ranged": "Дальний бой",
+      "armor": "Доспех"
+    },
     "properties": "Свойства",
     "value": "Цена",
     "categoryWeight": "{category} · {weight} {unit}",
