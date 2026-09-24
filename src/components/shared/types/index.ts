@@ -82,6 +82,8 @@ export interface IItemProperty {
 /** Alias used by inventory API mapping */
 export type IItemProp = IItemProperty
 
+export type EquipSlot = "armor" | "mainHand" | "offHand"
+
 export interface IInventoryItem {
   id: string
   name: string
@@ -92,6 +94,7 @@ export interface IInventoryItem {
   weight: number
   rarity?: ItemRarity
   equipped?: boolean
+  equipSlot?: EquipSlot
   isTwoHanded?: boolean
   value?: string
   properties?: Array<string | IItemProperty>
