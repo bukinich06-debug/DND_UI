@@ -261,7 +261,7 @@
     "sending": "Отправка…",
     "attackMessage": "Атакую {targetName} оружием «{weaponName}»",
     "weapons": "Оружие",
-    "noWeapons": "Нет оружия",
+    "noWeapons": "Нет оружия в руках. Экипируй его в инвентаре.",
     "potions": "Зелья",
     "noPotions": "Нет зелий",
     "healingPotion": "Зелье лечения",

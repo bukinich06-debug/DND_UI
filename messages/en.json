@@ -261,7 +261,7 @@
     "sending": "Sending…",
     "attackMessage": "Attack {targetName} with «{weaponName}»",
     "weapons": "Weapons",
-    "noWeapons": "No weapons",
+    "noWeapons": "No weapons equipped. Equip a weapon in your inventory.",
     "potions": "Potions",
     "noPotions": "No potions",
     "healingPotion": "Healing Potion",

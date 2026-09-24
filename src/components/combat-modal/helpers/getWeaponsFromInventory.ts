@@ -62,7 +62,10 @@ export const getWeaponsFromInventory = (
   items: IInventoryItem[],
 ): IWeaponSlot[] => {
   return items
-    .filter((item) => item.kind === "weapon")
+    .filter((item) => 
+      item.kind === "weapon" && 
+      (item.equipSlot === "mainHand" || item.equipSlot === "offHand")
+    )
     .map((item) => {
       if (isCombatDebug()) {
         console.log(
