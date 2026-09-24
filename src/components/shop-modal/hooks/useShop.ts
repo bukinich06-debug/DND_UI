@@ -22,11 +22,13 @@ interface IUseShopResult {
 interface IUseShopParams {
   npcId: string
   onPurchaseSuccess?: (replies: ITurnReply[]) => Promise<void>
+  onPurchaseAwaitingChange?: (awaiting: boolean) => void
 }
 
 export const useShop = ({
   npcId,
   onPurchaseSuccess,
+  onPurchaseAwaitingChange,
 }: IUseShopParams): IUseShopResult => {
   const [shop, setShop] = useState<IShopData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -84,6 +86,7 @@ export const useShop = ({
       setTimeout(() => setCooldown(false), 1200)
 
       if (onPurchaseSuccess) {
+        onPurchaseAwaitingChange?.(true)
         postPurchaseNarration({
           npcId: shop.npcId,
           itemName: item.name,
@@ -93,6 +96,9 @@ export const useShop = ({
           .then(onPurchaseSuccess)
           .catch(() => {
             /* Narration failure should not undo the purchase */
+          })
+          .finally(() => {
+            onPurchaseAwaitingChange?.(false)
           })
       }
     } catch (err: unknown) {

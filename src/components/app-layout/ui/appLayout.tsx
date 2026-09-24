@@ -34,6 +34,8 @@ export const AppLayout = () => {
   const [addPurchaseNarration, setAddPurchaseNarration] = useState<
     ((replies: ITurnReply[]) => Promise<void>) | null
   >(null)
+  const [beginAwaiting, setBeginAwaiting] = useState<(() => void) | null>(null)
+  const [endAwaiting, setEndAwaiting] = useState<(() => void) | null>(null)
 
   const playerId = process.env.NEXT_PUBLIC_PLAYER_ID ?? ""
 
@@ -49,9 +51,11 @@ export const AppLayout = () => {
           onLocationChanged={bumpLocation}
           locationEpoch={locationEpoch}
           onShopOpen={(signal: IOpenShopSignal) => setShopSignal(signal)}
-          onAddPurchaseNarrationReady={(callback) =>
+          onAddPurchaseNarrationReady={(callback, begin, end) => {
             setAddPurchaseNarration(() => callback)
-          }
+            setBeginAwaiting(() => begin)
+            setEndAwaiting(() => end)
+          }}
         />
 
         {!rightOpen && (
@@ -79,6 +83,10 @@ export const AppLayout = () => {
             npcId={shopSignal.npcId}
             onClose={() => setShopSignal(null)}
             onPurchaseSuccess={addPurchaseNarration ?? undefined}
+            onPurchaseAwaitingChange={(awaiting) => {
+              if (awaiting) beginAwaiting?.()
+              else endAwaiting?.()
+            }}
           />
         )}
 
