@@ -1,4 +1,4 @@
-import type { EquipSlot } from "../types"
+import type { EquipSlot } from "@/components/shared/types"
 import { getItemsApiEnv, readApiError } from "./env"
 
 interface IEquipItemParams {

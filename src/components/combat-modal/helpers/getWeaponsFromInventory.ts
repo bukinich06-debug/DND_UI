@@ -61,11 +61,24 @@ const toWeaponProperty = (prop: string | IItemProperty): IWeaponProperty => {
 export const getWeaponsFromInventory = (
   items: IInventoryItem[],
 ): IWeaponSlot[] => {
+  const slotOrder: Record<"mainHand" | "offHand" | "ranged", number> = { 
+    mainHand: 0, 
+    offHand: 1, 
+    ranged: 2 
+  }
+
   return items
     .filter((item) => 
       item.kind === "weapon" && 
-      (item.equipSlot === "mainHand" || item.equipSlot === "offHand")
+      (item.equipSlot === "mainHand" || item.equipSlot === "offHand" || item.equipSlot === "ranged")
     )
+    .sort((a, b) => {
+      const slotA = a.equipSlot as "mainHand" | "offHand" | "ranged"
+      const slotB = b.equipSlot as "mainHand" | "offHand" | "ranged"
+      const orderA = slotOrder[slotA] ?? 999
+      const orderB = slotOrder[slotB] ?? 999
+      return orderA - orderB
+    })
     .map((item) => {
       if (isCombatDebug()) {
         console.log(
