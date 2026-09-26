@@ -10,6 +10,11 @@ export interface ICombatant {
   initiative: number
   isOut: boolean
   isPlayerTurn?: boolean
+  actionUsed: boolean
+  bonusActionUsed: boolean
+  reactionUsed: boolean
+  movementUsedFeet: number
+  speed: number
 }
 
 export interface IWeaponProperty {
@@ -66,6 +71,11 @@ export interface IApiParticipant {
   playerId: string | null
   npcId: string | null
   monsterInstanceId: string | null
+  actionUsed?: boolean
+  bonusActionUsed?: boolean
+  reactionUsed?: boolean
+  movementUsedFeet?: number
+  speed?: number
 }
 
 export interface IApiEncounter {

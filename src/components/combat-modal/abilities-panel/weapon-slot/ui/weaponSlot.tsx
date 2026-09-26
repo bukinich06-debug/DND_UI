@@ -14,6 +14,8 @@ interface IWeaponSlotProps {
   playerId: string
   player: IPlayer | null
   onAttack: (targetName: string, weaponName: string) => void
+  actionUsed: boolean
+  isPlayerTurn: boolean
 }
 
 export const WeaponSlot = ({
@@ -22,6 +24,8 @@ export const WeaponSlot = ({
   playerId,
   player,
   onAttack,
+  actionUsed,
+  isPlayerTurn,
 }: IWeaponSlotProps) => {
   const t = useTranslations("combat")
   const [selectedTargetId, setSelectedTargetId] = useState("")
@@ -43,6 +47,8 @@ export const WeaponSlot = ({
 
   const attackBonus = getAttackBonus(weapon, player)
   const damageInfo = getDamageInfo(weapon.properties)
+
+  const isDisabled = !isPlayerTurn || actionUsed
 
   return (
     <div className="border border-border bg-panel p-3">
@@ -77,7 +83,8 @@ export const WeaponSlot = ({
           <select
             value={selectedTargetId}
             onChange={(e) => setSelectedTargetId(e.target.value)}
-            className="mb-2 w-full border border-border bg-panel-alt p-2 font-sans text-xs text-foreground outline-none"
+            disabled={isDisabled}
+            className="mb-2 w-full border border-border bg-panel-alt p-2 font-sans text-xs text-foreground outline-none disabled:cursor-not-allowed disabled:opacity-50"
           >
             <option value="">{t("selectTarget")}</option>
             {availableTargets.map((target) => (
@@ -90,8 +97,15 @@ export const WeaponSlot = ({
           <button
             type="button"
             onClick={handleAttack}
-            disabled={!selectedTargetId}
+            disabled={!selectedTargetId || isDisabled}
             className="w-full cursor-pointer border border-accent bg-accent px-3 py-2 font-sans text-xs font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
+            title={
+              !isPlayerTurn
+                ? t("notYourTurn")
+                : actionUsed
+                  ? t("actionSpent")
+                  : undefined
+            }
           >
             {t("attack")}
           </button>

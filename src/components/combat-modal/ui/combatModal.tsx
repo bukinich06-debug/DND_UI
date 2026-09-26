@@ -136,6 +136,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
             potionCount={potionCount}
             player={player}
             onAttack={handleAttack}
+            isPlayerTurn={encounter.isPlayerTurn}
           />
         </div>
       </div>

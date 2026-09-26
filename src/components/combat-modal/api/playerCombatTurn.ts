@@ -42,6 +42,11 @@ const mapParticipantToCombatant = (
   initiative: participant.initiative,
   isOut: participant.isOut,
   isPlayerTurn: participant.id === currentParticipantId,
+  actionUsed: participant.actionUsed ?? false,
+  bonusActionUsed: participant.bonusActionUsed ?? false,
+  reactionUsed: participant.reactionUsed ?? false,
+  movementUsedFeet: participant.movementUsedFeet ?? 0,
+  speed: participant.speed ?? 30,
 })
 
 export const playerCombatTurn = async ({

@@ -5,6 +5,7 @@ import type { ICombatant, IWeaponSlot } from "../../types"
 import type { IPlayer } from "@/components/character-panel/types"
 import { WeaponSlot } from "../weapon-slot"
 import { PotionSlot } from "../potion-slot"
+import { ActionEconomyBar } from "../../action-economy-bar"
 
 interface IAbilitiesPanelProps {
   weapons: IWeaponSlot[]
@@ -13,6 +14,7 @@ interface IAbilitiesPanelProps {
   potionCount: number
   player: IPlayer | null
   onAttack: (targetName: string, weaponName: string) => void
+  isPlayerTurn: boolean
 }
 
 export const AbilitiesPanel = ({
@@ -22,11 +24,19 @@ export const AbilitiesPanel = ({
   potionCount,
   player,
   onAttack,
+  isPlayerTurn,
 }: IAbilitiesPanelProps) => {
   const t = useTranslations("combat")
 
+  const playerCombatant = combatants.find((c) => c.type === "player") || null
+
   return (
     <div className="flex w-[280px] shrink-0 flex-col gap-4 overflow-y-auto border-l border-border bg-panel-alt p-4">
+      <ActionEconomyBar
+        playerCombatant={playerCombatant}
+        isPlayerTurn={isPlayerTurn}
+      />
+
       <div>
         <h3 className="mb-3 font-sans text-sm font-bold uppercase text-foreground">
           {t("weapons")}
@@ -45,6 +55,8 @@ export const AbilitiesPanel = ({
               playerId={playerId}
               player={player}
               onAttack={onAttack}
+              actionUsed={playerCombatant?.actionUsed ?? false}
+              isPlayerTurn={isPlayerTurn}
             />
           ))}
         </div>
@@ -59,7 +71,13 @@ export const AbilitiesPanel = ({
             {t("noPotions")}
           </p>
         )}
-        {potionCount > 0 && <PotionSlot count={potionCount} />}
+        {potionCount > 0 && (
+          <PotionSlot
+            count={potionCount}
+            bonusActionUsed={playerCombatant?.bonusActionUsed ?? false}
+            isPlayerTurn={isPlayerTurn}
+          />
+        )}
       </div>
     </div>
   )
