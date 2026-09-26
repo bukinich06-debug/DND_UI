@@ -13,6 +13,7 @@ import { CombatOutcome } from "../combat-outcome"
 import { getWeaponsFromInventory } from "../helpers/getWeaponsFromInventory"
 import type { IInventoryItem } from "@/components/shared/types"
 import type { IPlayer } from "@/components/character-panel/types"
+import type { ICombatOutcome } from "../types"
 
 interface ICombatModalProps {
   items: IInventoryItem[]
@@ -32,6 +33,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
 
   const [message, setMessage] = useState("")
   const [agentMessage, setAgentMessage] = useState<string | null>(null)
+  const [combatResult, setCombatResult] = useState<ICombatOutcome | null>(null)
 
   const {
     executeTurn,
@@ -49,7 +51,10 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
   const handleEndTurn = async () => {
     const result = await endTurn()
     if (result) {
-      setEncounter(result)
+      if (result.encounter) setEncounter(result.encounter)
+      if (result.encounterEnded && result.encounterResult) {
+        setCombatResult(result.encounterResult)
+      }
       setAgentMessage(null)
     }
   }
@@ -62,6 +67,9 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
       setEncounter(result.encounter)
       setMessage("")
       if (result.say) setAgentMessage(result.say)
+      if (result.encounterEnded && result.encounterResult) {
+        setCombatResult(result.encounterResult)
+      }
     }
   }
 
@@ -72,6 +80,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
   }
 
   const handleCloseOutcome = useCallback(() => {
+    setCombatResult(null)
     setEncounter(null)
   }, [setEncounter])
 
@@ -85,6 +94,10 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
     )
   }
 
+  if (combatResult) {
+    return <CombatOutcome outcome={combatResult} onClose={handleCloseOutcome} />
+  }
+
   if (!encounter) {
     if (networkError) {
       return (
@@ -96,16 +109,6 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
       )
     }
     return null
-  }
-
-  if (!encounter.active && encounter.outcome) {
-    return (
-      <CombatOutcome
-        outcome={encounter.outcome}
-        combatants={encounter.combatants}
-        onClose={handleCloseOutcome}
-      />
-    )
   }
 
   if (!encounter.active) return null

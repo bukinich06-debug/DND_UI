@@ -39,11 +39,13 @@ export interface IEncounter {
   isPlayerTurn: boolean
   combatants: ICombatant[]
   log: ICombatLogEntry[]
-  outcome?: ICombatOutcome
 }
 
 export interface ICombatOutcome {
   victory: boolean
+  defeated: string[]
+  survivors: string[]
+  defeatedMonsters: Array<{ name: string; catalogKey: string }>
 }
 
 export interface ICombatLogEntryMeta {
@@ -92,7 +94,6 @@ export interface IApiEncounter {
   isPlayerTurn: boolean
   participants: IApiParticipant[]
   log?: ICombatLogEntry[]
-  outcome?: ICombatOutcome
 }
 
 export interface IApiEncounterResponse {

@@ -290,7 +290,8 @@
     "outcome": {
       "victory": "Победа!",
       "defeat": "Поражение",
-      "casualties": "Выбыли из боя",
+      "defeated": "Выбыли из боя",
+      "survivors": "Уцелели",
       "close": "Закрыть"
     },
     "damageType": {

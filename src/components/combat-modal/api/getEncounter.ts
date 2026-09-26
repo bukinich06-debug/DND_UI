@@ -50,15 +50,14 @@ export const getEncounter = async ({
     (a, b) => b.initiative - a.initiative,
   )
 
-  return {
-    id: data.encounter.encounterId,
-    active: data.encounter.status === "active",
-    round: data.encounter.round,
-    isPlayerTurn: data.encounter.isPlayerTurn,
-    combatants: sortedParticipants.map((p) =>
-      mapParticipantToCombatant(p, data.encounter!.currentParticipantId),
-    ),
-    log: data.encounter.log || [],
-    outcome: data.encounter.outcome,
-  }
+    return {
+      id: data.encounter.encounterId,
+      active: data.encounter.status === "active",
+      round: data.encounter.round,
+      isPlayerTurn: data.encounter.isPlayerTurn,
+      combatants: sortedParticipants.map((p) =>
+        mapParticipantToCombatant(p, data.encounter!.currentParticipantId),
+      ),
+      log: data.encounter.log || [],
+    }
 }

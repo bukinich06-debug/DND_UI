@@ -17,6 +17,8 @@ export interface IPlayerCombatTurnResult {
   encounter: IEncounter
   say?: string
   error?: string
+  encounterEnded?: boolean
+  encounterResult?: ICombatOutcome
 }
 
 interface IApiPlayerTurnResponse {
@@ -34,8 +36,9 @@ interface IApiPlayerTurnResponse {
     isPlayerTurn: boolean
     participants: IApiParticipant[]
     log?: ICombatLogEntry[]
-    outcome?: ICombatOutcome
   }
+  encounterEnded?: boolean
+  encounterResult?: ICombatOutcome
 }
 
 const mapParticipantToCombatant = (
@@ -107,9 +110,10 @@ export const playerCombatTurn = async ({
           mapParticipantToCombatant(p, data.encounter!.currentParticipantId),
         ),
         log: data.encounter.log || [],
-        outcome: data.encounter.outcome,
       },
       say: data.say,
+      encounterEnded: data.encounterEnded,
+      encounterResult: data.encounterResult,
     }
   } catch (err) {
     if (err instanceof DOMException && err.name === "AbortError") throw err

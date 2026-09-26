@@ -290,7 +290,8 @@
     "outcome": {
       "victory": "Victory!",
       "defeat": "Defeat",
-      "casualties": "Casualties",
+      "defeated": "Defeated",
+      "survivors": "Survivors",
       "close": "Close"
     },
     "damageType": {
