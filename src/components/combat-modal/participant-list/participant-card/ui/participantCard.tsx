@@ -21,6 +21,25 @@ export const ParticipantCard = ({ combatant }: IParticipantCardProps) => {
       ? t("distance", { feet: combatant.feetFromPlayer })
       : t("distanceUnknown")
 
+  const isPlayer = combatant.type === "player"
+  const isUnconscious = isPlayer && combatant.hp === 0 && !combatant.isStable && !combatant.dead
+  const isStable = isPlayer && combatant.isStable
+  const isDead = isPlayer && combatant.dead
+
+  let statusLabel = null
+  let statusColor = ""
+
+  if (isDead) {
+    statusLabel = t("dead")
+    statusColor = "text-red-500"
+  } else if (isStable) {
+    statusLabel = t("stable")
+    statusColor = "text-yellow-500"
+  } else if (isUnconscious) {
+    statusLabel = t("unconscious")
+    statusColor = "text-orange-500"
+  }
+
   return (
     <div
       className={`border border-border bg-panel-alt p-3 ${
@@ -54,6 +73,56 @@ export const ParticipantCard = ({ combatant }: IParticipantCardProps) => {
           style={{ width: `${hpPercent}%` }}
         />
       </div>
+
+      {statusLabel && (
+        <div className={`mb-2 font-sans text-xs font-semibold ${statusColor}`}>
+          {statusLabel}
+        </div>
+      )}
+
+      {isUnconscious && (
+        <div className="mb-2 border-t border-border pt-2">
+          <div className="mb-1 font-sans text-xs font-semibold text-muted">
+            {t("deathSaves")}
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-0.5">
+              <div className="font-mono text-[10px] text-muted">
+                {t("successes")}
+              </div>
+              <div className="flex gap-1">
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={`success-${i}`}
+                    className={`h-3 w-3 rounded-full border ${
+                      i < (combatant.deathSaveSuccess ?? 0)
+                        ? "border-green-500 bg-green-500"
+                        : "border-gray-600 bg-transparent"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <div className="font-mono text-[10px] text-muted">
+                {t("failures")}
+              </div>
+              <div className="flex gap-1">
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={`fail-${i}`}
+                    className={`h-3 w-3 rounded-full border ${
+                      i < (combatant.deathSaveFail ?? 0)
+                        ? "border-red-500 bg-red-500"
+                        : "border-gray-600 bg-transparent"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="font-mono text-xs text-muted">{distanceLabel}</div>
     </div>

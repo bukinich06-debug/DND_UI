@@ -15,6 +15,11 @@ export interface ICombatant {
   reactionUsed: boolean
   movementUsedFeet: number
   speed: number
+  deathSaveSuccess?: number
+  deathSaveFail?: number
+  isStable?: boolean
+  dead?: boolean
+  conditions?: string[]
 }
 
 export interface IWeaponProperty {
@@ -43,9 +48,11 @@ export interface IEncounter {
 
 export interface ICombatOutcome {
   victory: boolean
+  outcome?: "victory" | "captured" | "defeat"
   defeated: string[]
   survivors: string[]
   defeatedMonsters: Array<{ name: string; catalogKey: string }>
+  capturedBy?: string[]
 }
 
 export interface ICombatLogEntryMeta {
@@ -83,6 +90,11 @@ export interface IApiParticipant {
   reactionUsed?: boolean
   movementUsedFeet?: number
   speed?: number
+  deathSaveSuccess?: number
+  deathSaveFail?: number
+  isStable?: boolean
+  dead?: boolean
+  conditions?: string[]
 }
 
 export interface IApiEncounter {

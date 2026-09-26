@@ -122,6 +122,23 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
   )
   const potionCount = potions.reduce((sum, p) => sum + p.qty, 0)
 
+  const playerCombatant = encounter.combatants.find((c) => c.type === "player")
+  const isPlayerUnconscious = playerCombatant && playerCombatant.hp === 0 && !playerCombatant.isStable && !playerCombatant.dead
+  const isPlayerStable = playerCombatant && playerCombatant.isStable
+  const isPlayerDead = playerCombatant && playerCombatant.dead
+  const canPlayerAct = encounter.isPlayerTurn && !isPlayerUnconscious && !isPlayerStable && !isPlayerDead
+
+  let disabledReason = null
+  if (encounter.isPlayerTurn) {
+    if (isPlayerDead) {
+      disabledReason = t("cannotActDead")
+    } else if (isPlayerStable) {
+      disabledReason = t("cannotActStable")
+    } else if (isPlayerUnconscious) {
+      disabledReason = t("cannotActUnconscious")
+    }
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6 backdrop-blur-[4px]">
       <div className="flex h-[680px] w-full max-w-[1200px] flex-col overflow-hidden border border-border-light bg-panel shadow-[0_24px_80px_rgba(0,0,0,0.8)]">
@@ -145,7 +162,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
             {encounter.isPlayerTurn ? (
               <button
                 onClick={handleEndTurn}
-                disabled={endTurnLoading}
+                disabled={endTurnLoading || !canPlayerAct}
                 className="cursor-pointer border border-accent bg-accent px-4 py-2 font-sans text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {endTurnLoading ? t("endingTurn") : t("endTurn")}
@@ -170,11 +187,19 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
           </div>
         )}
 
+        {disabledReason && (
+          <div className="border-b border-border bg-yellow-900/20 px-5 py-2">
+            <p className="m-0 font-sans text-sm text-yellow-400">
+              {disabledReason}
+            </p>
+          </div>
+        )}
+
         <div className="flex flex-1 overflow-hidden">
           <ParticipantList combatants={encounter.combatants} />
           <CombatChat
             log={encounter.log}
-            isPlayerTurn={encounter.isPlayerTurn}
+            isPlayerTurn={canPlayerAct}
             message={message}
             onMessageChange={setMessage}
             onSubmit={handlePlayerTurn}
@@ -189,7 +214,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
             potionCount={potionCount}
             player={player}
             onAttack={handleAttack}
-            isPlayerTurn={encounter.isPlayerTurn}
+            isPlayerTurn={canPlayerAct}
           />
         </div>
       </div>
