@@ -3,6 +3,7 @@ import type {
   IApiParticipant,
   ICombatant,
   ICombatLogEntry,
+  ICombatOutcome,
 } from "../types"
 import { getCombatApiEnv } from "./env"
 
@@ -12,9 +13,18 @@ interface IPlayerCombatTurnParams {
   signal?: AbortSignal
 }
 
+export interface IPlayerCombatTurnResult {
+  encounter: IEncounter
+  say?: string
+  error?: string
+  encounterEnded?: boolean
+  encounterResult?: ICombatOutcome
+}
+
 interface IApiPlayerTurnResponse {
   success?: boolean
   say?: string
+  error?: string
   do?: string
   toolCalls?: unknown[]
   encounter?: {
@@ -27,6 +37,8 @@ interface IApiPlayerTurnResponse {
     participants: IApiParticipant[]
     log?: ICombatLogEntry[]
   }
+  encounterEnded?: boolean
+  encounterResult?: ICombatOutcome
 }
 
 const mapParticipantToCombatant = (
@@ -53,7 +65,7 @@ export const playerCombatTurn = async ({
   encounterId,
   playerAction,
   signal,
-}: IPlayerCombatTurnParams): Promise<IEncounter> => {
+}: IPlayerCombatTurnParams): Promise<IPlayerCombatTurnResult> => {
   const { baseUrl, playerId, campaignId } = getCombatApiEnv()
 
   const url = new URL("/api/encounter/player-turn", baseUrl)
@@ -71,9 +83,11 @@ export const playerCombatTurn = async ({
       signal,
     })
 
-    if (!res.ok) throw new Error("Не удалось выполнить ход игрока.")
-
     const data = (await res.json()) as IApiPlayerTurnResponse
+
+    if (!res.ok) {
+      throw new Error(data.error || "Не удалось выполнить ход игрока.")
+    }
 
     if (!data.encounter) {
       throw new Error("Не получен обновлённый бой в ответе.")
@@ -87,14 +101,19 @@ export const playerCombatTurn = async ({
     )
 
     return {
-      id: data.encounter.encounterId,
-      active: data.encounter.status === "active",
-      round: data.encounter.round,
-      isPlayerTurn: data.encounter.isPlayerTurn,
-      combatants: sortedParticipants.map((p) =>
-        mapParticipantToCombatant(p, data.encounter!.currentParticipantId),
-      ),
-      log: data.encounter.log || [],
+      encounter: {
+        id: data.encounter.encounterId,
+        active: data.encounter.status === "active",
+        round: data.encounter.round,
+        isPlayerTurn: data.encounter.isPlayerTurn,
+        combatants: sortedParticipants.map((p) =>
+          mapParticipantToCombatant(p, data.encounter!.currentParticipantId),
+        ),
+        log: data.encounter.log || [],
+      },
+      say: data.say,
+      encounterEnded: data.encounterEnded,
+      encounterResult: data.encounterResult,
     }
   } catch (err) {
     if (err instanceof DOMException && err.name === "AbortError") throw err

@@ -41,6 +41,13 @@ export interface IEncounter {
   log: ICombatLogEntry[]
 }
 
+export interface ICombatOutcome {
+  victory: boolean
+  defeated: string[]
+  survivors: string[]
+  defeatedMonsters: Array<{ name: string; catalogKey: string }>
+}
+
 export interface ICombatLogEntryMeta {
   attackRoll?: number
   attackBonus?: number

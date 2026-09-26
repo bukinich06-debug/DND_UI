@@ -245,6 +245,8 @@
     "enemyTurn": "Enemy turn",
     "nextTurn": "Next Turn",
     "advancing": "Advancing turn…",
+    "endTurn": "End Turn",
+    "endingTurn": "Ending turn…",
     "hp": "HP",
     "distance": "{feet} ft.",
     "distanceUnknown": "? ft.",
@@ -284,6 +286,13 @@
       "available": "Available",
       "spent": "Spent",
       "notYourTurn": "Not your turn"
+    },
+    "outcome": {
+      "victory": "Victory!",
+      "defeat": "Defeat",
+      "defeated": "Defeated",
+      "survivors": "Survivors",
+      "close": "Close"
     },
     "damageType": {
       "slashing": "slashing",

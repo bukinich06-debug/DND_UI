@@ -1,16 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { useTranslations } from "next-intl"
 import { useEncounter } from "../hooks/useEncounter"
 import { useAdvanceEncounter } from "../hooks/useAdvanceEncounter"
 import { usePlayerCombatTurn } from "../hooks/usePlayerCombatTurn"
+import { useEndPlayerTurn } from "../hooks/useEndPlayerTurn"
 import { ParticipantList } from "../participant-list"
 import { CombatChat } from "../combat-chat"
 import { AbilitiesPanel } from "../abilities-panel"
+import { CombatOutcome } from "../combat-outcome"
 import { getWeaponsFromInventory } from "../helpers/getWeaponsFromInventory"
 import type { IInventoryItem } from "@/components/shared/types"
 import type { IPlayer } from "@/components/character-panel/types"
+import type { ICombatOutcome } from "../types"
 
 interface ICombatModalProps {
   items: IInventoryItem[]
@@ -20,14 +23,17 @@ interface ICombatModalProps {
 
 export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
   const t = useTranslations("combat")
-  const { encounter, loading, setEncounter } = useEncounter()
+  const { encounter, loading, networkError, setEncounter } = useEncounter()
   const {
     advance,
     loading: advanceLoading,
     error: advanceError,
   } = useAdvanceEncounter()
+  const { endTurn, loading: endTurnLoading, error: endTurnError } = useEndPlayerTurn()
 
   const [message, setMessage] = useState("")
+  const [agentMessage, setAgentMessage] = useState<string | null>(null)
+  const [combatResult, setCombatResult] = useState<ICombatOutcome | null>(null)
 
   const {
     executeTurn,
@@ -42,13 +48,28 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
     if (result) setEncounter(result)
   }
 
+  const handleEndTurn = async () => {
+    const result = await endTurn()
+    if (result) {
+      if (result.encounter) setEncounter(result.encounter)
+      if (result.encounterEnded && result.encounterResult) {
+        setCombatResult(result.encounterResult)
+      }
+      setAgentMessage(null)
+    }
+  }
+
   const handlePlayerTurn = async (playerAction: string) => {
     if (!playerAction.trim()) return
 
     const result = await executeTurn(playerAction)
     if (result) {
-      setEncounter(result)
+      setEncounter(result.encounter)
       setMessage("")
+      if (result.say) setAgentMessage(result.say)
+      if (result.encounterEnded && result.encounterResult) {
+        setCombatResult(result.encounterResult)
+      }
     }
   }
 
@@ -57,6 +78,11 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
     setMessage(attackMessage)
     handlePlayerTurn(attackMessage)
   }
+
+  const handleCloseOutcome = useCallback(() => {
+    setCombatResult(null)
+    setEncounter(null)
+  }, [setEncounter])
 
   if (loading) {
     return (
@@ -68,7 +94,24 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
     )
   }
 
-  if (!encounter || !encounter.active) return null
+  if (combatResult) {
+    return <CombatOutcome outcome={combatResult} onClose={handleCloseOutcome} />
+  }
+
+  if (!encounter) {
+    if (networkError) {
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-[4px]">
+          <div className="flex h-[680px] w-full max-w-[1200px] items-center justify-center border border-border-light bg-panel shadow-[0_24px_80px_rgba(0,0,0,0.8)]">
+            <p className="m-0 font-sans text-sm text-red-400">Ошибка сети. Повтор...</p>
+          </div>
+        </div>
+      )
+    }
+    return null
+  }
+
+  if (!encounter.active) return null
 
   const weapons = getWeaponsFromInventory(items)
 
@@ -99,7 +142,15 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
                 t("enemyTurn")
               )}
             </div>
-            {!encounter.isPlayerTurn && (
+            {encounter.isPlayerTurn ? (
+              <button
+                onClick={handleEndTurn}
+                disabled={endTurnLoading}
+                className="cursor-pointer border border-accent bg-accent px-4 py-2 font-sans text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {endTurnLoading ? t("endingTurn") : t("endTurn")}
+              </button>
+            ) : (
               <button
                 onClick={handleAdvanceTurn}
                 disabled={advanceLoading}
@@ -111,10 +162,10 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
           </div>
         </div>
 
-        {(advanceError || playerTurnError) && (
+        {(advanceError || playerTurnError || endTurnError) && (
           <div className="border-b border-border bg-red-900/20 px-5 py-2">
             <p className="m-0 font-sans text-sm text-red-400">
-              {advanceError || playerTurnError}
+              {advanceError || playerTurnError || endTurnError}
             </p>
           </div>
         )}
@@ -128,6 +179,8 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
             onMessageChange={setMessage}
             onSubmit={handlePlayerTurn}
             loading={playerTurnLoading}
+            agentMessage={agentMessage}
+            onAgentMessageShown={() => setAgentMessage(null)}
           />
           <AbilitiesPanel
             weapons={weapons}

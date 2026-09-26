@@ -11,6 +11,8 @@ interface ICombatChatProps {
   onMessageChange: (message: string) => void
   onSubmit: (message: string) => void
   loading: boolean
+  agentMessage?: string | null
+  onAgentMessageShown?: () => void
 }
 
 const formatDiceRoll = (entry: ICombatLogEntry, t: (key: string) => string): string | null => {
@@ -45,6 +47,8 @@ export const CombatChat = ({
   onMessageChange,
   onSubmit,
   loading,
+  agentMessage,
+  onAgentMessageShown,
 }: ICombatChatProps) => {
   const t = useTranslations("combat")
   const logRef = useRef<HTMLDivElement>(null)
@@ -53,7 +57,16 @@ export const CombatChat = ({
     if (logRef.current) {
       logRef.current.scrollTop = logRef.current.scrollHeight
     }
-  }, [log])
+  }, [log, agentMessage])
+
+  useEffect(() => {
+    if (agentMessage && onAgentMessageShown) {
+      const timer = setTimeout(() => {
+        onAgentMessageShown()
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [agentMessage, onAgentMessageShown])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -67,7 +80,7 @@ export const CombatChat = ({
         ref={logRef}
         className="flex-1 overflow-y-auto border-b border-border bg-panel p-4"
       >
-        {log.length === 0 && (
+        {log.length === 0 && !agentMessage && (
           <p className="m-0 font-sans text-sm text-muted">
             {t("logEmpty")}
           </p>
@@ -92,6 +105,16 @@ export const CombatChat = ({
             </div>
           )
         })}
+        {agentMessage && (
+          <div className="mb-3 rounded border border-accent/30 bg-accent/10 p-3">
+            <div className="mb-0.5 font-sans text-xs font-semibold text-accent">
+              Мастер боя
+            </div>
+            <div className="font-sans text-sm text-foreground">
+              {agentMessage}
+            </div>
+          </div>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="shrink-0 p-4">

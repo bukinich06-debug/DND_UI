@@ -245,6 +245,8 @@
     "enemyTurn": "Ход врага",
     "nextTurn": "Следующий ход",
     "advancing": "Продвигаем ход…",
+    "endTurn": "Закончить ход",
+    "endingTurn": "Завершаем ход…",
     "hp": "ОЗ",
     "distance": "{feet} фт.",
     "distanceUnknown": "? фт.",
@@ -284,6 +286,13 @@
       "available": "Доступно",
       "spent": "Потрачено",
       "notYourTurn": "Не ваш ход"
+    },
+    "outcome": {
+      "victory": "Победа!",
+      "defeat": "Поражение",
+      "defeated": "Выбыли из боя",
+      "survivors": "Уцелели",
+      "close": "Закрыть"
     },
     "damageType": {
       "slashing": "рубящий",
