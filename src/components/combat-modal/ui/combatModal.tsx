@@ -122,7 +122,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
   )
   const potionCount = potions.reduce((sum, p) => sum + p.qty, 0)
 
-  const playerCombatant = encounter.combatants.find((c) => c.type === "player")
+  const playerCombatant = encounter.combatants.find((c) => c.playerId === playerId) || null
   const isPlayerUnconscious = playerCombatant && playerCombatant.hp === 0 && !playerCombatant.isStable && !playerCombatant.dead
   const isPlayerStable = playerCombatant && playerCombatant.isStable
   const isPlayerDead = playerCombatant && playerCombatant.dead

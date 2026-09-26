@@ -28,7 +28,7 @@ export const AbilitiesPanel = ({
 }: IAbilitiesPanelProps) => {
   const t = useTranslations("combat")
 
-  const playerCombatant = combatants.find((c) => c.type === "player") || null
+  const playerCombatant = combatants.find((c) => c.playerId === playerId) || null
 
   return (
     <div className="flex w-[280px] shrink-0 flex-col gap-4 overflow-y-auto border-l border-border bg-panel-alt p-4">

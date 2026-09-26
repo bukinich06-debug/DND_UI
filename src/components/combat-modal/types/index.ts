@@ -15,6 +15,7 @@ export interface ICombatant {
   reactionUsed: boolean
   movementUsedFeet: number
   speed: number
+  playerId: string | null
   deathSaveSuccess?: number
   deathSaveFail?: number
   isStable?: boolean

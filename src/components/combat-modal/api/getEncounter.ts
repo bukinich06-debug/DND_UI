@@ -28,6 +28,7 @@ const mapParticipantToCombatant = (
   reactionUsed: participant.reactionUsed ?? false,
   movementUsedFeet: participant.movementUsedFeet ?? 0,
   speed: participant.speed ?? 30,
+  playerId: participant.playerId,
   deathSaveSuccess: participant.deathSaveSuccess,
   deathSaveFail: participant.deathSaveFail,
   isStable: participant.isStable,
