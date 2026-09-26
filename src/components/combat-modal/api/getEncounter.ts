@@ -39,31 +39,26 @@ export const getEncounter = async ({
   url.searchParams.set("campaignId", campaignId)
   url.searchParams.set("playerId", playerId)
 
-  try {
-    const res = await fetch(url, { signal })
-    if (!res.ok) throw new Error("Не удалось получить данные боя.")
+  const res = await fetch(url, { signal })
+  if (!res.ok) throw new Error("Не удалось получить данные боя.")
 
-    const data = (await res.json()) as IApiEncounterResponse
+  const data = (await res.json()) as IApiEncounterResponse
 
-    if (!data.hasActiveEncounter || !data.encounter) return null
+  if (!data.hasActiveEncounter || !data.encounter) return null
 
-    const sortedParticipants = [...data.encounter.participants].sort(
-      (a, b) => b.initiative - a.initiative,
-    )
+  const sortedParticipants = [...data.encounter.participants].sort(
+    (a, b) => b.initiative - a.initiative,
+  )
 
-    return {
-      id: data.encounter.encounterId,
-      active: data.encounter.status === "active",
-      round: data.encounter.round,
-      isPlayerTurn: data.encounter.isPlayerTurn,
-      combatants: sortedParticipants.map((p) =>
-        mapParticipantToCombatant(p, data.encounter!.currentParticipantId),
-      ),
-      log: data.encounter.log || [],
-    }
-  } catch (err) {
-    if (err instanceof DOMException && err.name === "AbortError") throw err
-    console.error("Failed to fetch encounter:", err)
-    return null
+  return {
+    id: data.encounter.encounterId,
+    active: data.encounter.status === "active",
+    round: data.encounter.round,
+    isPlayerTurn: data.encounter.isPlayerTurn,
+    combatants: sortedParticipants.map((p) =>
+      mapParticipantToCombatant(p, data.encounter!.currentParticipantId),
+    ),
+    log: data.encounter.log || [],
+    outcome: data.encounter.outcome,
   }
 }

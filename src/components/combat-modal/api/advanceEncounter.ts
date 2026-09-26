@@ -4,6 +4,7 @@ import type {
   IApiParticipant,
   ICombatant,
   ICombatLogEntry,
+  ICombatOutcome,
 } from "../types"
 import { getCombatApiEnv } from "./env"
 
@@ -23,6 +24,7 @@ interface IApiAdvanceResponse {
     isPlayerTurn: boolean
     participants: IApiParticipant[]
     log?: ICombatLogEntry[]
+    outcome?: ICombatOutcome
   }
   newLogEntries?: ICombatLogEntry[]
 }
@@ -97,6 +99,7 @@ export const advanceEncounter = async ({
         mapParticipantToCombatant(p, data.encounter!.currentParticipantId),
       ),
       log: data.encounter.log || [],
+      outcome: data.encounter.outcome,
     }
   } catch (err) {
     if (err instanceof DOMException && err.name === "AbortError") throw err

@@ -39,6 +39,13 @@ export interface IEncounter {
   isPlayerTurn: boolean
   combatants: ICombatant[]
   log: ICombatLogEntry[]
+  outcome?: ICombatOutcome
+}
+
+export interface ICombatOutcome {
+  victory: boolean
+  xp?: number
+  coins?: number
 }
 
 export interface ICombatLogEntryMeta {
@@ -87,6 +94,7 @@ export interface IApiEncounter {
   isPlayerTurn: boolean
   participants: IApiParticipant[]
   log?: ICombatLogEntry[]
+  outcome?: ICombatOutcome
 }
 
 export interface IApiEncounterResponse {

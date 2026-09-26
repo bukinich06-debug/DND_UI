@@ -2,14 +2,14 @@
 
 import { useState, useCallback } from "react"
 import type { IEncounter } from "../types"
-import { playerCombatTurn } from "../api/playerCombatTurn"
+import { playerCombatTurn, type IPlayerCombatTurnResult } from "../api/playerCombatTurn"
 
 interface IUsePlayerCombatTurnParams {
   encounterId: string
 }
 
 interface IUsePlayerCombatTurnResult {
-  executeTurn: (playerAction: string) => Promise<IEncounter | null>
+  executeTurn: (playerAction: string) => Promise<IPlayerCombatTurnResult | null>
   loading: boolean
   error: string | null
 }
@@ -21,7 +21,7 @@ export const usePlayerCombatTurn = ({
   const [error, setError] = useState<string | null>(null)
 
   const executeTurn = useCallback(
-    async (playerAction: string): Promise<IEncounter | null> => {
+    async (playerAction: string): Promise<IPlayerCombatTurnResult | null> => {
       setLoading(true)
       setError(null)
 
