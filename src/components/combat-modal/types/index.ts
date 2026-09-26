@@ -44,8 +44,6 @@ export interface IEncounter {
 
 export interface ICombatOutcome {
   victory: boolean
-  xp?: number
-  coins?: number
 }
 
 export interface ICombatLogEntryMeta {

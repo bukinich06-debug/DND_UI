@@ -290,8 +290,7 @@
     "outcome": {
       "victory": "Победа!",
       "defeat": "Поражение",
-      "xp": "Опыт",
-      "coins": "Монеты",
+      "casualties": "Выбыли из боя",
       "close": "Закрыть"
     },
     "damageType": {

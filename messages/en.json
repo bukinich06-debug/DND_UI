@@ -290,8 +290,7 @@
     "outcome": {
       "victory": "Victory!",
       "defeat": "Defeat",
-      "xp": "Experience",
-      "coins": "Coins",
+      "casualties": "Casualties",
       "close": "Close"
     },
     "damageType": {

@@ -99,7 +99,13 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
   }
 
   if (!encounter.active && encounter.outcome) {
-    return <CombatOutcome outcome={encounter.outcome} onClose={handleCloseOutcome} />
+    return (
+      <CombatOutcome
+        outcome={encounter.outcome}
+        combatants={encounter.combatants}
+        onClose={handleCloseOutcome}
+      />
+    )
   }
 
   if (!encounter.active) return null

@@ -1,15 +1,18 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import type { ICombatOutcome } from "../../types"
+import type { ICombatOutcome, ICombatant } from "../../types"
 
 interface ICombatOutcomeProps {
   outcome: ICombatOutcome
+  combatants: ICombatant[]
   onClose: () => void
 }
 
-export const CombatOutcome = ({ outcome, onClose }: ICombatOutcomeProps) => {
+export const CombatOutcome = ({ outcome, combatants, onClose }: ICombatOutcomeProps) => {
   const t = useTranslations("combat.outcome")
+
+  const outCombatants = combatants.filter((c) => c.isOut)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6 backdrop-blur-[4px]">
@@ -18,24 +21,18 @@ export const CombatOutcome = ({ outcome, onClose }: ICombatOutcomeProps) => {
           {outcome.victory ? t("victory") : t("defeat")}
         </h2>
 
-        {(outcome.xp !== undefined || outcome.coins !== undefined) && (
-          <div className="flex flex-col gap-3">
-            {outcome.xp !== undefined && (
-              <div className="flex items-center justify-between border-b border-border pb-2">
-                <span className="font-sans text-sm text-muted">{t("xp")}</span>
-                <span className="font-sans text-lg font-semibold text-accent">
-                  +{outcome.xp}
-                </span>
-              </div>
-            )}
-            {outcome.coins !== undefined && (
-              <div className="flex items-center justify-between border-b border-border pb-2">
-                <span className="font-sans text-sm text-muted">{t("coins")}</span>
-                <span className="font-sans text-lg font-semibold text-accent">
-                  +{outcome.coins} зм
-                </span>
-              </div>
-            )}
+        {outCombatants.length > 0 && (
+          <div className="flex flex-col gap-2">
+            <h3 className="m-0 font-sans text-sm font-semibold uppercase text-muted">
+              {t("casualties")}
+            </h3>
+            <ul className="m-0 list-none p-0">
+              {outCombatants.map((c) => (
+                <li key={c.id} className="mb-1 font-sans text-sm text-foreground">
+                  • {c.name}
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 
