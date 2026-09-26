@@ -272,6 +272,19 @@
     "toHit": "to hit",
     "damage": "damage",
     "vs": "vs",
+    "actionSpent": "Action already spent",
+    "bonusActionSpent": "Bonus action already spent",
+    "notYourTurn": "Not your turn",
+    "actionEconomy": {
+      "action": "Action",
+      "bonusAction": "Bonus",
+      "reaction": "Reaction",
+      "movement": "Movement",
+      "feet": "ft.",
+      "available": "Available",
+      "spent": "Spent",
+      "notYourTurn": "Not your turn"
+    },
     "damageType": {
       "slashing": "slashing",
       "piercing": "piercing",

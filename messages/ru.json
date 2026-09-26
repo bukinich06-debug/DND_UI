@@ -272,6 +272,19 @@
     "toHit": "к попаданию",
     "damage": "урон",
     "vs": "против",
+    "actionSpent": "Основное действие уже потрачено",
+    "bonusActionSpent": "Бонусное действие уже потрачено",
+    "notYourTurn": "Не ваш ход",
+    "actionEconomy": {
+      "action": "Действие",
+      "bonusAction": "Бонусное",
+      "reaction": "Реакция",
+      "movement": "Движение",
+      "feet": "фт.",
+      "available": "Доступно",
+      "spent": "Потрачено",
+      "notYourTurn": "Не ваш ход"
+    },
     "damageType": {
       "slashing": "рубящий",
       "piercing": "колющий",
