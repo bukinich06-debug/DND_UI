@@ -277,6 +277,15 @@
     "actionSpent": "Action already spent",
     "bonusActionSpent": "Bonus action already spent",
     "notYourTurn": "Not your turn",
+    "unconscious": "Unconscious",
+    "stable": "Stable",
+    "dead": "Dead",
+    "deathSaves": "Death Saves",
+    "successes": "Successes",
+    "failures": "Failures",
+    "cannotActUnconscious": "You are unconscious and cannot act",
+    "cannotActStable": "You are stabilized but still at 0 HP",
+    "cannotActDead": "You are dead",
     "actionEconomy": {
       "action": "Action",
       "bonusAction": "Bonus",
@@ -290,8 +299,10 @@
     "outcome": {
       "victory": "Victory!",
       "defeat": "Defeat",
+      "captured": "You are Captured",
       "defeated": "Defeated",
       "survivors": "Survivors",
+      "capturedBy": "Captured by",
       "close": "Close"
     },
     "damageType": {

@@ -35,6 +35,8 @@ export const useWeaponTargets = ({
     if (c.type !== "monster" && c.type !== "npc") return false
     if (c.feetFromPlayer === undefined) return false
     if (c.feetFromPlayer > maxRange) return false
+    if (c.hp <= 0) return false
+    if (c.isOut) return false
     return true
   })
 

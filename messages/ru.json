@@ -277,6 +277,15 @@
     "actionSpent": "Основное действие уже потрачено",
     "bonusActionSpent": "Бонусное действие уже потрачено",
     "notYourTurn": "Не ваш ход",
+    "unconscious": "Без сознания",
+    "stable": "Стабилен",
+    "dead": "Мёртв",
+    "deathSaves": "Спасброски от смерти",
+    "successes": "Успехи",
+    "failures": "Провалы",
+    "cannotActUnconscious": "Вы без сознания и не можете действовать",
+    "cannotActStable": "Вы стабилизированы, но всё ещё при 0 HP",
+    "cannotActDead": "Вы мертвы",
     "actionEconomy": {
       "action": "Действие",
       "bonusAction": "Бонусное",
@@ -290,8 +299,10 @@
     "outcome": {
       "victory": "Победа!",
       "defeat": "Поражение",
+      "captured": "Вы в плену",
       "defeated": "Выбыли из боя",
       "survivors": "Уцелели",
+      "capturedBy": "Захвачены",
       "close": "Закрыть"
     },
     "damageType": {
