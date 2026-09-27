@@ -3,6 +3,7 @@ import type {
   IApiParticipant,
   ICombatant,
   ICombatLogEntry,
+  ICombatOutcome,
 } from "../types"
 import { getCombatApiEnv } from "./env"
 
@@ -27,21 +28,18 @@ interface IApiEndTurnResponse {
   encounterEnded?: boolean
   encounterResult?: {
     victory: boolean
+    outcome?: "victory" | "captured" | "defeat"
     defeated: string[]
     survivors: string[]
     defeatedMonsters: Array<{ name: string; catalogKey: string }>
+    capturedBy?: string[]
   }
 }
 
 export interface IEndPlayerTurnResult {
   encounter: IEncounter | null
   encounterEnded?: boolean
-  encounterResult?: {
-    victory: boolean
-    defeated: string[]
-    survivors: string[]
-    defeatedMonsters: Array<{ name: string; catalogKey: string }>
-  }
+  encounterResult?: ICombatOutcome
 }
 
 const mapParticipantToCombatant = (
@@ -91,29 +89,42 @@ export const endPlayerTurn = async ({
 
   const data = (await res.json()) as IApiEndTurnResponse
 
-  if (!data.success || !data.encounter) {
+  if (!data.success) {
     throw new Error(data.error || "Не удалось завершить ход.")
   }
 
-  if (data.encounter.status === "ended") {
-    const sortedParticipants = [...data.encounter.participants].sort(
-      (a, b) => b.initiative - a.initiative,
-    )
-
-    return {
-      encounter: {
-        id: data.encounter.encounterId,
-        active: false,
-        round: data.encounter.round,
-        isPlayerTurn: data.encounter.isPlayerTurn,
-        combatants: sortedParticipants.map((p) =>
-          mapParticipantToCombatant(p, data.encounter!.currentParticipantId),
-        ),
-        log: data.encounter.log || [],
-      },
-      encounterEnded: data.encounterEnded,
-      encounterResult: data.encounterResult,
+  if (data.encounterEnded || !data.encounter || data.encounter.status === "ended") {
+    if (data.encounterEnded && data.encounterResult) {
+      return {
+        encounter: data.encounter
+          ? {
+              id: data.encounter.encounterId,
+              active: false,
+              round: data.encounter.round,
+              isPlayerTurn: data.encounter.isPlayerTurn,
+              combatants: [...data.encounter.participants]
+                .sort((a, b) => b.initiative - a.initiative)
+                .map((p) =>
+                  mapParticipantToCombatant(
+                    p,
+                    data.encounter!.currentParticipantId,
+                  ),
+                ),
+              log: data.encounter.log || [],
+            }
+          : null,
+        encounterEnded: true,
+        encounterResult: {
+          victory: data.encounterResult.victory,
+          outcome: data.encounterResult.outcome,
+          defeated: data.encounterResult.defeated,
+          survivors: data.encounterResult.survivors,
+          defeatedMonsters: data.encounterResult.defeatedMonsters,
+          capturedBy: data.encounterResult.capturedBy,
+        },
+      }
     }
+    throw new Error(data.error || "Не удалось завершить ход.")
   }
 
   const sortedParticipants = [...data.encounter.participants].sort(
@@ -132,6 +143,15 @@ export const endPlayerTurn = async ({
       log: data.encounter.log || [],
     },
     encounterEnded: data.encounterEnded,
-    encounterResult: data.encounterResult,
+    encounterResult: data.encounterResult
+      ? {
+          victory: data.encounterResult.victory,
+          outcome: data.encounterResult.outcome,
+          defeated: data.encounterResult.defeated,
+          survivors: data.encounterResult.survivors,
+          defeatedMonsters: data.encounterResult.defeatedMonsters,
+          capturedBy: data.encounterResult.capturedBy,
+        }
+      : undefined,
   }
 }

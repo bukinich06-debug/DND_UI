@@ -95,12 +95,30 @@ export const playerCombatTurn = async ({
       throw new Error(data.error || "Не удалось выполнить ход игрока.")
     }
 
-    if (!data.encounter) {
+    if (data.encounterEnded || !data.encounter || data.encounter?.status === "ended") {
+      if (data.encounterEnded && data.encounterResult && data.encounter) {
+        const sortedParticipants = [...data.encounter.participants].sort(
+          (a, b) => b.initiative - a.initiative,
+        )
+
+        return {
+          encounter: {
+            id: data.encounter.encounterId,
+            active: false,
+            round: data.encounter.round,
+            isPlayerTurn: data.encounter.isPlayerTurn,
+            combatants: sortedParticipants.map((p) =>
+              mapParticipantToCombatant(p, data.encounter!.currentParticipantId),
+            ),
+            log: data.encounter.log || [],
+          },
+          say: data.say,
+          encounterEnded: true,
+          encounterResult: data.encounterResult,
+        }
+      }
       throw new Error("Не получен обновлённый бой в ответе.")
     }
-
-    if (data.encounter.status === "ended")
-      throw new Error("Бой завершён.")
 
     const sortedParticipants = [...data.encounter.participants].sort(
       (a, b) => b.initiative - a.initiative,

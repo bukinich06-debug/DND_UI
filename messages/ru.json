@@ -247,6 +247,8 @@
     "advancing": "Продвигаем ход…",
     "endTurn": "Закончить ход",
     "endingTurn": "Завершаем ход…",
+    "rollDeathSave": "Бросить спасбросок",
+    "skipTurn": "Пропустить ход",
     "hp": "ОЗ",
     "distance": "{feet} фт.",
     "distanceUnknown": "? фт.",

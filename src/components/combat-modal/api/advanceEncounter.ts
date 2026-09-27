@@ -3,6 +3,7 @@ import type {
   IApiParticipant,
   ICombatant,
   ICombatLogEntry,
+  ICombatOutcome,
 } from "../types"
 import { getCombatApiEnv } from "./env"
 
@@ -28,10 +29,18 @@ interface IApiAdvanceResponse {
   encounterEnded?: boolean
   encounterResult?: {
     victory: boolean
+    outcome?: "victory" | "captured" | "defeat"
     defeated: string[]
     survivors: string[]
     defeatedMonsters: Array<{ name: string; catalogKey: string }>
+    capturedBy?: string[]
   }
+}
+
+interface IAdvanceEncounterResult {
+  encounter: IEncounter | null
+  encounterEnded: boolean
+  encounterResult: ICombatOutcome | null
 }
 
 const mapParticipantToCombatant = (
@@ -62,7 +71,7 @@ const mapParticipantToCombatant = (
 
 export const advanceEncounter = async ({
   signal,
-}: IAdvanceEncounterParams = {}): Promise<IEncounter | null> => {
+}: IAdvanceEncounterParams = {}): Promise<IAdvanceEncounterResult> => {
   const { baseUrl, playerId, campaignId } = getCombatApiEnv()
 
   const url = new URL("/api/encounter/advance", baseUrl)
@@ -85,12 +94,25 @@ export const advanceEncounter = async ({
 
   const data = (await res.json()) as IApiAdvanceResponse
 
-  if (!data.success || !data.encounter) {
+  if (!data.success) {
     throw new Error(data.error || "Не удалось продвинуть ход.")
   }
 
-  if (data.encounter.status === "ended" || data.encounterEnded) {
-    return null
+  if (data.encounterEnded || !data.encounter || data.encounter.status === "ended") {
+    return {
+      encounter: null,
+      encounterEnded: true,
+      encounterResult: data.encounterResult
+        ? {
+            victory: data.encounterResult.victory,
+            outcome: data.encounterResult.outcome,
+            defeated: data.encounterResult.defeated,
+            survivors: data.encounterResult.survivors,
+            defeatedMonsters: data.encounterResult.defeatedMonsters,
+            capturedBy: data.encounterResult.capturedBy,
+          }
+        : null,
+    }
   }
 
   const sortedParticipants = [...data.encounter.participants].sort(
@@ -98,13 +120,17 @@ export const advanceEncounter = async ({
   )
 
   return {
-    id: data.encounter.encounterId,
-    active: data.encounter.status === "active",
-    round: data.encounter.round,
-    isPlayerTurn: data.encounter.isPlayerTurn,
-    combatants: sortedParticipants.map((p) =>
-      mapParticipantToCombatant(p, data.encounter!.currentParticipantId),
-    ),
-    log: data.encounter.log || [],
+    encounter: {
+      id: data.encounter.encounterId,
+      active: data.encounter.status === "active",
+      round: data.encounter.round,
+      isPlayerTurn: data.encounter.isPlayerTurn,
+      combatants: sortedParticipants.map((p) =>
+        mapParticipantToCombatant(p, data.encounter!.currentParticipantId),
+      ),
+      log: data.encounter.log || [],
+    },
+    encounterEnded: false,
+    encounterResult: null,
   }
 }
