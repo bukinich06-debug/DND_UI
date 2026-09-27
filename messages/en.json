@@ -247,6 +247,8 @@
     "advancing": "Advancing turn…",
     "endTurn": "End Turn",
     "endingTurn": "Ending turn…",
+    "rollDeathSave": "Roll Death Save",
+    "skipTurn": "Skip Turn",
     "hp": "HP",
     "distance": "{feet} ft.",
     "distanceUnknown": "? ft.",

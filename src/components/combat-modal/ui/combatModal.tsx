@@ -45,7 +45,12 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
 
   const handleAdvanceTurn = async () => {
     const result = await advance()
-    if (result) setEncounter(result)
+    if (result) {
+      if (result.encounter) setEncounter(result.encounter)
+      if (result.encounterEnded && result.encounterResult) {
+        setCombatResult(result.encounterResult)
+      }
+    }
   }
 
   const handleEndTurn = async () => {
@@ -160,13 +165,27 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
               )}
             </div>
             {encounter.isPlayerTurn ? (
-              <button
-                onClick={handleEndTurn}
-                disabled={endTurnLoading || !canPlayerAct}
-                className="cursor-pointer border border-accent bg-accent px-4 py-2 font-sans text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {endTurnLoading ? t("endingTurn") : t("endTurn")}
-              </button>
+              isPlayerUnconscious || isPlayerStable ? (
+                <button
+                  onClick={handleAdvanceTurn}
+                  disabled={advanceLoading}
+                  className="cursor-pointer border border-accent bg-accent px-4 py-2 font-sans text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {advanceLoading
+                    ? t("advancing")
+                    : isPlayerUnconscious
+                      ? t("rollDeathSave")
+                      : t("skipTurn")}
+                </button>
+              ) : (
+                <button
+                  onClick={handleEndTurn}
+                  disabled={endTurnLoading || !canPlayerAct}
+                  className="cursor-pointer border border-accent bg-accent px-4 py-2 font-sans text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {endTurnLoading ? t("endingTurn") : t("endTurn")}
+                </button>
+              )
             ) : (
               <button
                 onClick={handleAdvanceTurn}

@@ -1,11 +1,17 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import type { IEncounter } from "../types"
+import type { IEncounter, ICombatOutcome } from "../types"
 import { advanceEncounter } from "../api/advanceEncounter"
 
+interface IAdvanceResult {
+  encounter: IEncounter | null
+  encounterEnded: boolean
+  encounterResult: ICombatOutcome | null
+}
+
 interface IUseAdvanceEncounterResult {
-  advance: () => Promise<IEncounter | null>
+  advance: () => Promise<IAdvanceResult | null>
   loading: boolean
   error: string | null
 }
@@ -14,7 +20,7 @@ export const useAdvanceEncounter = (): IUseAdvanceEncounterResult => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const advance = useCallback(async (): Promise<IEncounter | null> => {
+  const advance = useCallback(async (): Promise<IAdvanceResult | null> => {
     setLoading(true)
     setError(null)
 
