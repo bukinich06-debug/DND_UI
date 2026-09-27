@@ -20,6 +20,7 @@ const mapParticipantToCombatant = (
   hp: participant.hpCurrent,
   maxHp: participant.hpMax,
   feetFromPlayer: participant.feetFromPlayer,
+  positionFeet: participant.positionFeet,
   initiative: participant.initiative,
   isOut: participant.isOut,
   isPlayerTurn: participant.id === currentParticipantId,

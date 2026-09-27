@@ -5,9 +5,10 @@ import { useTranslations } from "next-intl"
 
 interface IParticipantCardProps {
   combatant: ICombatant
+  playerPositionFeet: number
 }
 
-export const ParticipantCard = ({ combatant }: IParticipantCardProps) => {
+export const ParticipantCard = ({ combatant, playerPositionFeet }: IParticipantCardProps) => {
   const t = useTranslations("combat")
 
   const hpPercent = Math.max(
@@ -16,12 +17,21 @@ export const ParticipantCard = ({ combatant }: IParticipantCardProps) => {
   )
 
   const typeLabel = t(`type.${combatant.type}`)
-  const distanceLabel =
-    combatant.feetFromPlayer !== undefined
-      ? t("distance", { feet: combatant.feetFromPlayer })
-      : t("distanceUnknown")
-
   const isPlayer = combatant.type === "player"
+
+  let distanceLabel = ""
+  if (!isPlayer) {
+    const positionDiff = combatant.positionFeet - playerPositionFeet
+    const distance = Math.abs(positionDiff)
+    if (positionDiff > 0) {
+      distanceLabel = t("positionAhead", { feet: distance })
+    } else if (positionDiff < 0) {
+      distanceLabel = t("positionBehind", { feet: distance })
+    } else {
+      distanceLabel = t("positionNearby")
+    }
+  }
+
   const isUnconscious = isPlayer && combatant.hp === 0 && !combatant.isStable && !combatant.dead
   const isStable = isPlayer && combatant.isStable
   const isDead = isPlayer && combatant.dead
@@ -124,7 +134,9 @@ export const ParticipantCard = ({ combatant }: IParticipantCardProps) => {
         </div>
       )}
 
-      <div className="font-mono text-xs text-muted">{distanceLabel}</div>
+      {!isPlayer && (
+        <div className="font-mono text-xs text-muted">{distanceLabel}</div>
+      )}
     </div>
   )
 }

@@ -253,6 +253,9 @@
     "distance": "{feet} фт.",
     "distanceUnknown": "? фт.",
     "feet": "фт.",
+    "positionAhead": "{feet} фт. впереди",
+    "positionBehind": "{feet} фт. позади",
+    "positionNearby": "рядом",
     "type": {
       "player": "Игрок",
       "npc": "NPC",
@@ -302,6 +305,7 @@
       "victory": "Победа!",
       "defeat": "Поражение",
       "captured": "Вы в плену",
+      "fled": "Вы сбежали из боя",
       "defeated": "Выбыли из боя",
       "survivors": "Уцелели",
       "capturedBy": "Захвачены",

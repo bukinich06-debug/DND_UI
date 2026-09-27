@@ -29,7 +29,7 @@ interface IApiAdvanceResponse {
   encounterEnded?: boolean
   encounterResult?: {
     victory: boolean
-    outcome?: "victory" | "captured" | "defeat"
+    outcome?: "victory" | "captured" | "defeat" | "fled"
     defeated: string[]
     survivors: string[]
     defeatedMonsters: Array<{ name: string; catalogKey: string }>
@@ -53,6 +53,7 @@ const mapParticipantToCombatant = (
   hp: participant.hpCurrent,
   maxHp: participant.hpMax,
   feetFromPlayer: participant.feetFromPlayer,
+  positionFeet: participant.positionFeet,
   initiative: participant.initiative,
   isOut: participant.isOut,
   isPlayerTurn: participant.id === currentParticipantId,
