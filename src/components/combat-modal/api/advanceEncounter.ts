@@ -94,11 +94,11 @@ export const advanceEncounter = async ({
 
   const data = (await res.json()) as IApiAdvanceResponse
 
-  if (!data.success || !data.encounter) {
+  if (!data.success) {
     throw new Error(data.error || "Не удалось продвинуть ход.")
   }
 
-  if (data.encounter.status === "ended" || data.encounterEnded) {
+  if (data.encounterEnded || !data.encounter || data.encounter.status === "ended") {
     return {
       encounter: null,
       encounterEnded: true,
