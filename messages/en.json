@@ -293,6 +293,10 @@
     "cannotActStable": "You are stabilized but still at 0 HP",
     "cannotActDead": "You are dead",
     "combatMaster": "Combat Master",
+    "rejection": {
+      "title": "Action Impossible",
+      "understood": "Understood"
+    },
     "actionEconomy": {
       "action": "Action",
       "bonusAction": "Bonus",
