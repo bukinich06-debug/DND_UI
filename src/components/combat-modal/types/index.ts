@@ -66,6 +66,7 @@ export interface ICombatLogEntryMeta {
   damageTotal?: number
   hpBefore?: number
   hpAfter?: number
+  kind?: string
 }
 
 export interface ICombatLogEntry {

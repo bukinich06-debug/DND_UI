@@ -293,6 +293,7 @@
     "cannotActStable": "Вы стабилизированы, но всё ещё при 0 HP",
     "cannotActDead": "Вы мертвы",
     "combatMaster": "Мастер боя",
+    "playerInput": "Вы",
     "rejection": {
       "title": "Действие невозможно",
       "understood": "Понятно"

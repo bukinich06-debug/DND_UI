@@ -86,6 +86,20 @@ export const CombatChat = ({
           </p>
         )}
         {log.map((entry) => {
+          if (entry.meta?.kind === "player_input") {
+            return (
+              <div key={entry.id} className="mb-3 flex justify-end">
+                <div className="max-w-[80%] rounded border border-border bg-panel-alt p-3">
+                  <div className="mb-0.5 text-right font-sans text-xs font-semibold text-muted">
+                    {entry.actorName || t("playerInput")}
+                  </div>
+                  <div className="whitespace-pre-wrap font-sans text-sm text-foreground">
+                    {entry.message}
+                  </div>
+                </div>
+              </div>
+            )
+          }
           const diceRoll = formatDiceRoll(entry, t)
           return (
             <div key={entry.id} className="mb-3">
