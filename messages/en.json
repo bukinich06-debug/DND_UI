@@ -253,6 +253,9 @@
     "distance": "{feet} ft.",
     "distanceUnknown": "? ft.",
     "feet": "ft.",
+    "positionAhead": "{feet} ft. ahead",
+    "positionBehind": "{feet} ft. behind",
+    "positionNearby": "nearby",
     "type": {
       "player": "Player",
       "npc": "NPC",
@@ -302,6 +305,7 @@
       "victory": "Victory!",
       "defeat": "Defeat",
       "captured": "You are Captured",
+      "fled": "You fled the battle",
       "defeated": "Defeated",
       "survivors": "Survivors",
       "capturedBy": "Captured by",

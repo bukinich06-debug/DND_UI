@@ -7,6 +7,7 @@ export interface ICombatant {
   hp: number
   maxHp: number
   feetFromPlayer: number
+  positionFeet: number
   initiative: number
   isOut: boolean
   isPlayerTurn?: boolean
@@ -49,7 +50,7 @@ export interface IEncounter {
 
 export interface ICombatOutcome {
   victory: boolean
-  outcome?: "victory" | "captured" | "defeat"
+  outcome?: "victory" | "captured" | "defeat" | "fled"
   defeated: string[]
   survivors: string[]
   defeatedMonsters: Array<{ name: string; catalogKey: string }>
@@ -82,6 +83,7 @@ export interface IApiParticipant {
   hpMax: number
   initiative: number
   feetFromPlayer: number
+  positionFeet: number
   isOut: boolean
   playerId: string | null
   npcId: string | null
