@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, useCallback } from "react"
 import type { IEncounter } from "../types"
 import { getEncounter } from "../api/getEncounter"
 
@@ -12,14 +12,24 @@ interface IUseEncounterResult {
   error: string | null
   networkError: boolean
   setEncounter: (encounter: IEncounter | null) => void
+  bumpVersion: () => void
 }
 
 export const useEncounter = (): IUseEncounterResult => {
-  const [encounter, setEncounter] = useState<IEncounter | null>(null)
+  const [encounter, setEncounterState] = useState<IEncounter | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [networkError, setNetworkError] = useState(false)
   const versionRef = useRef(0)
+
+  const bumpVersion = useCallback(() => {
+    versionRef.current++
+  }, [])
+
+  const setEncounter = useCallback((encounter: IEncounter | null) => {
+    versionRef.current++
+    setEncounterState(encounter)
+  }, [])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -33,7 +43,7 @@ export const useEncounter = (): IUseEncounterResult => {
         
         if (currentVersion !== versionRef.current) return
         
-        setEncounter(data)
+        setEncounterState(data)
         setError(null)
         setNetworkError(false)
       } catch (err: unknown) {
@@ -48,8 +58,10 @@ export const useEncounter = (): IUseEncounterResult => {
             : "Не удалось получить данные боя.",
         )
       } finally {
-        if (!controller.signal.aborted && currentVersion === versionRef.current) {
-          setLoading(false)
+        if (!controller.signal.aborted) {
+          if (currentVersion === versionRef.current) {
+            setLoading(false)
+          }
           timeoutId = setTimeout(poll, POLL_INTERVAL_MS)
         }
       }
@@ -63,5 +75,5 @@ export const useEncounter = (): IUseEncounterResult => {
     }
   }, [])
 
-  return { encounter, loading, error, networkError, setEncounter }
+  return { encounter, loading, error, networkError, setEncounter, bumpVersion }
 }

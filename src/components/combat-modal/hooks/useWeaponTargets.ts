@@ -32,8 +32,7 @@ export const useWeaponTargets = ({
 
   const targets = combatants.filter((c) => {
     if (c.id === playerId) return false
-    if (c.type === "player") return false
-    if (c.type === "npc" && c.playerId) return false
+    if (c.type !== "monster" && c.type !== "npc") return false
     if (c.feetFromPlayer === undefined) return false
     if (c.feetFromPlayer > maxRange) return false
     if (c.hp <= 0) return false

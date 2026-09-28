@@ -23,7 +23,7 @@ interface ICombatModalProps {
 
 export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
   const t = useTranslations("combat")
-  const { encounter, loading, networkError, setEncounter } = useEncounter()
+  const { encounter, loading, networkError, setEncounter, bumpVersion } = useEncounter()
   const {
     advance,
     loading: advanceLoading,
@@ -47,6 +47,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
 
   const handleAdvanceTurn = async () => {
     const currentVersion = ++versionRef.current
+    bumpVersion()
     const result = await advance()
     if (currentVersion !== versionRef.current) return
     if (result) {
@@ -59,6 +60,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
 
   const handleEndTurn = async () => {
     const currentVersion = ++versionRef.current
+    bumpVersion()
     const result = await endTurn()
     if (currentVersion !== versionRef.current) return
     if (result) {
@@ -74,6 +76,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
     if (!playerAction.trim()) return
 
     const currentVersion = ++versionRef.current
+    bumpVersion()
     const result = await executeTurn(playerAction)
     if (currentVersion !== versionRef.current) return
     if (result) {

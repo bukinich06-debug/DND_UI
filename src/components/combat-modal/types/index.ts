@@ -100,7 +100,6 @@ export interface IApiParticipant {
   isStable?: boolean
   dead?: boolean
   conditions?: string[]
-  isAlly?: boolean
 }
 
 export interface IApiEncounter {
