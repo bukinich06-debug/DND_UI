@@ -294,6 +294,10 @@
     "cannotActDead": "You are dead",
     "combatMaster": "Combat Master",
     "playerInput": "You",
+    "rejection": {
+      "title": "Action Impossible",
+      "understood": "Understood"
+    },
     "actionEconomy": {
       "action": "Action",
       "bonusAction": "Bonus",

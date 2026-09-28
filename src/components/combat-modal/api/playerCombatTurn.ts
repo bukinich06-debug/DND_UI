@@ -17,6 +17,8 @@ export interface IPlayerCombatTurnResult {
   encounter: IEncounter | null
   say?: string
   error?: string
+  actionRejected?: boolean
+  rejectionReason?: string | null
   encounterEnded?: boolean
   encounterResult?: ICombatOutcome
 }
@@ -25,6 +27,8 @@ interface IApiPlayerTurnResponse {
   success?: boolean
   say?: string
   error?: string
+  actionRejected?: boolean
+  rejectionReason?: string | null
   do?: string
   toolCalls?: unknown[]
   encounter?: {
@@ -94,7 +98,19 @@ export const playerCombatTurn = async ({
     const data = (await res.json()) as IApiPlayerTurnResponse
 
     if (!res.ok) {
-      throw new Error(data.error || "Не удалось выполнить ход игрока.")
+      return {
+        encounter: null,
+        actionRejected: true,
+        rejectionReason: data.error || "Не удалось выполнить ход игрока.",
+      }
+    }
+
+    if (data.actionRejected) {
+      return {
+        encounter: null,
+        actionRejected: true,
+        rejectionReason: data.rejectionReason || "Действие отклонено.",
+      }
     }
 
     if (data.encounterEnded || !data.encounter || data.encounter?.status === "ended") {

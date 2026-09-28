@@ -10,6 +10,7 @@ import { ParticipantList } from "../participant-list"
 import { CombatChat } from "../combat-chat"
 import { AbilitiesPanel } from "../abilities-panel"
 import { CombatOutcome } from "../combat-outcome"
+import { ActionRejectionModal } from "../action-rejection-modal"
 import { getWeaponsFromInventory } from "../helpers/getWeaponsFromInventory"
 import type { IInventoryItem } from "@/components/shared/types"
 import type { IPlayer } from "@/components/character-panel/types"
@@ -34,6 +35,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
   const [message, setMessage] = useState("")
   const [agentMessage, setAgentMessage] = useState<string | null>(null)
   const [combatResult, setCombatResult] = useState<ICombatOutcome | null>(null)
+  const [rejectionReason, setRejectionReason] = useState<string | null>(null)
 
   const versionRef = useRef(0)
 
@@ -80,6 +82,10 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
     const result = await executeTurn(playerAction)
     if (currentVersion !== versionRef.current) return
     if (result) {
+      if (result.actionRejected) {
+        setRejectionReason(result.rejectionReason || t("rejection.title"))
+        return
+      }
       if (result.encounter) setEncounter(result.encounter)
       setMessage("")
       if (result.say) setAgentMessage(result.say)
@@ -99,6 +105,10 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
     setCombatResult(null)
     setEncounter(null)
   }, [setEncounter])
+
+  const handleCloseRejection = useCallback(() => {
+    setRejectionReason(null)
+  }, [])
 
   const isAnyActionInProgress = playerTurnLoading || endTurnLoading || advanceLoading
 
@@ -158,99 +168,108 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6 backdrop-blur-[4px]">
-      <div className="flex h-[680px] w-full max-w-[1200px] flex-col overflow-hidden border border-border-light bg-panel shadow-[0_24px_80px_rgba(0,0,0,0.8)]">
-        <div className="flex shrink-0 items-center justify-between border-b border-border px-5 py-4">
-          <div>
-            <h2 className="m-0 font-sans text-[22px] font-bold uppercase text-foreground">
-              {t("title")}
-            </h2>
-            <div className="mt-0.5 font-sans text-xs text-muted">
-              {t("round", { number: encounter.round })}
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6 backdrop-blur-[4px]">
+        <div className="flex h-[680px] w-full max-w-[1200px] flex-col overflow-hidden border border-border-light bg-panel shadow-[0_24px_80px_rgba(0,0,0,0.8)]">
+          <div className="flex shrink-0 items-center justify-between border-b border-border px-5 py-4">
+            <div>
+              <h2 className="m-0 font-sans text-[22px] font-bold uppercase text-foreground">
+                {t("title")}
+              </h2>
+              <div className="mt-0.5 font-sans text-xs text-muted">
+                {t("round", { number: encounter.round })}
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="font-sans text-xs text-muted">
+            <div className="flex items-center gap-4">
+              <div className="font-sans text-xs text-muted">
+                {encounter.isPlayerTurn ? (
+                  <span className="font-bold text-accent">{t("yourTurn")}</span>
+                ) : (
+                  t("enemyTurn")
+                )}
+              </div>
               {encounter.isPlayerTurn ? (
-                <span className="font-bold text-accent">{t("yourTurn")}</span>
+                isPlayerUnconscious || isPlayerStable ? (
+                  <button
+                    onClick={handleAdvanceTurn}
+                    disabled={advanceLoading || isAnyActionInProgress}
+                    className="cursor-pointer border border-accent bg-accent px-4 py-2 font-sans text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {advanceLoading
+                      ? t("advancing")
+                      : isPlayerUnconscious
+                        ? t("rollDeathSave")
+                        : t("skipTurn")}
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleEndTurn}
+                    disabled={endTurnLoading || !canPlayerAct || isAnyActionInProgress}
+                    className="cursor-pointer border border-accent bg-accent px-4 py-2 font-sans text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {endTurnLoading ? t("endingTurn") : t("endTurn")}
+                  </button>
+                )
               ) : (
-                t("enemyTurn")
-              )}
-            </div>
-            {encounter.isPlayerTurn ? (
-              isPlayerUnconscious || isPlayerStable ? (
                 <button
                   onClick={handleAdvanceTurn}
                   disabled={advanceLoading || isAnyActionInProgress}
                   className="cursor-pointer border border-accent bg-accent px-4 py-2 font-sans text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {advanceLoading
-                    ? t("advancing")
-                    : isPlayerUnconscious
-                      ? t("rollDeathSave")
-                      : t("skipTurn")}
+                  {advanceLoading ? t("advancing") : t("nextTurn")}
                 </button>
-              ) : (
-                <button
-                  onClick={handleEndTurn}
-                  disabled={endTurnLoading || !canPlayerAct || isAnyActionInProgress}
-                  className="cursor-pointer border border-accent bg-accent px-4 py-2 font-sans text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {endTurnLoading ? t("endingTurn") : t("endTurn")}
-                </button>
-              )
-            ) : (
-              <button
-                onClick={handleAdvanceTurn}
-                disabled={advanceLoading || isAnyActionInProgress}
-                className="cursor-pointer border border-accent bg-accent px-4 py-2 font-sans text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {advanceLoading ? t("advancing") : t("nextTurn")}
-              </button>
-            )}
+              )}
+            </div>
           </div>
-        </div>
 
-        {(advanceError || playerTurnError || endTurnError) && (
-          <div className="border-b border-border bg-red-900/20 px-5 py-2">
-            <p className="m-0 font-sans text-sm text-red-400">
-              {advanceError || playerTurnError || endTurnError}
-            </p>
+          {(advanceError || endTurnError || playerTurnError) && (
+            <div className="border-b border-border bg-red-900/20 px-5 py-2">
+              <p className="m-0 font-sans text-sm text-red-400">
+                {advanceError || endTurnError || playerTurnError}
+              </p>
+            </div>
+          )}
+
+          {disabledReason && (
+            <div className="border-b border-border bg-yellow-900/20 px-5 py-2">
+              <p className="m-0 font-sans text-sm text-yellow-400">
+                {disabledReason}
+              </p>
+            </div>
+          )}
+
+          <div className="flex flex-1 overflow-hidden">
+            <ParticipantList combatants={encounter.combatants} />
+            <CombatChat
+              log={encounter.log}
+              isPlayerTurn={canPlayerAct}
+              message={message}
+              onMessageChange={setMessage}
+              onSubmit={handlePlayerTurn}
+              loading={playerTurnLoading}
+              agentMessage={agentMessage}
+              onAgentMessageShown={() => setAgentMessage(null)}
+            />
+            <AbilitiesPanel
+              weapons={weapons}
+              combatants={encounter.combatants}
+              playerId={playerId}
+              potionCount={potionCount}
+              player={player}
+              onAttack={handleAttack}
+              isPlayerTurn={canPlayerAct}
+              isAnyActionInProgress={isAnyActionInProgress}
+            />
           </div>
-        )}
-
-        {disabledReason && (
-          <div className="border-b border-border bg-yellow-900/20 px-5 py-2">
-            <p className="m-0 font-sans text-sm text-yellow-400">
-              {disabledReason}
-            </p>
-          </div>
-        )}
-
-        <div className="flex flex-1 overflow-hidden">
-          <ParticipantList combatants={encounter.combatants} />
-          <CombatChat
-            log={encounter.log}
-            isPlayerTurn={canPlayerAct}
-            message={message}
-            onMessageChange={setMessage}
-            onSubmit={handlePlayerTurn}
-            loading={playerTurnLoading}
-            agentMessage={agentMessage}
-            onAgentMessageShown={() => setAgentMessage(null)}
-          />
-          <AbilitiesPanel
-            weapons={weapons}
-            combatants={encounter.combatants}
-            playerId={playerId}
-            potionCount={potionCount}
-            player={player}
-            onAttack={handleAttack}
-            isPlayerTurn={canPlayerAct}
-            isAnyActionInProgress={isAnyActionInProgress}
-          />
         </div>
       </div>
-    </div>
+
+      {rejectionReason && (
+        <ActionRejectionModal
+          reason={rejectionReason}
+          onClose={handleCloseRejection}
+        />
+      )}
+    </>
   )
 }

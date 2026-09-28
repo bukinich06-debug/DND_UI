@@ -294,6 +294,10 @@
     "cannotActDead": "Вы мертвы",
     "combatMaster": "Мастер боя",
     "playerInput": "Вы",
+    "rejection": {
+      "title": "Действие невозможно",
+      "understood": "Понятно"
+    },
     "actionEconomy": {
       "action": "Действие",
       "bonusAction": "Бонусное",
