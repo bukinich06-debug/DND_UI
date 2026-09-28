@@ -15,6 +15,7 @@ interface IAbilitiesPanelProps {
   player: IPlayer | null
   onAttack: (targetName: string, weaponName: string) => void
   isPlayerTurn: boolean
+  isAnyActionInProgress: boolean
 }
 
 export const AbilitiesPanel = ({
@@ -25,6 +26,7 @@ export const AbilitiesPanel = ({
   player,
   onAttack,
   isPlayerTurn,
+  isAnyActionInProgress,
 }: IAbilitiesPanelProps) => {
   const t = useTranslations("combat")
 
@@ -57,6 +59,7 @@ export const AbilitiesPanel = ({
               onAttack={onAttack}
               actionUsed={playerCombatant?.actionUsed ?? false}
               isPlayerTurn={isPlayerTurn}
+              isAnyActionInProgress={isAnyActionInProgress}
             />
           ))}
         </div>

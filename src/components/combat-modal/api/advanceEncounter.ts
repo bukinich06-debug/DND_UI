@@ -55,6 +55,7 @@ const mapParticipantToCombatant = (
   feetFromPlayer: participant.feetFromPlayer,
   positionFeet: participant.positionFeet,
   initiative: participant.initiative,
+  order: participant.order ?? participant.initiative,
   isOut: participant.isOut,
   isPlayerTurn: participant.id === currentParticipantId,
   actionUsed: participant.actionUsed ?? false,
@@ -87,8 +88,7 @@ export const advanceEncounter = async ({
   if (!res.ok) {
     if (res.status === 400) {
       const errorData = await res.json().catch(() => ({}))
-      if (errorData.errorCode === "PLAYER_TURN")
-        throw new Error("Сейчас ход игрока, нельзя продвинуть ход.")
+      throw new Error(errorData.error || "Не удалось продвинуть ход.")
     }
     throw new Error("Не удалось продвинуть ход.")
   }
@@ -117,7 +117,7 @@ export const advanceEncounter = async ({
   }
 
   const sortedParticipants = [...data.encounter.participants].sort(
-    (a, b) => b.initiative - a.initiative,
+    (a, b) => (a.order ?? a.initiative) - (b.order ?? b.initiative),
   )
 
   return {

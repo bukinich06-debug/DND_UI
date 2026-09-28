@@ -108,7 +108,7 @@ export const CombatChat = ({
         {agentMessage && (
           <div className="mb-3 rounded border border-accent/30 bg-accent/10 p-3">
             <div className="mb-0.5 font-sans text-xs font-semibold text-accent">
-              Мастер боя
+              {t("combatMaster")}
             </div>
             <div className="font-sans text-sm text-foreground">
               {agentMessage}

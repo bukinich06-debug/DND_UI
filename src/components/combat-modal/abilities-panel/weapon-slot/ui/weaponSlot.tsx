@@ -16,6 +16,7 @@ interface IWeaponSlotProps {
   onAttack: (targetName: string, weaponName: string) => void
   actionUsed: boolean
   isPlayerTurn: boolean
+  isAnyActionInProgress: boolean
 }
 
 export const WeaponSlot = ({
@@ -26,6 +27,7 @@ export const WeaponSlot = ({
   onAttack,
   actionUsed,
   isPlayerTurn,
+  isAnyActionInProgress,
 }: IWeaponSlotProps) => {
   const t = useTranslations("combat")
   const [selectedTargetId, setSelectedTargetId] = useState("")
@@ -48,7 +50,7 @@ export const WeaponSlot = ({
   const attackBonus = getAttackBonus(weapon, player)
   const damageInfo = getDamageInfo(weapon.properties)
 
-  const isDisabled = !isPlayerTurn || actionUsed
+  const isDisabled = !isPlayerTurn || actionUsed || isAnyActionInProgress
 
   return (
     <div className="border border-border bg-panel p-3">
