@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useRef } from "react"
 import { useTranslations } from "next-intl"
 import { useEncounter } from "../hooks/useEncounter"
 import { useAdvanceEncounter } from "../hooks/useAdvanceEncounter"
@@ -35,6 +35,8 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
   const [agentMessage, setAgentMessage] = useState<string | null>(null)
   const [combatResult, setCombatResult] = useState<ICombatOutcome | null>(null)
 
+  const versionRef = useRef(0)
+
   const {
     executeTurn,
     loading: playerTurnLoading,
@@ -44,7 +46,9 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
   })
 
   const handleAdvanceTurn = async () => {
+    const currentVersion = ++versionRef.current
     const result = await advance()
+    if (currentVersion !== versionRef.current) return
     if (result) {
       if (result.encounter) setEncounter(result.encounter)
       if (result.encounterEnded && result.encounterResult) {
@@ -54,7 +58,9 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
   }
 
   const handleEndTurn = async () => {
+    const currentVersion = ++versionRef.current
     const result = await endTurn()
+    if (currentVersion !== versionRef.current) return
     if (result) {
       if (result.encounter) setEncounter(result.encounter)
       if (result.encounterEnded && result.encounterResult) {
@@ -67,7 +73,9 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
   const handlePlayerTurn = async (playerAction: string) => {
     if (!playerAction.trim()) return
 
+    const currentVersion = ++versionRef.current
     const result = await executeTurn(playerAction)
+    if (currentVersion !== versionRef.current) return
     if (result) {
       if (result.encounter) setEncounter(result.encounter)
       setMessage("")
@@ -89,6 +97,8 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
     setEncounter(null)
   }, [setEncounter])
 
+  const isAnyActionInProgress = playerTurnLoading || endTurnLoading || advanceLoading
+
   if (loading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-[4px]">
@@ -108,7 +118,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
       return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-[4px]">
           <div className="flex h-[680px] w-full max-w-[1200px] items-center justify-center border border-border-light bg-panel shadow-[0_24px_80px_rgba(0,0,0,0.8)]">
-            <p className="m-0 font-sans text-sm text-red-400">Ошибка сети. Повтор...</p>
+            <p className="m-0 font-sans text-sm text-red-400">{t("networkError")}</p>
           </div>
         </div>
       )
@@ -131,7 +141,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
   const isPlayerUnconscious = playerCombatant && playerCombatant.hp === 0 && !playerCombatant.isStable && !playerCombatant.dead
   const isPlayerStable = playerCombatant && playerCombatant.isStable
   const isPlayerDead = playerCombatant && playerCombatant.dead
-  const canPlayerAct = encounter.isPlayerTurn && !isPlayerUnconscious && !isPlayerStable && !isPlayerDead
+  const canPlayerAct = encounter.isPlayerTurn && !isPlayerUnconscious && !isPlayerStable && !isPlayerDead && !isAnyActionInProgress
 
   let disabledReason = null
   if (encounter.isPlayerTurn) {
@@ -168,7 +178,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
               isPlayerUnconscious || isPlayerStable ? (
                 <button
                   onClick={handleAdvanceTurn}
-                  disabled={advanceLoading}
+                  disabled={advanceLoading || isAnyActionInProgress}
                   className="cursor-pointer border border-accent bg-accent px-4 py-2 font-sans text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {advanceLoading
@@ -180,7 +190,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
               ) : (
                 <button
                   onClick={handleEndTurn}
-                  disabled={endTurnLoading || !canPlayerAct}
+                  disabled={endTurnLoading || !canPlayerAct || isAnyActionInProgress}
                   className="cursor-pointer border border-accent bg-accent px-4 py-2 font-sans text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {endTurnLoading ? t("endingTurn") : t("endTurn")}
@@ -189,7 +199,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
             ) : (
               <button
                 onClick={handleAdvanceTurn}
-                disabled={advanceLoading}
+                disabled={advanceLoading || isAnyActionInProgress}
                 className="cursor-pointer border border-accent bg-accent px-4 py-2 font-sans text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {advanceLoading ? t("advancing") : t("nextTurn")}
@@ -234,6 +244,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
             player={player}
             onAttack={handleAttack}
             isPlayerTurn={canPlayerAct}
+            isAnyActionInProgress={isAnyActionInProgress}
           />
         </div>
       </div>

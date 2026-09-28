@@ -9,6 +9,7 @@ export interface ICombatant {
   feetFromPlayer: number
   positionFeet: number
   initiative: number
+  order: number
   isOut: boolean
   isPlayerTurn?: boolean
   actionUsed: boolean
@@ -82,6 +83,7 @@ export interface IApiParticipant {
   hpCurrent: number
   hpMax: number
   initiative: number
+  order: number
   feetFromPlayer: number
   positionFeet: number
   isOut: boolean
@@ -98,6 +100,7 @@ export interface IApiParticipant {
   isStable?: boolean
   dead?: boolean
   conditions?: string[]
+  isAlly?: boolean
 }
 
 export interface IApiEncounter {

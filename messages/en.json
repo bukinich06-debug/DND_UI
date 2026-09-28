@@ -240,6 +240,7 @@
   "combat": {
     "title": "Combat Mode",
     "loading": "Loading combat…",
+    "networkError": "Network error. Retrying...",
     "round": "Round {number}",
     "yourTurn": "Your turn",
     "enemyTurn": "Enemy turn",
@@ -291,6 +292,7 @@
     "cannotActUnconscious": "You are unconscious and cannot act",
     "cannotActStable": "You are stabilized but still at 0 HP",
     "cannotActDead": "You are dead",
+    "combatMaster": "Combat Master",
     "actionEconomy": {
       "action": "Action",
       "bonusAction": "Bonus",
