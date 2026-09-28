@@ -88,8 +88,7 @@ export const advanceEncounter = async ({
   if (!res.ok) {
     if (res.status === 400) {
       const errorData = await res.json().catch(() => ({}))
-      if (errorData.errorCode === "PLAYER_TURN")
-        throw new Error("Сейчас ход игрока, нельзя продвинуть ход.")
+      throw new Error(errorData.error || "Не удалось продвинуть ход.")
     }
     throw new Error("Не удалось продвинуть ход.")
   }
