@@ -14,7 +14,7 @@ interface IPlayerCombatTurnParams {
 }
 
 export interface IPlayerCombatTurnResult {
-  encounter: IEncounter
+  encounter: IEncounter | null
   say?: string
   error?: string
   encounterEnded?: boolean
@@ -97,22 +97,22 @@ export const playerCombatTurn = async ({
     }
 
     if (data.encounterEnded || !data.encounter || data.encounter?.status === "ended") {
-      if (data.encounterEnded && data.encounterResult && data.encounter) {
-        const sortedParticipants = [...data.encounter.participants].sort(
-          (a, b) => b.initiative - a.initiative,
-        )
-
+      if (data.encounterEnded && data.encounterResult) {
         return {
-          encounter: {
-            id: data.encounter.encounterId,
-            active: false,
-            round: data.encounter.round,
-            isPlayerTurn: data.encounter.isPlayerTurn,
-            combatants: sortedParticipants.map((p) =>
-              mapParticipantToCombatant(p, data.encounter!.currentParticipantId),
-            ),
-            log: data.encounter.log || [],
-          },
+          encounter: data.encounter
+            ? {
+                id: data.encounter.encounterId,
+                active: false,
+                round: data.encounter.round,
+                isPlayerTurn: data.encounter.isPlayerTurn,
+                combatants: [...data.encounter.participants]
+                  .sort((a, b) => b.initiative - a.initiative)
+                  .map((p) =>
+                    mapParticipantToCombatant(p, data.encounter!.currentParticipantId),
+                  ),
+                log: data.encounter.log || [],
+              }
+            : null,
           say: data.say,
           encounterEnded: true,
           encounterResult: data.encounterResult,

@@ -69,7 +69,7 @@ export const CombatModal = ({ items, playerId, player }: ICombatModalProps) => {
 
     const result = await executeTurn(playerAction)
     if (result) {
-      setEncounter(result.encounter)
+      if (result.encounter) setEncounter(result.encounter)
       setMessage("")
       if (result.say) setAgentMessage(result.say)
       if (result.encounterEnded && result.encounterResult) {
