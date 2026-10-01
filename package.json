@@ -9,7 +9,7 @@
     "format": "oxfmt"
   },
   "dependencies": {
-    "next": "^15.5.0",
+    "next": "^15.5.27",
     "next-intl": "^4.13.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -20,7 +20,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "oxfmt": "^0.2.0",
-    "postcss": "^8.5.0",
+    "postcss": "^8.5.28",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.0"
   }
