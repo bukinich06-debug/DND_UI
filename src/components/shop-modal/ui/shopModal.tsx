@@ -15,16 +15,18 @@ interface IShopModalProps {
   npcId: string
   onClose: () => void
   onPurchaseSuccess?: (replies: ITurnReply[]) => Promise<void>
+  onPurchaseAwaitingChange?: (awaiting: boolean) => void
 }
 
 export const ShopModal = ({
   npcId,
   onClose,
   onPurchaseSuccess,
+  onPurchaseAwaitingChange,
 }: IShopModalProps) => {
   const t = useTranslations("shop")
   const { shop, loading, error, buying, buyError, buySuccess, cooldown, buy } =
-    useShop({ npcId, onPurchaseSuccess })
+    useShop({ npcId, onPurchaseSuccess, onPurchaseAwaitingChange })
   const [selected, setSelected] = useState<IShopItem | null>(null)
 
   useEffect(() => {

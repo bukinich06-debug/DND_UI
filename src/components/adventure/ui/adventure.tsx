@@ -14,6 +14,8 @@ interface IAdventureProps {
   onShopOpen?: (signal: IOpenShopSignal) => void
   onAddPurchaseNarrationReady?: (
     callback: (replies: ITurnReply[]) => Promise<void>,
+    beginAwaiting: () => void,
+    endAwaiting: () => void,
   ) => void
 }
 
@@ -33,13 +35,24 @@ export const Adventure = ({
     error,
     requestLocationLook,
     addPurchaseNarration,
+    beginAwaiting,
+    endAwaiting,
   } = useTurn({ onLocationChanged, onShopOpen })
 
   useEffect(() => {
     if (onAddPurchaseNarrationReady) {
-      onAddPurchaseNarrationReady(addPurchaseNarration)
+      onAddPurchaseNarrationReady(
+        addPurchaseNarration,
+        beginAwaiting,
+        endAwaiting,
+      )
     }
-  }, [onAddPurchaseNarrationReady, addPurchaseNarration])
+  }, [
+    onAddPurchaseNarrationReady,
+    addPurchaseNarration,
+    beginAwaiting,
+    endAwaiting,
+  ])
 
   const handleLocationMoved = async () => {
     setWorldOpen(false)
