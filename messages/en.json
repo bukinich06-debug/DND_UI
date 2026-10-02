@@ -333,5 +333,27 @@
       "psychic": "psychic",
       "force": "force"
     }
+  },
+  "dice": {
+    "narration": "A faint rustle comes from behind the door. Someone — or something — is waiting on the other side.",
+    "skill": "Perception",
+    "dc": "DC 12",
+    "throw": "Roll {die}",
+    "die": "Die",
+    "rolling": "Rolling…",
+    "rolled": "Rolled {value}",
+    "target": "Result (demo)",
+    "skin": "Skin",
+    "skins": {
+      "amethyst": "Amethyst",
+      "obsidian": "Obsidian",
+      "gold": "Gold",
+      "bone": "Bone",
+      "jade": "Jade",
+      "ruby": "Ruby"
+    },
+    "random": "Random",
+    "crit": "Critical hit!",
+    "fumble": "Critical fail"
   }
 }
